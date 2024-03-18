@@ -1,0 +1,5 @@
+C:\Users\Renko\Documents\GitHub\csharp-editor\bin\Debug\net6.0-windows\publish\csharp-editor.exe
+C:\Users\Renko\Documents\GitHub\csharp-editor\bin\Debug\net6.0-windows\publish\csharp-editor.dll
+C:\Users\Renko\Documents\GitHub\csharp-editor\bin\Debug\net6.0-windows\publish\csharp-editor.deps.json
+C:\Users\Renko\Documents\GitHub\csharp-editor\bin\Debug\net6.0-windows\publish\csharp-editor.runtimeconfig.json
+C:\Users\Renko\Documents\GitHub\csharp-editor\bin\Debug\net6.0-windows\publish\csharp-editor.pdb
