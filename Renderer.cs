@@ -9,10 +9,13 @@ namespace csharp_editor
 {
     public class Renderer
     {
-        public delegate void CallbackDelegate([MarshalAs(UnmanagedType.BStr)]string result);
+        public delegate void CallbackDelegate(string result);
 
         [DllImport("libRenderer.dll", EntryPoint = "init")]
-        public static extern void Init(CallbackDelegate callback);
+        public static extern void Init();
+
+        [DllImport("libRenderer.dll", EntryPoint = "initWithCallback")]
+        public static extern void InitWithCallback(CallbackDelegate callback);
 
         [DllImport("libRenderer.dll", EntryPoint = "draw")]
         public static extern void Draw();

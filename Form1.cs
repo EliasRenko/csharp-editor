@@ -7,15 +7,16 @@ namespace csharp_editor;
 
 public partial class Form1 : Form
 {
-    private string result;
+    //private string result;
 
     public Form1()
     {
         InitializeComponent();
 
-        Application.Idle += HandleApplicationIdle;
+        this.richTextBox_console.AppendText("Components initialized!");
 
-        Renderer.Init(MyCallback);
+        //Renderer.Init();
+        Renderer.InitWithCallback(MyCallback);
 
         IntPtr sdlHandle = Renderer.GetHandle();
 
@@ -40,6 +41,8 @@ public partial class Form1 : Form
         //Console.WriteLine("the result of Add function: " + res);
 
         //SetLogDispacher(MyCallback);
+
+        Application.Idle += HandleApplicationIdle;
     }
 
     private void HandleApplicationIdle(object? sender, EventArgs e)
@@ -50,7 +53,7 @@ public partial class Form1 : Form
     public void MyCallback(string result)
     {
         //Console.WriteLine("Callback invoked from C++ with result: " + result);
-        this.richTextBox_console.AppendText(result);
+        this.richTextBox_console.AppendText("\n" + result);
     }
     //public void RunAdd()
     //{
