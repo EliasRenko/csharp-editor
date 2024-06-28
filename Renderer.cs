@@ -14,11 +14,17 @@ namespace csharp_editor
         [DllImport("libRenderer.dll", EntryPoint = "init")]
         public static extern void Init();
 
+        [DllImport("libRenderer.dll", EntryPoint = "release")]
+        public static extern void Release();
+
         [DllImport("libRenderer.dll", EntryPoint = "initWithCallback")]
         public static extern void InitWithCallback(CallbackDelegate callback);
 
         [DllImport("libRenderer.dll", EntryPoint = "draw")]
         public static extern void Draw();
+
+        [DllImport("libRenderer.dll", EntryPoint = "update")]
+        public static extern void Update();
 
         [DllImport("libRenderer.dll", EntryPoint = "getHandle")]
         public static extern IntPtr GetHandle();

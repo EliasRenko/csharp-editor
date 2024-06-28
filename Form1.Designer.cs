@@ -51,11 +51,10 @@ partial class Form1
         toolStripButton9 = new ToolStripButton();
         toolStripButton7 = new ToolStripButton();
         toolStripButton8 = new ToolStripButton();
-        panel_main = new Panel();
+        panel_main = new MainView();
         richTextBox_console = new RichTextBox();
         menuStrip1.SuspendLayout();
         toolStrip1.SuspendLayout();
-        panel_main.SuspendLayout();
         SuspendLayout();
         // 
         // menuStrip1
@@ -210,20 +209,19 @@ partial class Form1
         // 
         // panel_main
         // 
-        panel_main.Controls.Add(richTextBox_console);
         panel_main.Dock = DockStyle.Fill;
         panel_main.Location = new Point(0, 49);
         panel_main.Name = "panel_main";
-        panel_main.Size = new Size(624, 392);
+        panel_main.Size = new Size(624, 296);
         panel_main.TabIndex = 2;
         // 
         // richTextBox_console
         // 
         richTextBox_console.Dock = DockStyle.Bottom;
-        richTextBox_console.Location = new Point(0, 328);
+        richTextBox_console.Location = new Point(0, 345);
         richTextBox_console.Name = "richTextBox_console";
-        richTextBox_console.Size = new Size(624, 64);
-        richTextBox_console.TabIndex = 1;
+        richTextBox_console.Size = new Size(624, 96);
+        richTextBox_console.TabIndex = 3;
         richTextBox_console.Text = "";
         // 
         // Form1
@@ -232,6 +230,7 @@ partial class Form1
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(624, 441);
         Controls.Add(panel_main);
+        Controls.Add(richTextBox_console);
         Controls.Add(toolStrip1);
         Controls.Add(menuStrip1);
         Location = new Point(1972, 52);
@@ -241,7 +240,6 @@ partial class Form1
         menuStrip1.PerformLayout();
         toolStrip1.ResumeLayout(false);
         toolStrip1.PerformLayout();
-        panel_main.ResumeLayout(false);
         ResumeLayout(false);
         PerformLayout();
     }
@@ -268,6 +266,6 @@ partial class Form1
     private ToolStripButton toolStripButton7;
     private ToolStripButton toolStripButton8;
     private ToolStripButton toolStripButton9;
-    private Panel panel_main;
+    private MainView panel_main;
     private RichTextBox richTextBox_console;
 }
