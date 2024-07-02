@@ -20,8 +20,8 @@ namespace csharp_editor
         [DllImport("libRenderer.dll", EntryPoint = "initWithCallback")]
         public static extern void InitWithCallback(CallbackDelegate callback);
 
-        [DllImport("libRenderer.dll", EntryPoint = "draw")]
-        public static extern void Draw();
+        [DllImport("libRenderer.dll", EntryPoint = "render")]
+        public static extern void Render();
 
         [DllImport("libRenderer.dll", EntryPoint = "update")]
         public static extern void Update();
@@ -37,7 +37,7 @@ namespace csharp_editor
 
         #region WinAPI Entry Points
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll") ]
         public static extern IntPtr SetWindowPos(
             IntPtr handle,
             IntPtr handleAfter,

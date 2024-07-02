@@ -8,14 +8,24 @@ namespace csharp_editor;
 public partial class Form1 : Form {
     //private string result;
 
-    public Form1() {
+    public Form1(Renderer.CallbackDelegate callback) {
 
         InitializeComponent();
 
-        panel_main.Init(LogCallback);
+        panel_main.Init(callback);
 
         Application.Idle += HandleApplicationIdle;
         FormClosing += Form1_FormClosing;
+    }
+
+    public void Render() {
+
+        panel_main.Render();
+    }
+
+    public void Tick() {
+
+        panel_main.Tick();
     }
 
     public void Log(String text) {
@@ -25,9 +35,9 @@ public partial class Form1 : Form {
 
     private void HandleApplicationIdle(object? sender, EventArgs e) {
 
-        panel_main.Update();
+        //panel_main.Update();
 
-        panel_main.Draw();
+        //panel_main.Draw();
     }
 
     private void LogCallback(string result) {

@@ -1,16 +1,44 @@
+using Microsoft.VisualBasic.Logging;
+
 namespace csharp_editor;
 
 static class Program
 {
-    /// <summary>
-    ///  The main entry point for the application.
-    /// </summary>
+    public static Form1? form1;
+
+    public static bool isRunning = true;
+
     [STAThread]
-    static void Main()
-    {
-        // To customize application configuration such as set high DPI settings or default font,
-        // see https://aka.ms/applicationconfiguration.
+    static void Main() {
+
+        Renderer.CallbackDelegate callback = (value) => {
+
+            Log(value);
+        };
+
         ApplicationConfiguration.Initialize();
-        Application.Run(new Form1());
+
+        // ---
+
+        form1 = new Form1(callback);
+        form1.Show();
+
+        while (isRunning) {
+
+            form1.Tick();
+            form1.Render();
+
+            Application.DoEvents();
+        }
+
+        Application.Exit();
     }    
+
+    public static void Log(string message) {
+
+        if (form1 != null) {
+
+            form1.Log(message);
+        }
+    }
 }

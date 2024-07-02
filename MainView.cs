@@ -2,9 +2,16 @@
 
 namespace csharp_editor {
     public partial class MainView : UserControl {
+
+        const int SWP_NOSIZE = 0x0001;
+        const int SWP_NOZORDER = 0x0004;
+
         public MainView() {
 
             InitializeComponent();
+
+            SetStyle(ControlStyles.Selectable, false);
+            SetStyle(ControlStyles.StandardClick, false);
 
             this.MouseClick += MainView_MouseClick;
         }
@@ -19,15 +26,15 @@ namespace csharp_editor {
             // ** Get the parent window handle.
             IntPtr windowHandle = Handle;
 
-            //Renderer.SetWindowPos(
-            //    Handle,
-            //    sdlHandle,
-            //    0,
-            //    0,
-            //    0,
-            //    0,
-            //    0x0401 // NOSIZE | SHOWWINDOW
-            //);
+            Renderer.SetWindowPos(
+                sdlHandle,
+                Handle,
+                0,
+                0,
+                0,
+                0,
+                0x0401 | SWP_NOSIZE | SWP_NOZORDER // NOSIZE | SHOWWINDOW
+            );
 
             // Attach the SDL2 window to the panel
             Renderer.SetParent(sdlHandle, Handle);
@@ -36,19 +43,26 @@ namespace csharp_editor {
 
         public void Release() {
 
-            Renderer.Stop();
+            Renderer.Release();
         }
 
-        public void Draw() {
+        public void Render() {
+
+            Renderer.Render();
+        }
+
+        public void Tick() {
 
             Renderer.Update();
-
-            Renderer.Draw();
         }
 
         private void MainView_MouseClick(object? sender, MouseEventArgs e) {
 
-            
+        }
+
+        protected override void OnGotFocus(EventArgs e) {
+
+            //base.OnGotFocus(e);
         }
     }
 }
