@@ -2,8 +2,7 @@
 
 namespace csharp_editor;
 
-partial class Form1
-{
+partial class Form1 {
     /// <summary>
     ///  Required designer variable.
     /// </summary>
@@ -13,10 +12,8 @@ partial class Form1
     ///  Clean up any resources being used.
     /// </summary>
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-    protected override void Dispose(bool disposing)
-    {
-        if (disposing && (components != null))
-        {
+    protected override void Dispose(bool disposing) {
+        if (disposing && (components != null)) {
             components.Dispose();
         }
         base.Dispose(disposing);
@@ -28,8 +25,7 @@ partial class Form1
     ///  Required method for Designer support - do not modify
     ///  the contents of this method with the code editor.
     /// </summary>
-    private void InitializeComponent()
-    {
+    private void InitializeComponent() {
         System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
         menuStrip1 = new MenuStrip();
         fileToolStripMenuItem = new ToolStripMenuItem();
@@ -44,15 +40,15 @@ partial class Form1
         toolStripButton3 = new ToolStripButton();
         toolStripButton4 = new ToolStripButton();
         toolStripSeparator1 = new ToolStripSeparator();
-        toolStripButton5 = new ToolStripButton();
-        toolStripButton6 = new ToolStripButton();
+        toolStripButton_cmd = new ToolStripButton();
+        toolStripButton_explorer = new ToolStripButton();
         toolStripSeparator2 = new ToolStripSeparator();
         toolStripComboBox1 = new ToolStripComboBox();
         toolStripButton9 = new ToolStripButton();
         toolStripButton7 = new ToolStripButton();
         toolStripButton8 = new ToolStripButton();
         panel_main = new MainView();
-        richTextBox_console = new RichTextBox();
+        textBox_console = new TextBox();
         menuStrip1.SuspendLayout();
         toolStrip1.SuspendLayout();
         SuspendLayout();
@@ -104,7 +100,7 @@ partial class Form1
         // 
         // toolStrip1
         // 
-        toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripButton1, toolStripButton2, toolStripButton3, toolStripButton4, toolStripSeparator1, toolStripButton5, toolStripButton6, toolStripSeparator2, toolStripComboBox1, toolStripButton9, toolStripButton7, toolStripButton8 });
+        toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripButton1, toolStripButton2, toolStripButton3, toolStripButton4, toolStripSeparator1, toolStripButton_cmd, toolStripButton_explorer, toolStripSeparator2, toolStripComboBox1, toolStripButton9, toolStripButton7, toolStripButton8 });
         toolStrip1.Location = new Point(0, 24);
         toolStrip1.Name = "toolStrip1";
         toolStrip1.Size = new Size(624, 25);
@@ -152,23 +148,23 @@ partial class Form1
         toolStripSeparator1.Name = "toolStripSeparator1";
         toolStripSeparator1.Size = new Size(6, 25);
         // 
-        // toolStripButton5
+        // toolStripButton_cmd
         // 
-        toolStripButton5.DisplayStyle = ToolStripItemDisplayStyle.Image;
-        toolStripButton5.Image = (Image)resources.GetObject("toolStripButton5.Image");
-        toolStripButton5.ImageTransparentColor = Color.Magenta;
-        toolStripButton5.Name = "toolStripButton5";
-        toolStripButton5.Size = new Size(23, 22);
-        toolStripButton5.Text = "toolStripButton5";
+        toolStripButton_cmd.DisplayStyle = ToolStripItemDisplayStyle.Image;
+        toolStripButton_cmd.Image = (Image)resources.GetObject("toolStripButton_cmd.Image");
+        toolStripButton_cmd.ImageTransparentColor = Color.Magenta;
+        toolStripButton_cmd.Name = "toolStripButton_cmd";
+        toolStripButton_cmd.Size = new Size(23, 22);
+        toolStripButton_cmd.Text = "toolStripButton_cmd";
         // 
-        // toolStripButton6
+        // toolStripButton_explorer
         // 
-        toolStripButton6.DisplayStyle = ToolStripItemDisplayStyle.Image;
-        toolStripButton6.Image = (Image)resources.GetObject("toolStripButton6.Image");
-        toolStripButton6.ImageTransparentColor = Color.Magenta;
-        toolStripButton6.Name = "toolStripButton6";
-        toolStripButton6.Size = new Size(23, 22);
-        toolStripButton6.Text = "toolStripButton6";
+        toolStripButton_explorer.DisplayStyle = ToolStripItemDisplayStyle.Image;
+        toolStripButton_explorer.Image = (Image)resources.GetObject("toolStripButton_explorer.Image");
+        toolStripButton_explorer.ImageTransparentColor = Color.Magenta;
+        toolStripButton_explorer.Name = "toolStripButton_explorer";
+        toolStripButton_explorer.Size = new Size(23, 22);
+        toolStripButton_explorer.Text = "toolStripButton6";
         // 
         // toolStripSeparator2
         // 
@@ -212,25 +208,27 @@ partial class Form1
         panel_main.Dock = DockStyle.Fill;
         panel_main.Location = new Point(0, 49);
         panel_main.Name = "panel_main";
-        panel_main.Size = new Size(624, 296);
+        panel_main.Size = new Size(624, 392);
         panel_main.TabIndex = 2;
         // 
-        // richTextBox_console
+        // textBox_console
         // 
-        richTextBox_console.Dock = DockStyle.Bottom;
-        richTextBox_console.Location = new Point(0, 345);
-        richTextBox_console.Name = "richTextBox_console";
-        richTextBox_console.Size = new Size(624, 96);
-        richTextBox_console.TabIndex = 3;
-        richTextBox_console.Text = "";
+        textBox_console.Dock = DockStyle.Bottom;
+        textBox_console.Enabled = false;
+        textBox_console.Location = new Point(0, 393);
+        textBox_console.Multiline = true;
+        textBox_console.Name = "textBox_console";
+        textBox_console.Size = new Size(624, 48);
+        textBox_console.TabIndex = 3;
+        textBox_console.TabStop = false;
         // 
         // Form1
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(624, 441);
+        Controls.Add(textBox_console);
         Controls.Add(panel_main);
-        Controls.Add(richTextBox_console);
         Controls.Add(toolStrip1);
         Controls.Add(menuStrip1);
         Location = new Point(1972, 52);
@@ -259,13 +257,13 @@ partial class Form1
     private ToolStripButton toolStripButton3;
     private ToolStripButton toolStripButton4;
     private ToolStripSeparator toolStripSeparator1;
-    private ToolStripButton toolStripButton5;
-    private ToolStripButton toolStripButton6;
+    private ToolStripButton toolStripButton_cmd;
+    private ToolStripButton toolStripButton_explorer;
     private ToolStripSeparator toolStripSeparator2;
     private ToolStripComboBox toolStripComboBox1;
     private ToolStripButton toolStripButton7;
     private ToolStripButton toolStripButton8;
     private ToolStripButton toolStripButton9;
     private MainView panel_main;
-    private RichTextBox richTextBox_console;
+    private TextBox textBox_console;
 }
