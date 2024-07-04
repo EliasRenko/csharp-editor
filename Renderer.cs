@@ -29,6 +29,9 @@ namespace csharp_editor
         [DllImport("libRenderer.dll", EntryPoint = "getHandle")]
         public static extern IntPtr GetHandle();
 
+        [DllImport("libRenderer.dll", EntryPoint = "createWindowFrom")]
+        public static extern void CreateWindowFrom(IntPtr handle);
+
         [DllImport("libRenderer.dll", EntryPoint = "Add", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int Add(int a, int b, string input, CallbackDelegate callback);
 
@@ -53,6 +56,12 @@ namespace csharp_editor
 
         [DllImport("user32.dll")]
         public static extern IntPtr ShowWindow(IntPtr handle, int command);
+
+        [DllImport("user32.dll")]
+        public static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
+
+        [DllImport("user32.dll")]
+        public static extern long SetWindowLongA(IntPtr hWnd, int nIndex, long dwNewLong);
 
         #endregion
     }
