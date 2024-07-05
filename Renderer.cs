@@ -38,6 +38,9 @@ namespace csharp_editor
         [DllImport("libRenderer.dll", EntryPoint = "setLogDispacher", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
         public static extern void SetLogDispacher(CallbackDelegate callback);
 
+        [DllImport("libRenderer.dll", EntryPoint = "onMouseClick")]
+        public static extern void OnMouseClick(int x, int y);
+
         #region WinAPI Entry Points
 
         [DllImport("user32.dll") ]

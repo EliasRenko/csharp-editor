@@ -62,7 +62,9 @@ namespace csharp_editor {
 
         private void MainView_MouseClick(object? sender, MouseEventArgs e) {
 
-            logCallback?.Invoke("View click");
+            //logCallback?.Invoke("X: " + e.X + " Y: " + e.Y);
+
+            Renderer.OnMouseClick(e.X, e.Y);
         }
     }
 }

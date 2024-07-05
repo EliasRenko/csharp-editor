@@ -48,7 +48,7 @@ partial class Form1 {
         toolStripButton7 = new ToolStripButton();
         toolStripButton8 = new ToolStripButton();
         panel_main = new MainView();
-        textBox_console = new TextBox();
+        richTextBox_console = new RichTextBox();
         menuStrip1.SuspendLayout();
         toolStrip1.SuspendLayout();
         SuspendLayout();
@@ -208,29 +208,28 @@ partial class Form1 {
         panel_main.Dock = DockStyle.Fill;
         panel_main.Location = new Point(0, 49);
         panel_main.Name = "panel_main";
-        panel_main.Size = new Size(624, 392);
+        panel_main.Size = new Size(624, 329);
         panel_main.TabIndex = 2;
         // 
-        // textBox_console
+        // richTextBox_console
         // 
-        textBox_console.Dock = DockStyle.Bottom;
-        textBox_console.Enabled = false;
-        textBox_console.Location = new Point(0, 393);
-        textBox_console.Multiline = true;
-        textBox_console.Name = "textBox_console";
-        textBox_console.Size = new Size(624, 48);
-        textBox_console.TabIndex = 3;
-        textBox_console.TabStop = false;
+        richTextBox_console.Dock = DockStyle.Bottom;
+        richTextBox_console.Enabled = false;
+        richTextBox_console.Location = new Point(0, 378);
+        richTextBox_console.Name = "richTextBox_console";
+        richTextBox_console.Size = new Size(624, 63);
+        richTextBox_console.TabIndex = 3;
+        richTextBox_console.Text = "";
         // 
         // Form1
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(624, 441);
-        Controls.Add(textBox_console);
         Controls.Add(panel_main);
         Controls.Add(toolStrip1);
         Controls.Add(menuStrip1);
+        Controls.Add(richTextBox_console);
         Location = new Point(1972, 52);
         Name = "Form1";
         Text = "Form1";
@@ -265,5 +264,5 @@ partial class Form1 {
     private ToolStripButton toolStripButton8;
     private ToolStripButton toolStripButton9;
     private MainView panel_main;
-    private TextBox textBox_console;
+    private RichTextBox richTextBox_console;
 }
