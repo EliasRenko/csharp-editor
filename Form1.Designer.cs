@@ -36,7 +36,7 @@ partial class Form1 {
         helpToolStripMenuItem = new ToolStripMenuItem();
         toolStrip1 = new ToolStrip();
         toolStripButton1 = new ToolStripButton();
-        toolStripButton2 = new ToolStripButton();
+        toolStripButton_openFile = new ToolStripButton();
         toolStripButton3 = new ToolStripButton();
         toolStripButton4 = new ToolStripButton();
         toolStripSeparator1 = new ToolStripSeparator();
@@ -100,7 +100,7 @@ partial class Form1 {
         // 
         // toolStrip1
         // 
-        toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripButton1, toolStripButton2, toolStripButton3, toolStripButton4, toolStripSeparator1, toolStripButton_cmd, toolStripButton_explorer, toolStripSeparator2, toolStripComboBox1, toolStripButton9, toolStripButton7, toolStripButton8 });
+        toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripButton1, toolStripButton_openFile, toolStripButton3, toolStripButton4, toolStripSeparator1, toolStripButton_cmd, toolStripButton_explorer, toolStripSeparator2, toolStripComboBox1, toolStripButton9, toolStripButton7, toolStripButton8 });
         toolStrip1.Location = new Point(0, 24);
         toolStrip1.Name = "toolStrip1";
         toolStrip1.Size = new Size(624, 25);
@@ -116,14 +116,14 @@ partial class Form1 {
         toolStripButton1.Size = new Size(23, 22);
         toolStripButton1.Text = "toolStripButton1";
         // 
-        // toolStripButton2
+        // toolStripButton_openFile
         // 
-        toolStripButton2.DisplayStyle = ToolStripItemDisplayStyle.Image;
-        toolStripButton2.Image = (Image)resources.GetObject("toolStripButton2.Image");
-        toolStripButton2.ImageTransparentColor = Color.Magenta;
-        toolStripButton2.Name = "toolStripButton2";
-        toolStripButton2.Size = new Size(23, 22);
-        toolStripButton2.Text = "toolStripButton2";
+        toolStripButton_openFile.DisplayStyle = ToolStripItemDisplayStyle.Image;
+        toolStripButton_openFile.Image = (Image)resources.GetObject("toolStripButton_openFile.Image");
+        toolStripButton_openFile.ImageTransparentColor = Color.Magenta;
+        toolStripButton_openFile.Name = "toolStripButton_openFile";
+        toolStripButton_openFile.Size = new Size(23, 22);
+        toolStripButton_openFile.Text = "Open file";
         // 
         // toolStripButton3
         // 
@@ -252,7 +252,7 @@ partial class Form1 {
     private ToolStripMenuItem toolsToolStripMenuItem;
     private ToolStrip toolStrip1;
     private ToolStripButton toolStripButton1;
-    private ToolStripButton toolStripButton2;
+    private ToolStripButton toolStripButton_openFile;
     private ToolStripButton toolStripButton3;
     private ToolStripButton toolStripButton4;
     private ToolStripSeparator toolStripSeparator1;

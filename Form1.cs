@@ -1,3 +1,4 @@
+using csharp_editor.Json;
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -21,7 +22,28 @@ public partial class Form1 : Form {
         PreviewKeyDown += Form1_PreviewKeyDown;
         KeyDown += Form1_KeyDown;
 
+        this.toolStripButton_openFile.MouseUp += toolStripButton_openFile_MouseUp;
         this.toolStripButton_cmd.MouseUp += ToolStripButton_cmd_MouseUp;
+    }
+
+    private void toolStripButton_openFile_MouseUp(object? sender, MouseEventArgs e) {
+
+        string path = Utils.OpenFile("");
+
+        string ext = Path.GetExtension(path);
+
+        switch (ext) {
+
+            case ".json":
+
+                OpenProject(Parser.GetProject(path));
+
+                break;
+
+            default:
+
+                throw new Exception("Invalid file name");
+        }
     }
 
     private void ToolStripButton_cmd_MouseUp(object? sender, MouseEventArgs e) {
@@ -68,6 +90,11 @@ public partial class Form1 : Form {
     public void Log(String text) {
 
         richTextBox_console.AppendText("\n" + text);
+    }
+
+    private void OpenProject(ProjectJson json) {
+
+        Log(json.Path);
     }
 
     private void HandleApplicationIdle(object? sender, EventArgs e) {
