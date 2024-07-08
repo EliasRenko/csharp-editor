@@ -35,3 +35,5 @@ C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp-edi
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp-editor.genruntimeconfig.cache
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\ref\csharp-editor.dll
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.MainView.resources
+C:\Users\Renko\Documents\Projects\csharp\csharp-editor\obj\Debug\csharp_editor.MainView.resources
+C:\Users\Renko\Documents\Projects\csharp\csharp-editor\obj\Debug\csharp_editor.TextureViewer.resources

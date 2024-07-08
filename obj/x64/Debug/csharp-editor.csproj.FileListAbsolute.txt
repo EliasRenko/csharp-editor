@@ -16,3 +16,4 @@ C:\Users\Renko\Documents\Projects\csharp\csharp-editor\obj\x64\Debug\refint\csha
 C:\Users\Renko\Documents\Projects\csharp\csharp-editor\obj\x64\Debug\csharp-editor.pdb
 C:\Users\Renko\Documents\Projects\csharp\csharp-editor\obj\x64\Debug\csharp-editor.genruntimeconfig.cache
 C:\Users\Renko\Documents\Projects\csharp\csharp-editor\obj\x64\Debug\ref\csharp-editor.dll
+C:\Users\Renko\Documents\Projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.MainView.resources

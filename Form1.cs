@@ -24,6 +24,8 @@ public partial class Form1 : Form {
 
         this.toolStripButton_openFile.MouseUp += toolStripButton_openFile_MouseUp;
         this.toolStripButton_cmd.MouseUp += ToolStripButton_cmd_MouseUp;
+
+        this.richTextBox_console.TextChanged += richTextBox_console_TextChanged;
     }
 
     private void toolStripButton_openFile_MouseUp(object? sender, MouseEventArgs e) {
@@ -36,7 +38,13 @@ public partial class Form1 : Form {
 
             case ".json":
 
-                OpenProject(Parser.GetProject(path));
+                ImportProject(Parser.GetProject(path));
+
+                break;
+
+            case ".png":
+
+                ImportImage(path);
 
                 break;
 
@@ -92,9 +100,23 @@ public partial class Form1 : Form {
         richTextBox_console.AppendText("\n" + text);
     }
 
-    private void OpenProject(ProjectJson json) {
+    private void ImportProject(ProjectJson json) {
 
-        Log(json.Path);
+        if (json.Path != null) {
+
+            Log(json.Path);
+        }
+    }
+
+    private void ImportImage(string path) {
+
+        Log("Import image");
+
+        TextureViewer textureViewer = new TextureViewer(path);
+
+        textureViewer.ShowDialog();
+
+        Renderer.LoadTexture(path, 0, "1");
     }
 
     private void HandleApplicationIdle(object? sender, EventArgs e) {
@@ -113,4 +135,11 @@ public partial class Form1 : Form {
 
         panel_main.Release();
     }
+
+    private void richTextBox_console_TextChanged(object sender, EventArgs e) {
+
+        richTextBox_console.SelectionStart = richTextBox_console.Text.Length;
+
+        richTextBox_console.ScrollToCaret();
+    }   
 }

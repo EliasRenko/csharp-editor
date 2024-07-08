@@ -1,3 +1,13 @@
 {
-    "path": "C:\\Users\\efedorenko\\Documents\\projects\\csharp\\csharp-editor\\Test"
+  "path": "C:\\Users\\efedorenko\\Documents\\projects\\csharp\\csharp-editor\\Test",
+
+  "tasks": [
+
+    {
+      "name": "Debug"
+    },
+    {
+      "name": "Release"
+    }
+  ]
 }

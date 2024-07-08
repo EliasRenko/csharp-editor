@@ -14,6 +14,9 @@ namespace csharp_editor
         [DllImport("libRenderer.dll", EntryPoint = "init")]
         public static extern void Init();
 
+        [DllImport("libRenderer.dll", EntryPoint = "loadTexture", CharSet = CharSet.Ansi)]
+        public static extern void LoadTexture(string filepath, int tileSize, string id);
+
         [DllImport("libRenderer.dll", EntryPoint = "release")]
         public static extern void Release();
 
