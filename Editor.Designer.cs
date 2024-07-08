@@ -2,7 +2,7 @@
 
 namespace csharp_editor;
 
-partial class Form1 {
+partial class Editor {
     /// <summary>
     ///  Required designer variable.
     /// </summary>
@@ -26,7 +26,7 @@ partial class Form1 {
     ///  the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-        System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+        System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Editor));
         menuStrip1 = new MenuStrip();
         fileToolStripMenuItem = new ToolStripMenuItem();
         editToolStripMenuItem = new ToolStripMenuItem();
@@ -49,8 +49,15 @@ partial class Form1 {
         toolStripButton8 = new ToolStripButton();
         panel_main = new MainView();
         richTextBox_console = new RichTextBox();
+        panel1 = new Panel();
+        tabControl1 = new TabControl();
+        tabPage2 = new TabPage();
+        label1 = new Label();
+        treeView_hierarchy = new TreeView();
         menuStrip1.SuspendLayout();
         toolStrip1.SuspendLayout();
+        panel1.SuspendLayout();
+        tabControl1.SuspendLayout();
         SuspendLayout();
         // 
         // menuStrip1
@@ -221,22 +228,76 @@ partial class Form1 {
         richTextBox_console.TabIndex = 3;
         richTextBox_console.Text = "";
         // 
-        // Form1
+        // panel1
+        // 
+        panel1.Controls.Add(tabControl1);
+        panel1.Controls.Add(label1);
+        panel1.Controls.Add(treeView_hierarchy);
+        panel1.Dock = DockStyle.Left;
+        panel1.Location = new Point(0, 49);
+        panel1.Name = "panel1";
+        panel1.Size = new Size(179, 329);
+        panel1.TabIndex = 4;
+        // 
+        // tabControl1
+        // 
+        tabControl1.Alignment = TabAlignment.Bottom;
+        tabControl1.Controls.Add(tabPage2);
+        tabControl1.Dock = DockStyle.Fill;
+        tabControl1.Location = new Point(0, 0);
+        tabControl1.Multiline = true;
+        tabControl1.Name = "tabControl1";
+        tabControl1.SelectedIndex = 0;
+        tabControl1.Size = new Size(179, 329);
+        tabControl1.TabIndex = 1;
+        // 
+        // tabPage2
+        // 
+        tabPage2.Location = new Point(4, 4);
+        tabPage2.Name = "tabPage2";
+        tabPage2.Padding = new Padding(3);
+        tabPage2.Size = new Size(171, 301);
+        tabPage2.TabIndex = 1;
+        tabPage2.Text = "tabPage2";
+        tabPage2.UseVisualStyleBackColor = true;
+        // 
+        // label1
+        // 
+        label1.AutoSize = true;
+        label1.Location = new Point(3, 9);
+        label1.Name = "label1";
+        label1.Size = new Size(38, 15);
+        label1.TabIndex = 0;
+        label1.Text = "label1";
+        // 
+        // treeView_hierarchy
+        // 
+        treeView_hierarchy.Dock = DockStyle.Fill;
+        treeView_hierarchy.Location = new Point(0, 0);
+        treeView_hierarchy.Name = "treeView_hierarchy";
+        treeView_hierarchy.Size = new Size(179, 329);
+        treeView_hierarchy.TabIndex = 0;
+        // 
+        // Editor
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(624, 441);
+        Controls.Add(panel1);
         Controls.Add(panel_main);
         Controls.Add(toolStrip1);
         Controls.Add(menuStrip1);
         Controls.Add(richTextBox_console);
         Location = new Point(1972, 52);
-        Name = "Form1";
+        Name = "Editor";
         Text = "Form1";
         menuStrip1.ResumeLayout(false);
         menuStrip1.PerformLayout();
         toolStrip1.ResumeLayout(false);
         toolStrip1.PerformLayout();
+        panel1.ResumeLayout(false);
+        panel1.PerformLayout();
+        tabControl1.ResumeLayout(false);
         ResumeLayout(false);
         PerformLayout();
     }
@@ -265,4 +326,9 @@ partial class Form1 {
     private ToolStripButton toolStripButton9;
     private MainView panel_main;
     private RichTextBox richTextBox_console;
+    private Panel panel1;
+    private TreeView treeView_hierarchy;
+    private TabControl tabControl1;
+    private TabPage tabPage2;
+    private Label label1;
 }

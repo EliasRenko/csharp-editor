@@ -4,9 +4,7 @@ namespace csharp_editor;
 
 static class Program
 {
-    public static Form1? form1;
-
-    public static bool isRunning = true;
+    public static Editor? editor;
 
     [STAThread]
     static void Main() {
@@ -20,13 +18,13 @@ static class Program
 
         // ---
 
-        form1 = new Form1(callback);
-        form1.Show();
+        editor = new Editor(callback);
+        editor.Show();
 
-        while (isRunning) {
+        while (editor.active) {
 
-            form1.Tick();
-            form1.Render();
+            editor.Tick();
+            editor.Render();
 
             Application.DoEvents();
         }
@@ -36,9 +34,9 @@ static class Program
 
     public static void Log(string message) {
 
-        if (form1 != null) {
+        if (editor != null) {
 
-            form1.Log(message);
+            editor.Log(message);
         }
     }
 }

@@ -16,14 +16,18 @@ C:\Users\Renko\Documents\Projects\csharp\csharp-editor\obj\Debug\refint\csharp-e
 C:\Users\Renko\Documents\Projects\csharp\csharp-editor\obj\Debug\csharp-editor.pdb
 C:\Users\Renko\Documents\Projects\csharp\csharp-editor\obj\Debug\csharp-editor.genruntimeconfig.cache
 C:\Users\Renko\Documents\Projects\csharp\csharp-editor\obj\Debug\ref\csharp-editor.dll
+C:\Users\Renko\Documents\Projects\csharp\csharp-editor\obj\Debug\csharp_editor.MainView.resources
+C:\Users\Renko\Documents\Projects\csharp\csharp-editor\obj\Debug\csharp_editor.TextureViewer.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\bin\Debug\csharp-editor.exe
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\bin\Debug\csharp-editor.deps.json
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\bin\Debug\csharp-editor.runtimeconfig.json
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\bin\Debug\csharp-editor.dll
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\bin\Debug\csharp-editor.pdb
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp-editor.csproj.AssemblyReference.cache
-C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.Form1.resources
+C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.Editor.resources
+C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.MainView.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.Properties.Resources.resources
+C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.TextureViewer.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp-editor.csproj.GenerateResource.cache
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp-editor.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp-editor.AssemblyInfoInputs.cache
@@ -34,6 +38,3 @@ C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\refint\csh
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp-editor.pdb
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp-editor.genruntimeconfig.cache
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\ref\csharp-editor.dll
-C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.MainView.resources
-C:\Users\Renko\Documents\Projects\csharp\csharp-editor\obj\Debug\csharp_editor.MainView.resources
-C:\Users\Renko\Documents\Projects\csharp\csharp-editor\obj\Debug\csharp_editor.TextureViewer.resources

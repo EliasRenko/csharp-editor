@@ -1,18 +1,17 @@
 using csharp_editor.Json;
-using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 namespace csharp_editor;
 
-public partial class Form1 : Form {
-    //private string result;
+public partial class Editor : Form {
 
-    public Form1(Renderer.CallbackDelegate callback) {
+    public bool active;
+
+    public Editor(Renderer.CallbackDelegate callback) {
 
         InitializeComponent();
+
+        active = true;
 
         panel_main.Init(callback);
 
@@ -134,6 +133,8 @@ public partial class Form1 : Form {
     private void Form1_FormClosing(object? sender, FormClosingEventArgs e) {
 
         panel_main.Release();
+
+        active = false;
     }
 
     private void richTextBox_console_TextChanged(object sender, EventArgs e) {
@@ -141,5 +142,5 @@ public partial class Form1 : Form {
         richTextBox_console.SelectionStart = richTextBox_console.Text.Length;
 
         richTextBox_console.ScrollToCaret();
-    }   
+    }
 }
