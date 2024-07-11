@@ -47,17 +47,21 @@ partial class Editor {
         toolStripButton9 = new ToolStripButton();
         toolStripButton7 = new ToolStripButton();
         toolStripButton8 = new ToolStripButton();
-        panel_main = new MainView();
         richTextBox_console = new RichTextBox();
-        panel1 = new Panel();
         tabControl1 = new TabControl();
-        tabPage2 = new TabPage();
-        label1 = new Label();
-        treeView_hierarchy = new TreeView();
+        tabPage_scene = new TabPage();
+        tabPage_files = new TabPage();
+        panel_main = new MainView();
+        panel2 = new Panel();
+        splitContainer1 = new SplitContainer();
         menuStrip1.SuspendLayout();
         toolStrip1.SuspendLayout();
-        panel1.SuspendLayout();
         tabControl1.SuspendLayout();
+        panel2.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
+        splitContainer1.Panel1.SuspendLayout();
+        splitContainer1.Panel2.SuspendLayout();
+        splitContainer1.SuspendLayout();
         SuspendLayout();
         // 
         // menuStrip1
@@ -65,7 +69,7 @@ partial class Editor {
         menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, editToolStripMenuItem, viewToolStripMenuItem, projectToolStripMenuItem, toolsToolStripMenuItem, helpToolStripMenuItem });
         menuStrip1.Location = new Point(0, 0);
         menuStrip1.Name = "menuStrip1";
-        menuStrip1.Size = new Size(624, 24);
+        menuStrip1.Size = new Size(944, 24);
         menuStrip1.TabIndex = 0;
         menuStrip1.Text = "menuStrip1";
         // 
@@ -107,10 +111,14 @@ partial class Editor {
         // 
         // toolStrip1
         // 
+        toolStrip1.BackColor = SystemColors.Control;
+        toolStrip1.CanOverflow = false;
+        toolStrip1.GripMargin = new Padding(8, 2, 2, 2);
         toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripButton1, toolStripButton_openFile, toolStripButton3, toolStripButton4, toolStripSeparator1, toolStripButton_cmd, toolStripButton_explorer, toolStripSeparator2, toolStripComboBox1, toolStripButton9, toolStripButton7, toolStripButton8 });
         toolStrip1.Location = new Point(0, 24);
         toolStrip1.Name = "toolStrip1";
-        toolStrip1.Size = new Size(624, 25);
+        toolStrip1.RenderMode = ToolStripRenderMode.System;
+        toolStrip1.Size = new Size(944, 25);
         toolStrip1.TabIndex = 1;
         toolStrip1.Text = "toolStrip1";
         // 
@@ -210,81 +218,98 @@ partial class Editor {
         toolStripButton8.Size = new Size(23, 22);
         toolStripButton8.Text = "toolStripButton8";
         // 
-        // panel_main
-        // 
-        panel_main.Dock = DockStyle.Fill;
-        panel_main.Location = new Point(0, 49);
-        panel_main.Name = "panel_main";
-        panel_main.Size = new Size(624, 329);
-        panel_main.TabIndex = 2;
-        // 
         // richTextBox_console
         // 
+        richTextBox_console.BorderStyle = BorderStyle.None;
         richTextBox_console.Dock = DockStyle.Bottom;
         richTextBox_console.Enabled = false;
-        richTextBox_console.Location = new Point(0, 378);
+        richTextBox_console.Location = new Point(0, 438);
         richTextBox_console.Name = "richTextBox_console";
-        richTextBox_console.Size = new Size(624, 63);
+        richTextBox_console.Size = new Size(944, 63);
         richTextBox_console.TabIndex = 3;
         richTextBox_console.Text = "";
         // 
-        // panel1
-        // 
-        panel1.Controls.Add(tabControl1);
-        panel1.Controls.Add(label1);
-        panel1.Controls.Add(treeView_hierarchy);
-        panel1.Dock = DockStyle.Left;
-        panel1.Location = new Point(0, 49);
-        panel1.Name = "panel1";
-        panel1.Size = new Size(179, 329);
-        panel1.TabIndex = 4;
-        // 
         // tabControl1
         // 
-        tabControl1.Alignment = TabAlignment.Bottom;
-        tabControl1.Controls.Add(tabPage2);
-        tabControl1.Dock = DockStyle.Fill;
+        tabControl1.Controls.Add(tabPage_scene);
+        tabControl1.Controls.Add(tabPage_files);
+        tabControl1.Dock = DockStyle.Top;
+        tabControl1.ItemSize = new Size(64, 26);
         tabControl1.Location = new Point(0, 0);
-        tabControl1.Multiline = true;
+        tabControl1.Margin = new Padding(0);
         tabControl1.Name = "tabControl1";
+        tabControl1.Padding = new Point(0, 0);
+        tabControl1.RightToLeft = RightToLeft.Yes;
         tabControl1.SelectedIndex = 0;
-        tabControl1.Size = new Size(179, 329);
-        tabControl1.TabIndex = 1;
+        tabControl1.Size = new Size(160, 334);
+        tabControl1.SizeMode = TabSizeMode.Fixed;
+        tabControl1.TabIndex = 6;
         // 
-        // tabPage2
+        // tabPage_scene
         // 
-        tabPage2.Location = new Point(4, 4);
-        tabPage2.Name = "tabPage2";
-        tabPage2.Padding = new Padding(3);
-        tabPage2.Size = new Size(171, 301);
-        tabPage2.TabIndex = 1;
-        tabPage2.Text = "tabPage2";
-        tabPage2.UseVisualStyleBackColor = true;
+        tabPage_scene.Location = new Point(4, 30);
+        tabPage_scene.Margin = new Padding(0);
+        tabPage_scene.Name = "tabPage_scene";
+        tabPage_scene.Size = new Size(152, 300);
+        tabPage_scene.TabIndex = 0;
+        tabPage_scene.Text = "Scene";
+        tabPage_scene.UseVisualStyleBackColor = true;
         // 
-        // label1
+        // tabPage_files
         // 
-        label1.AutoSize = true;
-        label1.Location = new Point(3, 9);
-        label1.Name = "label1";
-        label1.Size = new Size(38, 15);
-        label1.TabIndex = 0;
-        label1.Text = "label1";
+        tabPage_files.Location = new Point(4, 30);
+        tabPage_files.Name = "tabPage_files";
+        tabPage_files.Size = new Size(150, 300);
+        tabPage_files.TabIndex = 1;
+        tabPage_files.Text = "Files";
+        tabPage_files.UseVisualStyleBackColor = true;
         // 
-        // treeView_hierarchy
+        // panel_main
         // 
-        treeView_hierarchy.Dock = DockStyle.Fill;
-        treeView_hierarchy.Location = new Point(0, 0);
-        treeView_hierarchy.Name = "treeView_hierarchy";
-        treeView_hierarchy.Size = new Size(179, 329);
-        treeView_hierarchy.TabIndex = 0;
+        panel_main.BorderStyle = BorderStyle.FixedSingle;
+        panel_main.Dock = DockStyle.Fill;
+        panel_main.Location = new Point(0, 0);
+        panel_main.Name = "panel_main";
+        panel_main.Size = new Size(775, 383);
+        panel_main.TabIndex = 2;
+        // 
+        // panel2
+        // 
+        panel2.Controls.Add(splitContainer1);
+        panel2.Dock = DockStyle.Fill;
+        panel2.Location = new Point(0, 49);
+        panel2.Margin = new Padding(0);
+        panel2.Name = "panel2";
+        panel2.Padding = new Padding(3);
+        panel2.Size = new Size(944, 389);
+        panel2.TabIndex = 5;
+        // 
+        // splitContainer1
+        // 
+        splitContainer1.Dock = DockStyle.Fill;
+        splitContainer1.Location = new Point(3, 3);
+        splitContainer1.Name = "splitContainer1";
+        // 
+        // splitContainer1.Panel1
+        // 
+        splitContainer1.Panel1.Controls.Add(tabControl1);
+        splitContainer1.Panel1MinSize = 64;
+        // 
+        // splitContainer1.Panel2
+        // 
+        splitContainer1.Panel2.Controls.Add(panel_main);
+        splitContainer1.Panel2MinSize = 640;
+        splitContainer1.Size = new Size(938, 383);
+        splitContainer1.SplitterDistance = 160;
+        splitContainer1.SplitterWidth = 3;
+        splitContainer1.TabIndex = 5;
         // 
         // Editor
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(624, 441);
-        Controls.Add(panel1);
-        Controls.Add(panel_main);
+        ClientSize = new Size(944, 501);
+        Controls.Add(panel2);
         Controls.Add(toolStrip1);
         Controls.Add(menuStrip1);
         Controls.Add(richTextBox_console);
@@ -295,9 +320,12 @@ partial class Editor {
         menuStrip1.PerformLayout();
         toolStrip1.ResumeLayout(false);
         toolStrip1.PerformLayout();
-        panel1.ResumeLayout(false);
-        panel1.PerformLayout();
         tabControl1.ResumeLayout(false);
+        panel2.ResumeLayout(false);
+        splitContainer1.Panel1.ResumeLayout(false);
+        splitContainer1.Panel2.ResumeLayout(false);
+        ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+        splitContainer1.ResumeLayout(false);
         ResumeLayout(false);
         PerformLayout();
     }
@@ -324,11 +352,11 @@ partial class Editor {
     private ToolStripButton toolStripButton7;
     private ToolStripButton toolStripButton8;
     private ToolStripButton toolStripButton9;
-    private MainView panel_main;
     private RichTextBox richTextBox_console;
-    private Panel panel1;
-    private TreeView treeView_hierarchy;
+    private MainView panel_main;
+    private Panel panel2;
+    private SplitContainer splitContainer1;
     private TabControl tabControl1;
-    private TabPage tabPage2;
-    private Label label1;
+    private TabPage tabPage_scene;
+    private TabPage tabPage_files;
 }

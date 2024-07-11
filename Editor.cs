@@ -1,5 +1,6 @@
 using csharp_editor.Json;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace csharp_editor;
 
@@ -12,6 +13,21 @@ public partial class Editor : Form {
         InitializeComponent();
 
         active = true;
+
+        toolStrip1.Renderer = new ToolStripRenderer();
+
+        ImageList iconsList = new ImageList();
+        //iconsList.ColorDepth = ColorDepth.Depth32Bit;
+        iconsList.ImageSize = new Size(16, 16);
+        iconsList.ColorDepth = ColorDepth.Depth32Bit;
+        iconsList.Images.Add(Image.FromFile(Application.StartupPath + "\\Resources\\folder_brick.png"));
+        iconsList.Images.Add(Image.FromFile(Application.StartupPath + "\\Resources\\folder_explorer.png"));
+
+        tabPage_scene.ImageIndex = 0;
+        tabPage_files.ImageIndex = 1;
+
+        tabControl1.ImageList = iconsList;
+
 
         panel_main.Init(callback);
 
