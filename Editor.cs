@@ -15,6 +15,7 @@ public partial class Editor : Form {
         active = true;
 
         toolStrip1.Renderer = new ToolStripRenderer();
+        //toolStrip2.Renderer = new ToolStripRenderer();
 
         ImageList iconsList = new ImageList();
         //iconsList.ColorDepth = ColorDepth.Depth32Bit;

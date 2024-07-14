@@ -27,6 +27,7 @@ partial class Editor {
     /// </summary>
     private void InitializeComponent() {
         System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Editor));
+        TreeNode treeNode1 = new TreeNode("root");
         menuStrip1 = new MenuStrip();
         fileToolStripMenuItem = new ToolStripMenuItem();
         editToolStripMenuItem = new ToolStripMenuItem();
@@ -50,18 +51,30 @@ partial class Editor {
         richTextBox_console = new RichTextBox();
         tabControl1 = new TabControl();
         tabPage_scene = new TabPage();
+        treeView1 = new TreeView();
+        toolStrip2 = new ToolStrip();
+        toolStripButton10 = new ToolStripButton();
+        toolStripButton6 = new ToolStripButton();
+        toolStripButton5 = new ToolStripButton();
+        toolStripButton2 = new ToolStripButton();
         tabPage_files = new TabPage();
         panel_main = new MainView();
         panel2 = new Panel();
         splitContainer1 = new SplitContainer();
+        splitContainer2 = new SplitContainer();
         menuStrip1.SuspendLayout();
         toolStrip1.SuspendLayout();
         tabControl1.SuspendLayout();
+        tabPage_scene.SuspendLayout();
+        toolStrip2.SuspendLayout();
         panel2.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
         splitContainer1.Panel1.SuspendLayout();
         splitContainer1.Panel2.SuspendLayout();
         splitContainer1.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
+        splitContainer2.Panel1.SuspendLayout();
+        splitContainer2.SuspendLayout();
         SuspendLayout();
         // 
         // menuStrip1
@@ -117,6 +130,7 @@ partial class Editor {
         toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripButton1, toolStripButton_openFile, toolStripButton3, toolStripButton4, toolStripSeparator1, toolStripButton_cmd, toolStripButton_explorer, toolStripSeparator2, toolStripComboBox1, toolStripButton9, toolStripButton7, toolStripButton8 });
         toolStrip1.Location = new Point(0, 24);
         toolStrip1.Name = "toolStrip1";
+        toolStrip1.Padding = new Padding(0);
         toolStrip1.RenderMode = ToolStripRenderMode.System;
         toolStrip1.Size = new Size(944, 25);
         toolStrip1.TabIndex = 1;
@@ -241,25 +255,91 @@ partial class Editor {
         tabControl1.Padding = new Point(0, 0);
         tabControl1.RightToLeft = RightToLeft.Yes;
         tabControl1.SelectedIndex = 0;
-        tabControl1.Size = new Size(160, 334);
+        tabControl1.Size = new Size(160, 227);
         tabControl1.SizeMode = TabSizeMode.Fixed;
         tabControl1.TabIndex = 6;
         // 
         // tabPage_scene
         // 
+        tabPage_scene.Controls.Add(treeView1);
+        tabPage_scene.Controls.Add(toolStrip2);
         tabPage_scene.Location = new Point(4, 30);
         tabPage_scene.Margin = new Padding(0);
         tabPage_scene.Name = "tabPage_scene";
-        tabPage_scene.Size = new Size(152, 300);
+        tabPage_scene.Size = new Size(152, 193);
         tabPage_scene.TabIndex = 0;
         tabPage_scene.Text = "Scene";
         tabPage_scene.UseVisualStyleBackColor = true;
+        // 
+        // treeView1
+        // 
+        treeView1.BorderStyle = BorderStyle.None;
+        treeView1.Dock = DockStyle.Fill;
+        treeView1.Location = new Point(0, 0);
+        treeView1.Margin = new Padding(0);
+        treeView1.Name = "treeView1";
+        treeNode1.Name = "Node0";
+        treeNode1.Text = "root";
+        treeView1.Nodes.AddRange(new TreeNode[] { treeNode1 });
+        treeView1.Size = new Size(152, 168);
+        treeView1.TabIndex = 3;
+        // 
+        // toolStrip2
+        // 
+        toolStrip2.BackColor = SystemColors.Window;
+        toolStrip2.CanOverflow = false;
+        toolStrip2.Dock = DockStyle.Bottom;
+        toolStrip2.GripStyle = ToolStripGripStyle.Hidden;
+        toolStrip2.Items.AddRange(new ToolStripItem[] { toolStripButton10, toolStripButton6, toolStripButton5, toolStripButton2 });
+        toolStrip2.Location = new Point(0, 168);
+        toolStrip2.Name = "toolStrip2";
+        toolStrip2.Padding = new Padding(0);
+        toolStrip2.RenderMode = ToolStripRenderMode.System;
+        toolStrip2.Size = new Size(152, 25);
+        toolStrip2.TabIndex = 4;
+        toolStrip2.Text = "toolStrip2";
+        // 
+        // toolStripButton10
+        // 
+        toolStripButton10.DisplayStyle = ToolStripItemDisplayStyle.Image;
+        toolStripButton10.Image = (Image)resources.GetObject("toolStripButton10.Image");
+        toolStripButton10.ImageTransparentColor = Color.Magenta;
+        toolStripButton10.Name = "toolStripButton10";
+        toolStripButton10.Size = new Size(23, 22);
+        toolStripButton10.Text = "toolStripButton10";
+        // 
+        // toolStripButton6
+        // 
+        toolStripButton6.DisplayStyle = ToolStripItemDisplayStyle.Image;
+        toolStripButton6.Image = (Image)resources.GetObject("toolStripButton6.Image");
+        toolStripButton6.ImageTransparentColor = Color.Magenta;
+        toolStripButton6.Name = "toolStripButton6";
+        toolStripButton6.Size = new Size(23, 22);
+        toolStripButton6.Text = "toolStripButton6";
+        // 
+        // toolStripButton5
+        // 
+        toolStripButton5.DisplayStyle = ToolStripItemDisplayStyle.Image;
+        toolStripButton5.Image = (Image)resources.GetObject("toolStripButton5.Image");
+        toolStripButton5.ImageTransparentColor = Color.Magenta;
+        toolStripButton5.Name = "toolStripButton5";
+        toolStripButton5.Size = new Size(23, 22);
+        toolStripButton5.Text = "toolStripButton5";
+        // 
+        // toolStripButton2
+        // 
+        toolStripButton2.DisplayStyle = ToolStripItemDisplayStyle.Image;
+        toolStripButton2.Image = (Image)resources.GetObject("toolStripButton2.Image");
+        toolStripButton2.ImageTransparentColor = Color.Magenta;
+        toolStripButton2.Name = "toolStripButton2";
+        toolStripButton2.Size = new Size(23, 22);
+        toolStripButton2.Text = "toolStripButton2";
         // 
         // tabPage_files
         // 
         tabPage_files.Location = new Point(4, 30);
         tabPage_files.Name = "tabPage_files";
-        tabPage_files.Size = new Size(150, 300);
+        tabPage_files.Size = new Size(152, 193);
         tabPage_files.TabIndex = 1;
         tabPage_files.Text = "Files";
         tabPage_files.UseVisualStyleBackColor = true;
@@ -292,7 +372,7 @@ partial class Editor {
         // 
         // splitContainer1.Panel1
         // 
-        splitContainer1.Panel1.Controls.Add(tabControl1);
+        splitContainer1.Panel1.Controls.Add(splitContainer2);
         splitContainer1.Panel1MinSize = 64;
         // 
         // splitContainer1.Panel2
@@ -303,6 +383,20 @@ partial class Editor {
         splitContainer1.SplitterDistance = 160;
         splitContainer1.SplitterWidth = 3;
         splitContainer1.TabIndex = 5;
+        // 
+        // splitContainer2
+        // 
+        splitContainer2.Dock = DockStyle.Fill;
+        splitContainer2.Location = new Point(0, 0);
+        splitContainer2.Name = "splitContainer2";
+        splitContainer2.Orientation = Orientation.Horizontal;
+        // 
+        // splitContainer2.Panel1
+        // 
+        splitContainer2.Panel1.Controls.Add(tabControl1);
+        splitContainer2.Size = new Size(160, 383);
+        splitContainer2.SplitterDistance = 256;
+        splitContainer2.TabIndex = 4;
         // 
         // Editor
         // 
@@ -321,11 +415,18 @@ partial class Editor {
         toolStrip1.ResumeLayout(false);
         toolStrip1.PerformLayout();
         tabControl1.ResumeLayout(false);
+        tabPage_scene.ResumeLayout(false);
+        tabPage_scene.PerformLayout();
+        toolStrip2.ResumeLayout(false);
+        toolStrip2.PerformLayout();
         panel2.ResumeLayout(false);
         splitContainer1.Panel1.ResumeLayout(false);
         splitContainer1.Panel2.ResumeLayout(false);
         ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
         splitContainer1.ResumeLayout(false);
+        splitContainer2.Panel1.ResumeLayout(false);
+        ((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
+        splitContainer2.ResumeLayout(false);
         ResumeLayout(false);
         PerformLayout();
     }
@@ -359,4 +460,11 @@ partial class Editor {
     private TabControl tabControl1;
     private TabPage tabPage_scene;
     private TabPage tabPage_files;
+    private TreeView treeView1;
+    private ToolStrip toolStrip2;
+    private ToolStripButton toolStripButton2;
+    private ToolStripButton toolStripButton10;
+    private ToolStripButton toolStripButton6;
+    private ToolStripButton toolStripButton5;
+    private SplitContainer splitContainer2;
 }
