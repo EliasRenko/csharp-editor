@@ -1,12 +1,17 @@
 using csharp_editor.Json;
 using System.Diagnostics;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace csharp_editor;
 
 public partial class Editor : Form {
 
     public bool active;
+
+    public int id = 0;
+
+    public TreeNode rootNode;
 
     public Editor(Renderer.CallbackDelegate callback) {
 
@@ -29,10 +34,8 @@ public partial class Editor : Form {
 
         tabControl1.ImageList = iconsList;
 
-
         panel_main.Init(callback);
 
-        Application.Idle += HandleApplicationIdle;
         FormClosing += Form1_FormClosing;
 
         PreviewKeyDown += Form1_PreviewKeyDown;
@@ -40,8 +43,37 @@ public partial class Editor : Form {
 
         this.toolStripButton_openFile.MouseUp += toolStripButton_openFile_MouseUp;
         this.toolStripButton_cmd.MouseUp += ToolStripButton_cmd_MouseUp;
+        this.toolStripButton_addEntity.MouseUp += ToolStripButton_addEntity;
 
         this.richTextBox_console.TextChanged += richTextBox_console_TextChanged;
+
+        rootNode = new TreeNode("root");
+
+        this.treeView1.Nodes.Add(rootNode);
+        this.treeView1.AfterSelect += TreeView1_AfterSelect;
+    }
+
+    private void TreeView1_AfterSelect(object? sender, TreeViewEventArgs e) {
+
+        TreeNode node = this.treeView1.SelectedNode;
+        
+        if (node == null) {
+
+            return;
+        }
+        else {
+
+            if (node.Tag == null) {
+
+                panel_main.DeselectEntity();
+
+                return;
+            }
+        }
+
+        int id = (int) node.Tag;
+
+        panel_main.SelectEntity(id);
     }
 
     private void toolStripButton_openFile_MouseUp(object? sender, MouseEventArgs e) {
@@ -78,6 +110,21 @@ public partial class Editor : Form {
         p.StartInfo.Arguments = "node fileWithCommands.js";
         p.Start();
     }
+    private void ToolStripButton_addEntity(object? sender, MouseEventArgs e) {
+
+        TreeNode selectedNode = treeView1.SelectedNode;
+
+        if (selectedNode == null) selectedNode = rootNode;
+
+        TreeNode entity = new TreeNode("New Entity");
+        entity.Tag = id;
+
+        selectedNode.Nodes.Add(entity);
+
+        panel_main.AddEntity(id);
+
+        id++;
+    }
 
     private void Form1_PreviewKeyDown(object? sender, PreviewKeyDownEventArgs e) {
 
@@ -101,9 +148,19 @@ public partial class Editor : Form {
         }
     }
 
+    public void PreRender() {
+
+        panel_main.PreRender();
+    }
+
     public void Render() {
 
         panel_main.Render();
+    }
+
+    public void PostRender() {
+
+        panel_main.PostRender();
     }
 
     public void Tick() {
@@ -133,13 +190,6 @@ public partial class Editor : Form {
         textureViewer.ShowDialog();
 
         Renderer.LoadTexture(path, 0, "1");
-    }
-
-    private void HandleApplicationIdle(object? sender, EventArgs e) {
-
-        //panel_main.Update();
-
-        //panel_main.Draw();
     }
 
     private void LogCallback(string result) {

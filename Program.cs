@@ -24,7 +24,10 @@ static class Program
         while (editor.active) {
 
             editor.Tick();
+
+            editor.PreRender();
             editor.Render();
+            editor.PostRender();
 
             Application.DoEvents();
         }

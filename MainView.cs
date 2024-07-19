@@ -50,9 +50,34 @@ namespace csharp_editor {
             Renderer.Release();
         }
 
+        public void AddEntity(int id) {
+
+            Renderer.AddEntity(id);
+        }
+
+        public void SelectEntity(int id) {
+
+            Renderer.SelectEntity(id);
+        }
+
+        public void DeselectEntity() {
+
+            Renderer.DeselectEntity();
+        }
+
+        public void PreRender() {
+
+            Renderer.PreRender();
+        }
+
         public void Render() {
 
             Renderer.Render();
+        }
+
+        public void PostRender() {
+
+            Renderer.PostRender();
         }
 
         public void Tick() {

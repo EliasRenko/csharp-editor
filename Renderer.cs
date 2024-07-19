@@ -23,8 +23,23 @@ namespace csharp_editor
         [DllImport("libRenderer.dll", EntryPoint = "initWithCallback")]
         public static extern void InitWithCallback(CallbackDelegate callback);
 
+        [DllImport("libRenderer.dll", EntryPoint = "preRender")]
+        public static extern void PreRender();
+
         [DllImport("libRenderer.dll", EntryPoint = "render")]
         public static extern void Render();
+
+        [DllImport("libRenderer.dll", EntryPoint = "postRender")]
+        public static extern void PostRender();
+
+        [DllImport("libRenderer.dll", EntryPoint = "addEntity")]
+        public static extern void AddEntity(int id);
+
+        [DllImport("libRenderer.dll", EntryPoint = "selectEntity")]
+        public static extern void SelectEntity(int id);
+
+        [DllImport("libRenderer.dll", EntryPoint = "deselectEntity")]
+        public static extern void DeselectEntity();
 
         [DllImport("libRenderer.dll", EntryPoint = "update")]
         public static extern void Update();
