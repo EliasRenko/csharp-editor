@@ -1,6 +1,8 @@
 ﻿namespace csharp_editor {
     internal class Entity {
 
+        public Action<Entity>? callback;
+
         private int _id;
 
         private int _x;
@@ -16,14 +18,37 @@
 
             get { return _x; }
 
-            set { _x = value; }
+            set { 
+
+                _x = value;
+
+                onChange();
+            }
         }
 
         public int Y {
 
             get { return _y; }
 
-            set { _y = value; }
+            set { 
+
+                _y = value;
+
+                onChange();
+            }
+        }
+
+        public int id {
+
+            get { return _id; }
+        }
+
+        private void onChange() {
+
+            if (callback != null) {
+
+                callback.Invoke(this);
+            }
         }
     }
 }

@@ -65,6 +65,12 @@ namespace csharp_editor {
             Renderer.DeselectEntity();
         }
 
+        public void UpdateEntity(int id, int x, int y)
+        {
+
+            Renderer.UpdateEntity(id, x, y);
+        }
+
         public void PreRender() {
 
             Renderer.PreRender();

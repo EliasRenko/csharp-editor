@@ -71,9 +71,20 @@ public partial class Editor : Form {
             }
         }
 
-        int id = (int) node.Tag;
+        Entity? entity = node.Tag as Entity;
 
-        panel_main.SelectEntity(id);
+        if (entity == null) throw new Exception("Invalid or null entity object");
+
+        entity.callback = changeEntityProperties;
+
+        propertyGrid_main.SelectedObject = entity;
+
+        panel_main.SelectEntity(entity.id);
+    }
+
+    private void changeEntityProperties(Entity entity) {
+
+        panel_main.UpdateEntity(entity.id, entity.X, entity.Y);
     }
 
     private void toolStripButton_openFile_MouseUp(object? sender, MouseEventArgs e) {
@@ -116,10 +127,13 @@ public partial class Editor : Form {
 
         if (selectedNode == null) selectedNode = rootNode;
 
-        TreeNode entity = new TreeNode("New Entity");
-        entity.Tag = id;
+        Entity entity = new Entity(id);
 
-        selectedNode.Nodes.Add(entity);
+        TreeNode nodeEntity = new TreeNode("New Entity");
+
+        nodeEntity.Tag = entity;
+
+        selectedNode.Nodes.Add(nodeEntity);
 
         panel_main.AddEntity(id);
 
