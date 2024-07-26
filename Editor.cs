@@ -48,6 +48,7 @@ public partial class Editor : Form {
         this.richTextBox_console.TextChanged += richTextBox_console_TextChanged;
 
         rootNode = new TreeNode("root");
+        rootNode.Tag = new MapObject();
 
         this.treeView1.Nodes.Add(rootNode);
         this.treeView1.AfterSelect += TreeView1_AfterSelect;
@@ -62,6 +63,21 @@ public partial class Editor : Form {
             return;
         }
         else {
+
+            if (node.Text == "root") {
+
+                MapObject mapObject = node.Tag as MapObject;
+
+                if (mapObject == null) throw new Exception("Invalid map object");
+
+                propertyGrid_main.SelectedObject = mapObject;
+
+                mapObject.callback = changeMapProperties;
+
+                panel_main.DeselectEntity();
+
+                return;
+            }
 
             if (node.Tag == null) {
 
@@ -86,6 +102,18 @@ public partial class Editor : Form {
 
         panel_main.UpdateEntity(entity.id, entity.X, entity.Y);
     }
+
+    private void changeMapProperties(MapObject map) {
+
+        string hexValue = ToHex(map.color);
+
+        //int value = int.Parse(hexValue, System.Globalization.NumberStyles.HexNumber);
+
+        panel_main.UpdateMap(hexValue);
+    }
+
+    private static String ToHex(System.Drawing.Color c)
+    => $"#{c.R:X2}{c.G:X2}{c.B:X2}";
 
     private void toolStripButton_openFile_MouseUp(object? sender, MouseEventArgs e) {
 

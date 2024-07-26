@@ -44,6 +44,9 @@ namespace csharp_editor
         [DllImport("libRenderer.dll", EntryPoint = "updateEntity")]
         public static extern void UpdateEntity(int id, int x, int y);
 
+        [DllImport("libRenderer.dll", EntryPoint = "updateMap")]
+        public static extern void UpdateMap(string hex);
+
         [DllImport("libRenderer.dll", EntryPoint = "update")]
         public static extern void Update();
 

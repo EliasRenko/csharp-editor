@@ -71,6 +71,11 @@ namespace csharp_editor {
             Renderer.UpdateEntity(id, x, y);
         }
 
+        public void UpdateMap(string hex) {
+
+            Renderer.UpdateMap(color);
+        }
+
         public void PreRender() {
 
             Renderer.PreRender();
