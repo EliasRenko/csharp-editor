@@ -1,4 +1,5 @@
 using csharp_editor.Json;
+using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
@@ -107,13 +108,15 @@ public partial class Editor : Form {
 
         string hexValue = ToHex(map.color);
 
-        //int value = int.Parse(hexValue, System.Globalization.NumberStyles.HexNumber);
+        //int intColor = (map.color.R << 16) | (map.color.G << 8) | (map.color.B);
+
+        //int value = int.Parse(map.color., System.Globalization.NumberStyles.HexNumber);
 
         panel_main.UpdateMap(hexValue);
     }
 
     private static String ToHex(System.Drawing.Color c)
-    => $"#{c.R:X2}{c.G:X2}{c.B:X2}";
+    => $"{c.R:X2}{c.G:X2}{c.B:X2}";
 
     private void toolStripButton_openFile_MouseUp(object? sender, MouseEventArgs e) {
 

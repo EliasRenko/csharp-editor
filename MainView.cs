@@ -73,7 +73,7 @@ namespace csharp_editor {
 
         public void UpdateMap(string hex) {
 
-            Renderer.UpdateMap(color);
+            Renderer.UpdateMap(hex);
         }
 
         public void PreRender() {
