@@ -1,4 +1,6 @@
-﻿namespace csharp_editor
+﻿using System.Windows.Forms;
+
+namespace csharp_editor
 {
     partial class MainView
     {
@@ -28,10 +30,32 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            this.panel_view = new System.Windows.Forms.Panel();
+            this.SuspendLayout();
+            // 
+            // MainView
+            // 
+            this.panel_view.BackColor = System.Drawing.SystemColors.Desktop;
+            this.panel_view.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel_view.Location = new System.Drawing.Point(0, 0);
+            this.panel_view.Name = "MainView";
+            this.panel_view.Size = new System.Drawing.Size(150, 150);
+            this.panel_view.TabIndex = 0;
+            // 
+            // view
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Controls.Add(this.panel_view);
+            this.Name = "view";
+            this.Load += new System.EventHandler(this.view_Load);
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
+        private Panel panel_view;
     }
 }

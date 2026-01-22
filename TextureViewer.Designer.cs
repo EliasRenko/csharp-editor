@@ -1,4 +1,7 @@
-﻿namespace csharp_editor
+﻿using System.Drawing;
+using System.Windows.Forms;
+
+namespace csharp_editor
 {
     partial class TextureViewer
     {

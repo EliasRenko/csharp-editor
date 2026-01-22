@@ -1,68 +1,85 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace csharp_editor
 {
     public class Renderer
     {
-        public delegate void CallbackDelegate(string result);
+        public const string DLL = "Main-debug.dll";
 
-        [DllImport("libRenderer.dll", EntryPoint = "init")]
-        public static extern void Init();
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void CallbackDelegate([MarshalAs(UnmanagedType.LPStr)] string message);
 
-        [DllImport("libRenderer.dll", EntryPoint = "loadTexture", CharSet = CharSet.Ansi)]
+        [DllImport(DLL, EntryPoint = "init")]
+        public static extern int Init();
+
+        //[DllImport(DLL, EntryPoint = "initWithCallback", CallingConvention = CallingConvention.Cdecl)]
+        //public static extern int InitWithCallback(CallbackDelegate callback);
+
+        [DllImport(DLL, EntryPoint = "loadTexture", CharSet = CharSet.Ansi)]
         public static extern void LoadTexture(string filepath, int tileSize, string id);
 
-        [DllImport("libRenderer.dll", EntryPoint = "release")]
+        [DllImport(DLL, EntryPoint = "release")]
         public static extern void Release();
 
-        [DllImport("libRenderer.dll", EntryPoint = "initWithCallback")]
-        public static extern void InitWithCallback(CallbackDelegate callback);
+        [DllImport(DLL, EntryPoint = "initWithCallback")]
+        public static extern int InitWithCallback(CallbackDelegate callback);
 
-        [DllImport("libRenderer.dll", EntryPoint = "preRender")]
+        [DllImport(DLL, EntryPoint = "updateFrame")]
+        public static extern void UpdateFrame();
+
+        [DllImport(DLL, EntryPoint = "preRender")]
         public static extern void PreRender();
 
-        [DllImport("libRenderer.dll", EntryPoint = "render")]
+        [DllImport(DLL, EntryPoint = "render")]
         public static extern void Render();
 
-        [DllImport("libRenderer.dll", EntryPoint = "postRender")]
+        [DllImport(DLL, EntryPoint = "postRender")]
         public static extern void PostRender();
 
-        [DllImport("libRenderer.dll", EntryPoint = "addEntity")]
+        // --- States
+
+        [DllImport(DLL, EntryPoint = "loadState")]
+        public static extern void LoadState(int id);
+
+        // ---
+
+        [DllImport(DLL, EntryPoint = "addEntity")]
         public static extern void AddEntity(int id);
 
-        [DllImport("libRenderer.dll", EntryPoint = "selectEntity")]
+        [DllImport(DLL, EntryPoint = "selectEntity")]
         public static extern void SelectEntity(int id);
 
-        [DllImport("libRenderer.dll", EntryPoint = "deselectEntity")]
+        [DllImport(DLL, EntryPoint = "deselectEntity")]
         public static extern void DeselectEntity();
 
-        [DllImport("libRenderer.dll", EntryPoint = "updateEntity")]
+        [DllImport(DLL, EntryPoint = "updateEntity")]
         public static extern void UpdateEntity(int id, int x, int y);
 
-        [DllImport("libRenderer.dll", EntryPoint = "updateMap")]
+        [DllImport(DLL, EntryPoint = "updateMap")]
         public static extern void UpdateMap(string hex);
 
-        [DllImport("libRenderer.dll", EntryPoint = "update")]
+        [DllImport(DLL, EntryPoint = "update")]
         public static extern void Update();
 
-        [DllImport("libRenderer.dll", EntryPoint = "getHandle")]
-        public static extern IntPtr GetHandle();
 
-        [DllImport("libRenderer.dll", EntryPoint = "createWindowFrom")]
+        // Window
+        [DllImport(DLL, EntryPoint = "getWindowHandle")]
+        public static extern IntPtr GetWindowHandle();
+
+        [DllImport(DLL, EntryPoint = "createWindowFrom")]
         public static extern void CreateWindowFrom(IntPtr handle);
 
-        [DllImport("libRenderer.dll", EntryPoint = "Add", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        [DllImport(DLL, EntryPoint = "setWindowPosition")]
+        public static extern void SetWindowPosition(int x, int y);
+
+        [DllImport(DLL, EntryPoint = "Add", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int Add(int a, int b, string input, CallbackDelegate callback);
 
-        [DllImport("libRenderer.dll", EntryPoint = "setLogDispacher", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
+        [DllImport(DLL, EntryPoint = "setLogDispacher", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
         public static extern void SetLogDispacher(CallbackDelegate callback);
 
-        [DllImport("libRenderer.dll", EntryPoint = "onMouseClick")]
+        [DllImport(DLL, EntryPoint = "onMouseClick")]
         public static extern void OnMouseClick(int x, int y);
 
         #region WinAPI Entry Points

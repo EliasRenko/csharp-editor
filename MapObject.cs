@@ -1,7 +1,10 @@
-﻿namespace csharp_editor {
+﻿using System;
+using System.Drawing;
+
+namespace csharp_editor {
     internal class MapObject {
 
-        public Action<MapObject>? callback;
+        public Action<MapObject> callback;
 
         private Color _color;
 

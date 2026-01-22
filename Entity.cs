@@ -1,7 +1,9 @@
-﻿namespace csharp_editor {
+﻿using System;
+
+namespace csharp_editor {
     internal class Entity {
 
-        public Action<Entity>? callback;
+        public Action<Entity> callback;
 
         private int _id;
 

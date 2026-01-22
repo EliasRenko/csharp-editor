@@ -1,45 +1,36 @@
-using Microsoft.VisualBasic.Logging;
+using System;
+using System.Windows.Forms;
 
-namespace csharp_editor;
-
-static class Program
+namespace csharp_editor
 {
-    public static Editor? editor;
+    static class Program
+    {
+        public static Editor editor;
 
-    [STAThread]
-    static void Main() {
+        [STAThread]
+        static void Main()
+        {
+            Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
 
-        Renderer.CallbackDelegate callback = (value) => {
+            // ---
 
-            Log(value);
-        };
+            editor = new Editor();
+            editor.Show();
 
-        ApplicationConfiguration.Initialize();
+            while (editor.active)
+            {
 
-        // ---
+                editor.Tick();
+                editor.PreRender();
+                editor.Render();
+                editor.PostRender();
 
-        editor = new Editor(callback);
-        editor.Show();
+                Application.DoEvents();
+            }
 
-        while (editor.active) {
-
-            editor.Tick();
-
-            editor.PreRender();
-            editor.Render();
-            editor.PostRender();
-
-            Application.DoEvents();
-        }
-
-        Application.Exit();
-    }    
-
-    public static void Log(string message) {
-
-        if (editor != null) {
-
-            editor.Log(message);
+            Application.Exit();
         }
     }
 }

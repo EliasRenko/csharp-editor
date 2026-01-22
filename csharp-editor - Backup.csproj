@@ -6,11 +6,10 @@
     <UseWindowsForms>true</UseWindowsForms>
     <Platforms>AnyCPU;x64</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="test.cs" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.664.37" />
   </ItemGroup>
 
   <ItemGroup>
@@ -136,9 +135,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Resources\disk_multiple.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\displays.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Resources\draw_clone.png">
@@ -360,18 +356,6 @@
     <None Update="Resources\zoom_selection.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="C:\Users\Renko\.nuget\packages\microsoft.web.webview2\1.0.664.37\build\\..\runtimes\win-arm\native\WebView2Loader.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="C:\Users\Renko\.nuget\packages\microsoft.web.webview2\1.0.664.37\build\\..\runtimes\win-arm\native\WebView2Loader.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="test.cs" />
   </ItemGroup>
 
 </Project>

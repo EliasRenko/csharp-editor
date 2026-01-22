@@ -7,7 +7,13 @@
     <Compile Update="MainView.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="NewDisplayObject.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="TextureViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="TilesetEditor.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

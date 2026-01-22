@@ -1,32 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Renko\\Documents\\Projects\\csharp\\csharp-editor\\csharp-editor.csproj": {}
+    "C:\\Users\\Renko\\Documents\\Libraries\\csharp-editor\\csharp-editor.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Renko\\Documents\\Projects\\csharp\\csharp-editor\\csharp-editor.csproj": {
+    "C:\\Users\\Renko\\Documents\\Libraries\\csharp-editor\\csharp-editor.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Renko\\Documents\\Projects\\csharp\\csharp-editor\\csharp-editor.csproj",
+        "projectUniqueName": "C:\\Users\\Renko\\Documents\\Libraries\\csharp-editor\\csharp-editor.csproj",
         "projectName": "csharp-editor",
-        "projectPath": "C:\\Users\\Renko\\Documents\\Projects\\csharp\\csharp-editor\\csharp-editor.csproj",
+        "projectPath": "C:\\Users\\Renko\\Documents\\Libraries\\csharp-editor\\csharp-editor.csproj",
         "packagesPath": "C:\\Users\\Renko\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Renko\\Documents\\Projects\\csharp\\csharp-editor\\obj\\",
+        "outputPath": "C:\\Users\\Renko\\Documents\\Libraries\\csharp-editor\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Renko\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net6.0-windows"
+          "netcoreapp3.1"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net6.0-windows7.0": {
-            "targetAlias": "net6.0-windows",
+          "netcoreapp3.1": {
             "projectReferences": {}
           }
         },
@@ -37,16 +36,14 @@
         }
       },
       "frameworks": {
-        "net6.0-windows7.0": {
-          "targetAlias": "net6.0-windows",
+        "netcoreapp3.1": {
           "imports": [
             "net461",
             "net462",
             "net47",
             "net471",
             "net472",
-            "net48",
-            "net481"
+            "net48"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -58,7 +55,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
         }
       }
     }

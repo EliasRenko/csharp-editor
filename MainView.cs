@@ -1,32 +1,76 @@
-﻿using static csharp_editor.Renderer;
+﻿using System;
+using System.Windows.Forms;
+using static csharp_editor.Renderer;
 
 namespace csharp_editor {
     public partial class MainView : UserControl {
 
-        public CallbackDelegate ?logCallback;
+        public CallbackDelegate logCallback;
+        public bool active = false;
+
+        private IntPtr sdlWindowHandle = IntPtr.Zero;
 
         public MainView() {
 
             InitializeComponent();
 
             // ** Events
-
             MouseClick += MainView_MouseClick;
         }
 
+        // CallbackDelegate callback
         public void Init(CallbackDelegate callback) {
 
             logCallback = callback;
 
-            //Renderer.Init();
-            Renderer.InitWithCallback(callback);
+            if (Renderer.InitWithCallback(callback) != 1)
+            {
+                MessageBox.Show("Failed to initialize engine", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
-            Renderer.CreateWindowFrom(Handle);
+            // Get the SDL window handle
+            sdlWindowHandle = Renderer.GetWindowHandle();
+            if (sdlWindowHandle == IntPtr.Zero)
+            {
+                MessageBox.Show("Failed to get SDL window handle", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Set SDL window as child of panel
+            SetParent(sdlWindowHandle, panel_view.Handle);
+            Renderer.SetWindowPosition(0,0);
+
+            //MoveWindow(sdlWindowHandle, 0, 0, panel1.Width, panel1.Height, true);
+
+            // Load default state (CollisionTestState)
+            Renderer.LoadState(0);
+
+            //engineInitialized = true;
+            //btnRunEngine.Enabled = false;
+
+            // Start delta timer
+            //deltaTimer.Start();
+
+            // Start render loop on UI thread - runs continuously
+            //renderTimer = new System.Windows.Forms.Timer();
+            //renderTimer.Interval = 1; // Run as fast as possible, limited by VSync
+            //renderTimer.Tick += RenderFrame;
+            //renderTimer.Start();
+
+            active = true;
+
+            //Renderer.Init();
+            //Renderer.InitWithCallback(callback);
+
+            //Renderer.CreateWindowFrom(Handle);
 
             //IntPtr sdlHandle = Renderer.GetHandle();
 
             // ** Get the parent window handle.
-            IntPtr windowHandle = Handle;
+            //IntPtr windowHandle = Handle;
 
             //Renderer.SetWindowPos(
             //    sdlHandle,
@@ -47,60 +91,68 @@ namespace csharp_editor {
 
         public void Release() {
 
-            Renderer.Release();
+            if (active == true)
+            {
+                Renderer.Release();
+            }
         }
 
         public void AddEntity(int id) {
 
-            Renderer.AddEntity(id);
+            //Renderer.AddEntity(id);
         }
 
         public void SelectEntity(int id) {
 
-            Renderer.SelectEntity(id);
+            //Renderer.SelectEntity(id);
         }
 
         public void DeselectEntity() {
 
-            Renderer.DeselectEntity();
+            //Renderer.DeselectEntity();
         }
 
         public void UpdateEntity(int id, int x, int y)
         {
 
-            Renderer.UpdateEntity(id, x, y);
+            //Renderer.UpdateEntity(id, x, y);
         }
 
         public void UpdateMap(string hex) {
 
-            Renderer.UpdateMap(hex);
+            //Renderer.UpdateMap(hex);
         }
 
         public void PreRender() {
 
-            Renderer.PreRender();
+            //Renderer.PreRender();
         }
 
-        public void Render() {
-
+        public void Render()
+        {
             Renderer.Render();
         }
 
-        public void PostRender() {
-
-            Renderer.PostRender();
+        public void PostRender()
+        {
+            //Renderer.PostRender();
         }
 
-        public void Tick() {
-
-            Renderer.Update();
+        public void Tick()
+        {
+            Renderer.UpdateFrame();
         }
 
-        private void MainView_MouseClick(object? sender, MouseEventArgs e) {
+        private void MainView_MouseClick(object sender, MouseEventArgs e) {
 
             //logCallback?.Invoke("X: " + e.X + " Y: " + e.Y);
 
-            Renderer.OnMouseClick(e.X, e.Y);
+            //Renderer.OnMouseClick(e.X, e.Y);
+        }
+
+        private void view_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
