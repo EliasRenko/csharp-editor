@@ -1,33 +1,37 @@
-using System;
-using System.Windows.Forms;
+using System.Diagnostics;
 
-namespace csharp_editor
-{
-    static class Program
-    {
-        public static Editor editor;
+namespace csharp_bmfg {
+    static class Program {
+        private static Editor? editor;
 
         [STAThread]
-        static void Main()
-        {
+        static void Main() {
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // ---
-
+            // Basic editor form
             editor = new Editor();
             editor.Show();
 
-            while (editor.active)
-            {
+            // Delta time calculation
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            double lastTime = 0.0;
 
-                editor.Tick();
+            while (editor.active == true) {
+                Application.DoEvents();
+
+                double currentTime = stopwatch.Elapsed.TotalSeconds;
+                float deltaTime = (float)(currentTime - lastTime);
+                lastTime = currentTime;
+
+                // Update
+                editor.UpdateFrame(deltaTime);
+
+                // Rendering
                 editor.PreRender();
                 editor.Render();
-                editor.PostRender();
-
-                Application.DoEvents();
+                editor.SwapBuffers();
             }
 
             Application.Exit();
