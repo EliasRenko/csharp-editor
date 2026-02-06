@@ -28,14 +28,6 @@ namespace csharp_editor {
             // ExternView Events
             view_extern.MouseDown += view_extern_MouseDown;
             view_extern.MouseUp += view_extern_MouseUp;
-
-            // ---
-            
-            button_rebake.MouseUp += Button_rebake_MouseUp;
-        }
-
-        private void Button_rebake_MouseUp(object? sender, MouseEventArgs e) {
-            view_extern.RebakeFont((int)numericUpDown_size.Value, 512, 512, 32, 96);
         }
 
         public void UpdateFrame(float deltaTime) {
@@ -58,10 +50,6 @@ namespace csharp_editor {
 
         private void LoadJson(string path) {
             view_extern.LoadFont(path);
-        }
-
-        private void LoadTTF(string path) {
-            view_extern.ImportFont(path, (int)numericUpDown_size.Value);
         }
 
         #endregion
@@ -133,10 +121,6 @@ namespace csharp_editor {
             switch (ext) {
                 case ".json":
                     LoadJson(path);
-                    break;
-
-                case ".ttf":
-                    LoadTTF(path);
                     break;
 
                 default:
