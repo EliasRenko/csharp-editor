@@ -1,5 +1,5 @@
-﻿using csharp_bmfg.UserControls;
-namespace csharp_bmfg.UserControls {
+﻿using csharp_editor.UserControls;
+namespace csharp_editor.UserControls {
     partial class Console {
         /// <summary> 
         /// Required designer variable.
@@ -26,9 +26,9 @@ namespace csharp_bmfg.UserControls {
         private void InitializeComponent()
         {
             label_log = new System.Windows.Forms.Label();
-            logView = new csharp_bmfg.LogView();
-            inputView1 = new csharp_bmfg.InputView();
-            inputView2 = new csharp_bmfg.InputView();
+            logView = new csharp_editor.LogView();
+            inputView1 = new csharp_editor.InputView();
+            inputView2 = new csharp_editor.InputView();
             SuspendLayout();
             // 
             // label_log
@@ -85,11 +85,11 @@ namespace csharp_bmfg.UserControls {
             PerformLayout();
         }
 
-        private csharp_bmfg.InputView inputView2;
+        private csharp_editor.InputView inputView2;
 
-        private csharp_bmfg.InputView inputView1;
+        private csharp_editor.InputView inputView1;
 
-        private csharp_bmfg.LogView logView;
+        private csharp_editor.LogView logView;
 
         #endregion
 

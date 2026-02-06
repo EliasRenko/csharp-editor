@@ -1,4 +1,4 @@
-namespace csharp_bmfg {
+namespace csharp_editor {
     public partial class Editor : Form {
 
         public bool active = false;

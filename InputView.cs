@@ -1,4 +1,4 @@
-namespace csharp_bmfg {
+namespace csharp_editor {
     public partial class InputView : UserControl {
         private System.Windows.Forms.Panel panel_border;
         private System.Windows.Forms.TextBox textBox_input;

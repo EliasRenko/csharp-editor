@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace csharp_bmfg {
+namespace csharp_editor {
     static class Program {
         private static Editor? editor;
 

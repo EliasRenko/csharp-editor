@@ -1,6 +1,6 @@
-﻿using static csharp_bmfg.Externs;
+﻿using static csharp_editor.Externs;
 
-namespace csharp_bmfg {
+namespace csharp_editor {
     public partial class ExternView : UserControl {
 
         public CallbackDelegate logCallback;
@@ -14,6 +14,7 @@ namespace csharp_bmfg {
 
             // ** Events
             //MouseClick += MainView_MouseClick;
+            MouseMove += OnMouseMotion;
             Resize += ExternView_Resize;
         }
 
@@ -60,7 +61,7 @@ namespace csharp_bmfg {
             Externs.MoveWindow(sdlWindowHandle, 0, 0, panel_extern.Width, panel_extern.Height, true);
 
             // Load default state (CollisionTestState)
-            Externs.LoadState(0);
+            //Externs.LoadState(0);
 
             active = true;
         }
@@ -90,6 +91,14 @@ namespace csharp_bmfg {
 
         public void ImportFont(string filename, int size) {
             Externs.ImportFont(filename, size);
+        }
+        
+        // public void OnMouseMove() {
+        //     Externs.OnMouseMotion(x, y);
+        // }
+        
+        private void OnMouseMotion(object? sender, MouseEventArgs e) {
+            Externs.OnMouseMotion(e.X, e.Y);
         }
 
         public void OnMouseButtonDown(int x, int y, int button) {

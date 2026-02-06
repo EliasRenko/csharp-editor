@@ -1,4 +1,4 @@
-namespace csharp_bmfg {
+namespace csharp_editor {
     public static class MouseButtonMapper {
         public static int ToSDLMouseButton(MouseButtons button) {
             switch (button) {

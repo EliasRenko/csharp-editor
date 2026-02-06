@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace csharp_bmfg {
-    public class Externs
+namespace csharp_editor {
+    public static class Externs
     {
         public const string DLL = "Editor-debug.dll";
 
@@ -82,6 +82,9 @@ namespace csharp_bmfg {
         
         // Input
         #region Input
+        
+        [DllImport(DLL, EntryPoint = "onMouseMotion")]
+        public static extern void OnMouseMotion(int x, int y);
 
         [DllImport(DLL, EntryPoint = "onMouseButtonDown")]
         public static extern void OnMouseButtonDown(int x, int y, int button);

@@ -1,7 +1,7 @@
-﻿using csharp_bmfg.UserControls;
-using csharp_bmfg;
+﻿using csharp_editor.UserControls;
+using csharp_editor;
 
-namespace csharp_bmfg {
+namespace csharp_editor {
     partial class Editor {
         /// <summary>
         ///  Required designer variable.

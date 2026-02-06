@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace csharp_bmfg {
+namespace csharp_editor {
     internal static class Utils {
 
         public static string OpenFile(string startingPath) {

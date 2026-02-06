@@ -1,4 +1,4 @@
-namespace csharp_bmfg {
+namespace csharp_editor {
     public static class KeyMapper {
         public static int ToSDLScancode(Keys key) {
             switch (key) {

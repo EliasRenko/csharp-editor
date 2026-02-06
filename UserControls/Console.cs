@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-namespace csharp_bmfg.UserControls {
+namespace csharp_editor.UserControls {
     public partial class Console : UserControl {
 
         public Console() {
