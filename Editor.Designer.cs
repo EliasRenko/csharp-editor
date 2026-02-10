@@ -39,6 +39,7 @@ namespace csharp_editor {
             console = new csharp_editor.UserControls.Console();
             toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             buttonTextureView = new System.Windows.Forms.Button();
+            buttonTilesets = new System.Windows.Forms.Button();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -130,11 +131,21 @@ namespace csharp_editor {
             buttonTextureView.Text = "View Texture";
             buttonTextureView.UseVisualStyleBackColor = true;
             // 
+            // buttonTilesets
+            // 
+            buttonTilesets.Location = new System.Drawing.Point(93, 27);
+            buttonTilesets.Name = "buttonTilesets";
+            buttonTilesets.Size = new System.Drawing.Size(75, 23);
+            buttonTilesets.TabIndex = 5;
+            buttonTilesets.Text = "Tilesets";
+            buttonTilesets.UseVisualStyleBackColor = true;
+            // 
             // Editor
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(624, 441);
+            Controls.Add(buttonTilesets);
             Controls.Add(buttonTextureView);
             Controls.Add(console);
             Controls.Add(view_extern);
@@ -147,6 +158,8 @@ namespace csharp_editor {
             ResumeLayout(false);
             PerformLayout();
         }
+
+        private System.Windows.Forms.Button buttonTilesets;
 
         private System.Windows.Forms.Button buttonTextureView;
 

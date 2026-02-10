@@ -34,6 +34,7 @@ namespace csharp_editor {
             // Debug 
             
             buttonTextureView.MouseDown += ButtonTextureViewOnMouseDown;
+            buttonTilesets.MouseDown += ButtonTilesetsOnMouseDown;
 
             void ButtonTextureViewOnMouseDown(object? sender, MouseEventArgs e) {
                 
@@ -80,6 +81,10 @@ namespace csharp_editor {
                     }
                 }
             }
+            
+            void ButtonTilesetsOnMouseDown(object? sender, MouseEventArgs e) {
+                ShowTilesetImportDialog();
+            }
         }
 
         public void UpdateFrame(float deltaTime) {
@@ -100,8 +105,8 @@ namespace csharp_editor {
 
         #region Core
 
-        private void LoadJson(string path) {
-            view_extern.LoadFont(path);
+        private void LoadMap(string path) {
+            view_extern.ImportMap(path);
         }
 
         #endregion
@@ -172,7 +177,7 @@ namespace csharp_editor {
 
             switch (ext) {
                 case ".json":
-                    LoadJson(path);
+                    LoadMap(path);
                     break;
 
                 default:
@@ -197,12 +202,18 @@ namespace csharp_editor {
                     dialog.AddExtension = true;
 
                     if (dialog.ShowDialog() == DialogResult.OK) {
-                        view_extern.ExportFont(dialog.FileName);
+                        view_extern.ExportMap(dialog.FileName);
                     }
                 }
             }
             catch (Exception ex) {
                 MessageBox.Show($"Error saving file: {ex.Message}", "Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public void ShowTilesetImportDialog() {
+            using (TilesetImportDialog dialog = new TilesetImportDialog(view_extern)) {
+                dialog.ShowDialog(this);
             }
         }
     }

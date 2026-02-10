@@ -64,28 +64,7 @@ namespace csharp_editor {
 
         [DllImport(DLL, EntryPoint = "loadState")]
         public static extern void LoadState(int id);
-
-        // ---
-
-        [DllImport(DLL, EntryPoint = "addEntity")]
-        public static extern void AddEntity(int id);
-
-        [DllImport(DLL, EntryPoint = "selectEntity")]
-        public static extern void SelectEntity(int id);
-
-        [DllImport(DLL, EntryPoint = "deselectEntity")]
-        public static extern void DeselectEntity();
-
-        [DllImport(DLL, EntryPoint = "updateEntity")]
-        public static extern void UpdateEntity(int id, int x, int y);
-
-        [DllImport(DLL, EntryPoint = "updateMap")]
-        public static extern void UpdateMap(string hex);
-
-        [DllImport(DLL, EntryPoint = "update")]
-        public static extern void Update();
-
-
+        
         // Window
         #region Window
         
@@ -130,8 +109,26 @@ namespace csharp_editor {
         [DllImport(DLL, EntryPoint = "getTileset", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetTileset(string tilesetName, out TilesetInfoStruct outInfo);
         
+        [DllImport(DLL, EntryPoint = "getTilesetCount", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetTilesetCount();
+        
+        [DllImport(DLL, EntryPoint = "getTilesetNameAt", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern IntPtr GetTilesetNameAt(int index);
+        
+        [DllImport(DLL, EntryPoint = "setCurrentTileset", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int SetCurrentTileset(string tilesetName);
+        
+        [DllImport(DLL, EntryPoint = "setupTilemap", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int SetupTilemap(string texturePath, string name, int tileSize);
+        
         [DllImport(DLL, EntryPoint = "setSelectedTile")]
         public static extern int SetSelectedTile(int tileRegionId);
+        
+        [DllImport(DLL, EntryPoint = "exportMap")]
+        public static extern int ExportMap(string path);
+        
+        [DllImport(DLL, EntryPoint = "importMap")]
+        public static extern int ImportMap(string path);
         
         // BMFG
 

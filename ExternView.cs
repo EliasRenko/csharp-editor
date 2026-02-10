@@ -145,13 +145,38 @@ namespace csharp_editor {
         public void GetTextureData(string path, out TextureDataStruct outData) {
             Externs.GetTextureData(path, out outData);
         }
-
+        
+        
         public void GetTileset(string tilesetName, out TilesetInfoStruct outInfo) {
             Externs.GetTileset(tilesetName, out outInfo);
         }
 
+        public int GetTilesetCount() {
+            return Externs.GetTilesetCount();
+        }
+
+        public IntPtr GetTilesetNameAt(int index) {
+            return Externs.GetTilesetNameAt(index);
+        }
+
+        public int SetCurrentTileset(string tilesetName) {
+            return Externs.SetCurrentTileset(tilesetName);
+        }
+
+        public void SetupTilemap(string texturePath, string name, int tileSize) {
+            Externs.SetupTilemap(texturePath, name, tileSize);
+        }
+
         public void SetSelectedTile(int tileRegionId) {
             Externs.SetSelectedTile(tileRegionId);
+        }
+        
+        public void ImportMap(string path) {
+            Externs.ImportMap(path);
+        }
+        
+        public void ExportMap(string path) {
+            Externs.ExportMap(path);
         }
         
         #endregion
