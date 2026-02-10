@@ -145,6 +145,14 @@ namespace csharp_editor {
         public void GetTextureData(string path, out TextureDataStruct outData) {
             Externs.GetTextureData(path, out outData);
         }
+
+        public void GetTileset(string tilesetName, out TilesetInfoStruct outInfo) {
+            Externs.GetTileset(tilesetName, out outInfo);
+        }
+
+        public void SetSelectedTile(int tileRegionId) {
+            Externs.SetSelectedTile(tileRegionId);
+        }
         
         #endregion
         

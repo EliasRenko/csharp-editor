@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 namespace csharp_editor {
     public partial class Editor : Form {
 
@@ -35,13 +37,27 @@ namespace csharp_editor {
 
             void ButtonTextureViewOnMouseDown(object? sender, MouseEventArgs e) {
                 
-                Externs.TextureDataStruct textureData;
+                Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
                 
-                view_extern.GetTextureData("textures/devTiles.tga", out textureData);
+                // Get tileset info from C++
+                view_extern.GetTileset("devTiles", out tilesetInfo);
+                
+                // Get texture path from tileset info
+                string texturePath = Marshal.PtrToStringAnsi(tilesetInfo.texturePath) ?? "";
+                
+                if (string.IsNullOrEmpty(texturePath)) {
+                    MessageBox.Show("Invalid texture path in tileset", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                
+                // Get texture data
+                Externs.TextureDataStruct textureData;
+                view_extern.GetTextureData(texturePath, out textureData);
                 
                 // Create and show TextureViewer dialog
                 using (Form dialog = new Form()) {
-                    dialog.Text = "Texture Viewer - devTiles.tga";
+                    string tilesetName = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "Unknown";
+                    dialog.Text = $"Texture Viewer - {tilesetName}";
                     dialog.Size = new Size(620, 560);
                     dialog.StartPosition = FormStartPosition.CenterParent;
                     dialog.FormBorderStyle = FormBorderStyle.Sizable;
@@ -49,10 +65,19 @@ namespace csharp_editor {
                     
                     UserControls.TextureViewer viewer = new UserControls.TextureViewer();
                     viewer.Dock = DockStyle.Fill;
-                    viewer.SetTextureData(textureData);
+                    viewer.SetTextureData(textureData, tilesetInfo);
                     
                     dialog.Controls.Add(viewer);
                     dialog.ShowDialog(this);
+                    
+                    // Get selection after dialog closes
+                    if (viewer.HasSelection) {
+                        Point selectedTile = viewer.SelectedTile;
+                        int regionId = viewer.SelectedRegionId;
+                        Log($"Selected tile: X={selectedTile.X}, Y={selectedTile.Y}, RegionId={regionId}");
+                        
+                        view_extern.SetSelectedTile(regionId);
+                    }
                 }
             }
         }

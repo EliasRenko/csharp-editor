@@ -21,6 +21,16 @@ namespace csharp_editor {
             public int Transparent;
         }
         
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        public struct TilesetInfoStruct {
+            public IntPtr name;              // Tileset name (use Marshal.PtrToStringAnsi to read)
+            public IntPtr texturePath;       // Resource path to texture (use Marshal.PtrToStringAnsi to read)
+            public int tileSize;             // Size of each tile in pixels
+            public int tilesPerRow;          // Number of tiles per row in atlas
+            public int tilesPerCol;          // Number of tiles per column in atlas
+            public int regionCount;          // Total number of tile regions
+        }
+        
         // Core functionality
         [DllImport(DLL, EntryPoint = "init")]
         public static extern int Init();
@@ -49,8 +59,6 @@ namespace csharp_editor {
         // Resources
         [DllImport(DLL, EntryPoint = "loadTexture", CharSet = CharSet.Ansi)]
         public static extern void LoadTexture(string filepath, int tileSize, string id);
-
-
 
         // --- States
 
@@ -119,6 +127,12 @@ namespace csharp_editor {
         
         #endregion
 
+        [DllImport(DLL, EntryPoint = "getTileset", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetTileset(string tilesetName, out TilesetInfoStruct outInfo);
+        
+        [DllImport(DLL, EntryPoint = "setSelectedTile")]
+        public static extern int SetSelectedTile(int tileRegionId);
+        
         // BMFG
 
         [DllImport(DLL, EntryPoint = "importFont", CharSet = CharSet.Ansi)]
