@@ -28,6 +28,33 @@ namespace csharp_editor {
             // ExternView Events
             view_extern.MouseDown += view_extern_MouseDown;
             view_extern.MouseUp += view_extern_MouseUp;
+            
+            // Debug 
+            
+            buttonTextureView.MouseDown += ButtonTextureViewOnMouseDown;
+
+            void ButtonTextureViewOnMouseDown(object? sender, MouseEventArgs e) {
+                
+                Externs.TextureDataStruct textureData;
+                
+                view_extern.GetTextureData("textures/devTiles.tga", out textureData);
+                
+                // Create and show TextureViewer dialog
+                using (Form dialog = new Form()) {
+                    dialog.Text = "Texture Viewer - devTiles.tga";
+                    dialog.Size = new Size(620, 560);
+                    dialog.StartPosition = FormStartPosition.CenterParent;
+                    dialog.FormBorderStyle = FormBorderStyle.Sizable;
+                    dialog.MinimumSize = new Size(400, 300);
+                    
+                    UserControls.TextureViewer viewer = new UserControls.TextureViewer();
+                    viewer.Dock = DockStyle.Fill;
+                    viewer.SetTextureData(textureData);
+                    
+                    dialog.Controls.Add(viewer);
+                    dialog.ShowDialog(this);
+                }
+            }
         }
 
         public void UpdateFrame(float deltaTime) {

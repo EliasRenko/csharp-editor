@@ -140,6 +140,14 @@ namespace csharp_editor {
         
         #endregion
         
+        #region Texture
+
+        public void GetTextureData(string path, out TextureDataStruct outData) {
+            Externs.GetTextureData(path, out outData);
+        }
+        
+        #endregion
+        
         private Panel panel_extern;
 
         private void InitializeComponent() {

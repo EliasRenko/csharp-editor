@@ -9,6 +9,18 @@ namespace csharp_editor {
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void CallbackDelegate([MarshalAs(UnmanagedType.LPStr)] string message);
 
+        // Structs
+        
+        [StructLayout(LayoutKind.Sequential)]
+        public struct TextureDataStruct {
+            public IntPtr Data; // unsigned char*
+            public int Width;
+            public int Height;
+            public int BytesPerPixel;
+            public int DataLength;
+            public int Transparent;
+        }
+        
         // Core functionality
         [DllImport(DLL, EntryPoint = "init")]
         public static extern int Init();
@@ -98,6 +110,13 @@ namespace csharp_editor {
         [DllImport(DLL, EntryPoint = "onKeyboardUp")]
         public static extern void OnKeyboardUp(int keyCode);
 
+        #endregion
+        
+        #region Textures
+        
+        [DllImport(DLL, EntryPoint = "getTextureData", CharSet = CharSet.Ansi)]
+        public static extern void GetTextureData(string path, out TextureDataStruct outData);
+        
         #endregion
 
         // BMFG

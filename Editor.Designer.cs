@@ -37,6 +37,8 @@ namespace csharp_editor {
             helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             statusStrip1 = new System.Windows.Forms.StatusStrip();
             console = new csharp_editor.UserControls.Console();
+            toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            buttonTextureView = new System.Windows.Forms.Button();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -114,11 +116,26 @@ namespace csharp_editor {
             console.Size = new System.Drawing.Size(624, 128);
             console.TabIndex = 3;
             // 
+            // toolStripMenuItem1
+            // 
+            toolStripMenuItem1.Name = "toolStripMenuItem1";
+            toolStripMenuItem1.Size = new System.Drawing.Size(32, 19);
+            // 
+            // buttonTextureView
+            // 
+            buttonTextureView.Location = new System.Drawing.Point(12, 27);
+            buttonTextureView.Name = "buttonTextureView";
+            buttonTextureView.Size = new System.Drawing.Size(75, 23);
+            buttonTextureView.TabIndex = 4;
+            buttonTextureView.Text = "View Texture";
+            buttonTextureView.UseVisualStyleBackColor = true;
+            // 
             // Editor
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(624, 441);
+            Controls.Add(buttonTextureView);
             Controls.Add(console);
             Controls.Add(view_extern);
             Controls.Add(menuStrip1);
@@ -130,6 +147,10 @@ namespace csharp_editor {
             ResumeLayout(false);
             PerformLayout();
         }
+
+        private System.Windows.Forms.Button buttonTextureView;
+
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
 
         #endregion
 

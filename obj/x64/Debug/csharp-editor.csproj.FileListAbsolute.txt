@@ -17,3 +17,4 @@ C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\refint
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp-editor.pdb
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp-editor.genruntimeconfig.cache
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\ref\csharp-editor.dll
+C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.TextureViewer.resources
