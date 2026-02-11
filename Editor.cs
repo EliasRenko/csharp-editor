@@ -5,6 +5,7 @@ namespace csharp_editor {
 
         public bool active = false;
         private string _currentTilesetName = "";
+        private string _currentEntityName = "";
         
         public Editor() {
             InitializeComponent();
@@ -37,6 +38,7 @@ namespace csharp_editor {
             
             buttonTextureView.MouseDown += ButtonTextureViewOnMouseDown;
             buttonTilesets.MouseDown += ButtonTilesetsOnMouseDown;
+            buttonEntities.MouseDown += ButtonEntitiesOnMouseDown;
 
             void ButtonTextureViewOnMouseDown(object? sender, MouseEventArgs e) {
                 
@@ -100,6 +102,10 @@ namespace csharp_editor {
             void ButtonTilesetsOnMouseDown(object? sender, MouseEventArgs e) {
                 ShowTilesetImportDialog();
             }
+        }
+
+        private void ButtonEntitiesOnMouseDown(object? sender, MouseEventArgs e) {
+            ShowEntitiesDialog();
         }
 
         public void UpdateFrame(float deltaTime) {
@@ -230,6 +236,15 @@ namespace csharp_editor {
             using (TilesetImportDialog dialog = new TilesetImportDialog(view_extern, (tilesetName) => {
                 _currentTilesetName = tilesetName;
                 Log($"Current tileset set to: {_currentTilesetName}");
+            })) {
+                dialog.ShowDialog(this);
+            }
+        }
+
+        public void ShowEntitiesDialog() {
+            using (EntitiesDialog dialog = new EntitiesDialog(view_extern, (entityName) => {
+                _currentEntityName = entityName;
+                Log($"Current entity set to: {_currentEntityName}");
             })) {
                 dialog.ShowDialog(this);
             }
