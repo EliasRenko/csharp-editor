@@ -147,8 +147,8 @@ namespace csharp_editor {
         }
         
         
-        public void GetTileset(string tilesetName, out TilesetInfoStruct outInfo) {
-            Externs.GetTileset(tilesetName, out outInfo);
+        public int GetTileset(string tilesetName, out TilesetInfoStruct outInfo) {
+            return Externs.GetTileset(tilesetName, out outInfo);
         }
 
         public int GetTilesetCount() {
@@ -159,7 +159,7 @@ namespace csharp_editor {
             return Externs.GetTilesetNameAt(index);
         }
 
-        public int SetCurrentTileset(string tilesetName) {
+        public bool SetCurrentTileset(string tilesetName) {
             return Externs.SetCurrentTileset(tilesetName);
         }
 

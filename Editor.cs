@@ -4,6 +4,8 @@ namespace csharp_editor {
     public partial class Editor : Form {
 
         public bool active = false;
+        private string _currentTilesetName = "";
+        
         public Editor() {
             InitializeComponent();
 
@@ -38,10 +40,23 @@ namespace csharp_editor {
 
             void ButtonTextureViewOnMouseDown(object? sender, MouseEventArgs e) {
                 
+                // Check if a tileset is currently selected
+                if (string.IsNullOrEmpty(_currentTilesetName)) {
+                    MessageBox.Show("No tileset is currently selected. Please select a tileset from the Tilesets dialog first.",
+                        "No Tileset Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                
                 Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
                 
                 // Get tileset info from C++
-                view_extern.GetTileset("devTiles", out tilesetInfo);
+                int result = view_extern.GetTileset(_currentTilesetName, out tilesetInfo);
+                
+                if (result == 0) {
+                    MessageBox.Show($"Failed to get tileset '{_currentTilesetName}'. Please try selecting it again.",
+                        "Tileset Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 
                 // Get texture path from tileset info
                 string texturePath = Marshal.PtrToStringAnsi(tilesetInfo.texturePath) ?? "";
@@ -212,7 +227,10 @@ namespace csharp_editor {
         }
 
         public void ShowTilesetImportDialog() {
-            using (TilesetImportDialog dialog = new TilesetImportDialog(view_extern)) {
+            using (TilesetImportDialog dialog = new TilesetImportDialog(view_extern, (tilesetName) => {
+                _currentTilesetName = tilesetName;
+                Log($"Current tileset set to: {_currentTilesetName}");
+            })) {
                 dialog.ShowDialog(this);
             }
         }
