@@ -31,6 +31,14 @@ namespace csharp_editor {
             public int regionCount;          // Total number of tile regions
         }
         
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        public struct LayerInfoStruct {
+            public IntPtr name;              // Layer name (use Marshal.PtrToStringAnsi to read)
+            public int type;                 // Layer type (0 = TileLayer, 1 = EntityLayer)
+            public IntPtr tilesetName;       // Tileset name for TileLayers (use Marshal.PtrToStringAnsi to read)
+            public int visible;              // Visibility flag (0 = hidden, 1 = visible)
+        }
+        
         // Core functionality
         [DllImport(DLL, EntryPoint = "init")]
         public static extern int Init();
@@ -118,8 +126,8 @@ namespace csharp_editor {
         [DllImport(DLL, EntryPoint = "setCurrentTileset", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern bool SetCurrentTileset(string tilesetName);
         
-        [DllImport(DLL, EntryPoint = "setupTilemap", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int SetupTilemap(string texturePath, string name, int tileSize);
+        [DllImport(DLL, EntryPoint = "setupTileset", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int SetupTileset(string texturePath, string name, int tileSize);
         
         [DllImport(DLL, EntryPoint = "setSelectedTile")]
         public static extern int SetSelectedTile(int tileRegionId);
@@ -129,6 +137,44 @@ namespace csharp_editor {
         
         [DllImport(DLL, EntryPoint = "importMap")]
         public static extern int ImportMap(string path);
+        
+        // Layer Management
+        
+        [DllImport(DLL, EntryPoint = "createTilemapLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void CreateTilemapLayer(string layerName, string tilesetName);
+        
+        [DllImport(DLL, EntryPoint = "createEntityLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void CreateEntityLayer(string layerName);
+        
+        [DllImport(DLL, EntryPoint = "createFolderLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void CreateFolderLayer(string layerName);
+        
+        [DllImport(DLL, EntryPoint = "setActiveLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int SetActiveLayer(string layerName);
+        
+        [DllImport(DLL, EntryPoint = "setActiveLayerByIndex", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int SetActiveLayerByIndex(int index);
+        
+        [DllImport(DLL, EntryPoint = "getActiveLayerName", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern IntPtr GetActiveLayerName();
+        
+        [DllImport(DLL, EntryPoint = "getActiveLayerIndex", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetActiveLayerIndex();
+        
+        [DllImport(DLL, EntryPoint = "removeLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int RemoveLayer(string layerName);
+        
+        [DllImport(DLL, EntryPoint = "removeLayerByIndex", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int RemoveLayerByIndex(int index);
+        
+        [DllImport(DLL, EntryPoint = "getLayerCount", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetLayerCount();
+        
+        [DllImport(DLL, EntryPoint = "getLayerInfoAt", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetLayerInfoAt(int index, out LayerInfoStruct outInfo);
+        
+        [DllImport(DLL, EntryPoint = "getLayerInfo", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int GetLayerInfo(string layerName, out LayerInfoStruct outInfo);
         
         // BMFG
 

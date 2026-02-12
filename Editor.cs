@@ -22,6 +22,11 @@ namespace csharp_editor {
             toolStripMenuItem_open.MouseUp += toolStripButton_openFile;
             toolStripMenuItem_export.MouseUp += toolStripButton_export;
             
+            // Initialize HierarchyTree
+            hierarchyTree.SetExternView(view_extern);
+            hierarchyTree.LayerSelected += HierarchyTree_LayerSelected;
+            hierarchyTree.LayersChanged += HierarchyTree_LayersChanged;
+            
             // Enable keyboard events at form level
             KeyPreview = true;
 
@@ -42,20 +47,35 @@ namespace csharp_editor {
 
             void ButtonTextureViewOnMouseDown(object? sender, MouseEventArgs e) {
                 
-                // Check if a tileset is currently selected
-                if (string.IsNullOrEmpty(_currentTilesetName)) {
-                    MessageBox.Show("No tileset is currently selected. Please select a tileset from the Tilesets dialog first.",
-                        "No Tileset Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                // Check if a layer is currently selected
+                var selectedLayer = hierarchyTree.GetSelectedLayer();
+                if (selectedLayer == null) {
+                    MessageBox.Show("No layer is currently selected. Please select a layer from the Hierarchy first.",
+                        "No Layer Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                
+                // Check if it's a TileLayer
+                if (selectedLayer.Type != LayerType.TileLayer) {
+                    MessageBox.Show("The selected layer is not a Tile Layer. Please select a Tile Layer to view its tileset.",
+                        "Invalid Layer Type", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                
+                // Check if the layer has a tileset assigned
+                if (string.IsNullOrEmpty(selectedLayer.TilesetName)) {
+                    MessageBox.Show("The selected layer does not have a tileset assigned.",
+                        "No Tileset", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
                 
                 Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
                 
-                // Get tileset info from C++
-                int result = view_extern.GetTileset(_currentTilesetName, out tilesetInfo);
+                // Get tileset info from C++ using the layer's tileset
+                int result = view_extern.GetTileset(selectedLayer.TilesetName, out tilesetInfo);
                 
                 if (result == 0) {
-                    MessageBox.Show($"Failed to get tileset '{_currentTilesetName}'. Please try selecting it again.",
+                    MessageBox.Show($"Failed to get tileset '{selectedLayer.TilesetName}'. Please try reloading the tileset.",
                         "Tileset Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
@@ -75,7 +95,7 @@ namespace csharp_editor {
                 // Create and show TextureViewer dialog
                 using (Form dialog = new Form()) {
                     string tilesetName = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "Unknown";
-                    dialog.Text = $"Texture Viewer - {tilesetName}";
+                    dialog.Text = $"Texture Viewer - {selectedLayer.Name} ({tilesetName})";
                     dialog.Size = new Size(620, 560);
                     dialog.StartPosition = FormStartPosition.CenterParent;
                     dialog.FormBorderStyle = FormBorderStyle.Sizable;
@@ -92,7 +112,7 @@ namespace csharp_editor {
                     if (viewer.HasSelection) {
                         Point selectedTile = viewer.SelectedTile;
                         int regionId = viewer.SelectedRegionId;
-                        Log($"Selected tile: X={selectedTile.X}, Y={selectedTile.Y}, RegionId={regionId}");
+                        Log($"Selected tile from layer '{selectedLayer.Name}': X={selectedTile.X}, Y={selectedTile.Y}, RegionId={regionId}");
                         
                         view_extern.SetSelectedTile(regionId);
                     }
@@ -128,6 +148,11 @@ namespace csharp_editor {
 
         private void LoadMap(string path) {
             view_extern.ImportMap(path);
+            
+            // Refresh the hierarchy tree to show loaded layers
+            hierarchyTree.LoadLayersFromBackend();
+            
+            Log($"Map loaded from: {path}");
         }
 
         #endregion
@@ -248,6 +273,15 @@ namespace csharp_editor {
             })) {
                 dialog.ShowDialog(this);
             }
+        }
+
+        private void HierarchyTree_LayerSelected(object sender, HierarchyTree.LayerNode layer) {
+            Log($"Layer selected: {layer.Name} ({layer.Type})");
+            // TODO: Notify backend when selected layer changes
+        }
+
+        private void HierarchyTree_LayersChanged(object sender, EventArgs e) {
+            // TODO: Sync with backend when layers change
         }
     }
 }

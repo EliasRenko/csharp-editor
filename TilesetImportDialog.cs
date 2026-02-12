@@ -110,7 +110,7 @@ namespace csharp_editor {
 
             // Send to C++
             try {
-                _externView.SetupTilemap(newTileset.ImagePath, newTileset.Name, newTileset.TileSize);
+                _externView.SetupTileset(newTileset.ImagePath, newTileset.Name, newTileset.TileSize);
                 
                 // Add to list
                 _tilesets.Add(newTileset);

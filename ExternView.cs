@@ -163,8 +163,8 @@ namespace csharp_editor {
             return Externs.SetCurrentTileset(tilesetName);
         }
 
-        public void SetupTilemap(string texturePath, string name, int tileSize) {
-            Externs.SetupTilemap(texturePath, name, tileSize);
+        public void SetupTileset(string texturePath, string name, int tileSize) {
+            Externs.SetupTileset(texturePath, name, tileSize);
         }
 
         public void SetSelectedTile(int tileRegionId) {
@@ -177,6 +177,59 @@ namespace csharp_editor {
         
         public void ExportMap(string path) {
             Externs.ExportMap(path);
+        }
+        
+        #endregion
+        
+        #region Layer Management
+        
+        public void CreateTilemapLayer(string layerName, string tilesetName) {
+            Externs.CreateTilemapLayer(layerName, tilesetName);
+        }
+        
+        public void CreateEntityLayer(string layerName) {
+            Externs.CreateEntityLayer(layerName);
+        }
+        
+        public void CreateFolderLayer(string layerName) {
+            Externs.CreateFolderLayer(layerName);
+        }
+        
+        public int SetActiveLayer(string layerName) {
+            return Externs.SetActiveLayer(layerName);
+        }
+        
+        public int SetActiveLayerByIndex(int index) {
+            return Externs.SetActiveLayerByIndex(index);
+        }
+        
+        public string GetActiveLayerName() {
+            IntPtr namePtr = Externs.GetActiveLayerName();
+            return System.Runtime.InteropServices.Marshal.PtrToStringAnsi(namePtr) ?? "";
+        }
+        
+        public int GetActiveLayerIndex() {
+            return Externs.GetActiveLayerIndex();
+        }
+        
+        public int RemoveLayer(string layerName) {
+            return Externs.RemoveLayer(layerName);
+        }
+        
+        public int RemoveLayerByIndex(int index) {
+            return Externs.RemoveLayerByIndex(index);
+        }
+        
+        public int GetLayerCount() {
+            return Externs.GetLayerCount();
+        }
+        
+        public int GetLayerInfoAt(int index, out Externs.LayerInfoStruct outInfo) {
+            return Externs.GetLayerInfoAt(index, out outInfo);
+        }
+        
+        public int GetLayerInfo(string layerName, out Externs.LayerInfoStruct outInfo) {
+            return Externs.GetLayerInfo(layerName, out outInfo);
         }
         
         #endregion

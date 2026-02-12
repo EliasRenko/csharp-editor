@@ -41,13 +41,16 @@ namespace csharp_editor {
             buttonTextureView = new System.Windows.Forms.Button();
             buttonTilesets = new System.Windows.Forms.Button();
             buttonEntities = new System.Windows.Forms.Button();
+            hierarchyTree = new csharp_editor.HierarchyTree();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // view_extern
             // 
             view_extern.BackColor = System.Drawing.SystemColors.ControlDark;
-            view_extern.Dock = System.Windows.Forms.DockStyle.Fill;
+            view_extern.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             view_extern.Location = new System.Drawing.Point(0, 24);
             view_extern.Name = "view_extern";
             view_extern.Size = new System.Drawing.Size(624, 395);
@@ -150,11 +153,22 @@ namespace csharp_editor {
             buttonEntities.Text = "Entities";
             buttonEntities.UseVisualStyleBackColor = true;
             // 
+            // hierarchyTree
+            // 
+            hierarchyTree.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            hierarchyTree.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            hierarchyTree.Location = new System.Drawing.Point(624, 24);
+            hierarchyTree.Name = "hierarchyTree";
+            hierarchyTree.Size = new System.Drawing.Size(250, 395);
+            hierarchyTree.TabIndex = 7;
+            // 
             // Editor
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(624, 441);
+            ClientSize = new System.Drawing.Size(874, 441);
+            Controls.Add(hierarchyTree);
             Controls.Add(buttonEntities);
             Controls.Add(buttonTilesets);
             Controls.Add(buttonTextureView);
@@ -190,5 +204,6 @@ namespace csharp_editor {
         private ToolStripMenuItem toolStripMenuItem_export;
         private StatusStrip statusStrip1;
         private UserControls.Console console;
+        private HierarchyTree hierarchyTree;
     }
 }
