@@ -18,9 +18,8 @@ namespace csharp_editor.UserControls {
             this.labelBPP = new System.Windows.Forms.Label();
             this.labelHeight = new System.Windows.Forms.Label();
             this.labelWidth = new System.Windows.Forms.Label();
-            this.pictureBoxTexture = new System.Windows.Forms.PictureBox();
+            this.tilesetViewer = new TilesetViewer();
             this.panelInfo.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTexture)).BeginInit();
             this.SuspendLayout();
             // 
             // panelInfo
@@ -88,29 +87,26 @@ namespace csharp_editor.UserControls {
             this.labelWidth.TabIndex = 0;
             this.labelWidth.Text = "Width: -";
             // 
-            // pictureBoxTexture
+            // tilesetViewer
             // 
-            this.pictureBoxTexture.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.pictureBoxTexture.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBoxTexture.Location = new System.Drawing.Point(0, 120);
-            this.pictureBoxTexture.Name = "pictureBoxTexture";
-            this.pictureBoxTexture.Size = new System.Drawing.Size(600, 380);
-            this.pictureBoxTexture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBoxTexture.TabIndex = 1;
-            this.pictureBoxTexture.TabStop = false;
+            this.tilesetViewer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.tilesetViewer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tilesetViewer.Location = new System.Drawing.Point(0, 120);
+            this.tilesetViewer.Name = "tilesetViewer";
+            this.tilesetViewer.Size = new System.Drawing.Size(600, 380);
+            this.tilesetViewer.TabIndex = 1;
             // 
             // TextureViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.Controls.Add(this.pictureBoxTexture);
+            this.Controls.Add(this.tilesetViewer);
             this.Controls.Add(this.panelInfo);
             this.Name = "TextureViewer";
             this.Size = new System.Drawing.Size(600, 500);
             this.panelInfo.ResumeLayout(false);
             this.panelInfo.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTexture)).EndInit();
             this.ResumeLayout(false);
         }
 
@@ -122,6 +118,6 @@ namespace csharp_editor.UserControls {
         private System.Windows.Forms.Label labelBPP;
         private System.Windows.Forms.Label labelDataLength;
         private System.Windows.Forms.Label labelTransparent;
-        private System.Windows.Forms.PictureBox pictureBoxTexture;
+        private TilesetViewer tilesetViewer;
     }
 }

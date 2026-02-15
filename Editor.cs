@@ -27,6 +27,9 @@ namespace csharp_editor {
             hierarchyTree.LayerSelected += HierarchyTree_LayerSelected;
             hierarchyTree.LayersChanged += HierarchyTree_LayersChanged;
             
+            // Initialize TilesetViewer
+            tilesetViewer.SelectionChanged += TilesetViewer_SelectionChanged;
+            
             // Enable keyboard events at form level
             KeyPreview = true;
 
@@ -38,12 +41,12 @@ namespace csharp_editor {
             // ExternView Events
             view_extern.MouseDown += view_extern_MouseDown;
             view_extern.MouseUp += view_extern_MouseUp;
-            
+
             // Debug 
-            
-            buttonTextureView.MouseDown += ButtonTextureViewOnMouseDown;
-            buttonTilesets.MouseDown += ButtonTilesetsOnMouseDown;
-            buttonEntities.MouseDown += ButtonEntitiesOnMouseDown;
+
+            ToolStripMenuItem_textureViewer.MouseDown += ButtonTextureViewOnMouseDown;
+            toolStripButton_tilesets.MouseDown += ButtonTilesetsOnMouseDown;
+            toolStripButton_entities.MouseDown += ButtonEntitiesOnMouseDown;
 
             void ButtonTextureViewOnMouseDown(object? sender, MouseEventArgs e) {
                 
@@ -278,10 +281,61 @@ namespace csharp_editor {
         private void HierarchyTree_LayerSelected(object sender, HierarchyTree.LayerNode layer) {
             Log($"Layer selected: {layer.Name} ({layer.Type})");
             // TODO: Notify backend when selected layer changes
+            
+            // Update the embedded texture viewer when a tile layer is selected
+            UpdateTextureViewer(layer);
         }
 
         private void HierarchyTree_LayersChanged(object sender, EventArgs e) {
             // TODO: Sync with backend when layers change
+        }
+
+        private void UpdateTextureViewer(HierarchyTree.LayerNode layer) {
+            // Only update if it's a tile layer with a tileset
+            if (layer.Type != LayerType.TileLayer || string.IsNullOrEmpty(layer.TilesetName)) {
+                // Clear the tileset viewer if no valid tileset
+                tilesetViewer.Clear();
+                return;
+            }
+            
+            Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
+            
+            // Get tileset info from C++ using the layer's tileset
+            int result = view_extern.GetTileset(layer.TilesetName, out tilesetInfo);
+            
+            if (result == 0) {
+                Log($"Failed to load tileset '{layer.TilesetName}' for tileset viewer");
+                tilesetViewer.Clear();
+                return;
+            }
+            
+            // Get texture path from tileset info
+            string texturePath = Marshal.PtrToStringAnsi(tilesetInfo.texturePath) ?? "";
+            
+            if (string.IsNullOrEmpty(texturePath)) {
+                Log("Invalid texture path in tileset");
+                tilesetViewer.Clear();
+                return;
+            }
+            
+            // Get texture data
+            Externs.TextureDataStruct textureData;
+            view_extern.GetTextureData(texturePath, out textureData);
+            
+            // Update tileset viewer
+            tilesetViewer.SetTextureData(textureData, tilesetInfo);
+            
+            Log($"Tileset viewer updated with tileset: {layer.TilesetName}");
+        }
+
+        private void TilesetViewer_SelectionChanged(object? sender, int regionId) {
+            // Update the selected tile in the backend
+            view_extern.SetSelectedTile(regionId);
+            
+            var selectedLayer = hierarchyTree.GetSelectedLayer();
+            if (selectedLayer != null) {
+                Log($"Selected tile from '{selectedLayer.Name}': RegionId={regionId}");
+            }
         }
     }
 }
