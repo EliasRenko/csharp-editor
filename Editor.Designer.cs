@@ -167,7 +167,7 @@ namespace csharp_editor {
             // hierarchyTree
             // 
             hierarchyTree.BackColor = Color.FromArgb(30, 30, 30);
-            hierarchyTree.Dock = DockStyle.Fill;
+            hierarchyTree.Dock = DockStyle.Top;
             hierarchyTree.Location = new Point(0, 0);
             hierarchyTree.Name = "hierarchyTree";
             hierarchyTree.Size = new Size(317, 344);
@@ -176,7 +176,7 @@ namespace csharp_editor {
             // tilesetViewer
             // 
             tilesetViewer.BackColor = Color.FromArgb(30, 30, 30);
-            tilesetViewer.Dock = DockStyle.Fill;
+            tilesetViewer.Dock = DockStyle.Bottom;
             tilesetViewer.Location = new Point(0, 0);
             tilesetViewer.Name = "tilesetViewer";
             tilesetViewer.Size = new Size(317, 344);

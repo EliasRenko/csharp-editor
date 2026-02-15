@@ -113,6 +113,16 @@ namespace csharp_editor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap entities {
+            get {
+                object obj = ResourceManager.GetObject("entities", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap folder_image {
             get {
                 object obj = ResourceManager.GetObject("folder_image", resourceCulture);
@@ -166,6 +176,16 @@ namespace csharp_editor.Properties {
         internal static System.Drawing.Bitmap shading {
             get {
                 object obj = ResourceManager.GetObject("shading", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap tiles {
+            get {
+                object obj = ResourceManager.GetObject("tiles", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

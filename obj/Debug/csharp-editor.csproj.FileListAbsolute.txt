@@ -26,9 +26,11 @@ C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\csharp_editor.Editor.
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\csharp_editor.EntitiesDialog.resources
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\csharp_editor.ExternView.resources
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\csharp_editor.HierarchyTree.resources
+C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\csharp_editor.Properties.Resources.resources
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\csharp_editor.TilesetImportDialog.resources
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\csharp_editor.UserControls.Console.resources
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\csharp_editor.UserControls.TextureViewer.resources
+C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\csharp_editor.UserControls.TilesetViewer.resources
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\csharp-editor.csproj.GenerateResource.cache
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\csharp-editor.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\csharp-editor.AssemblyInfoInputs.cache
@@ -40,5 +42,3 @@ C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\refint\csharp-editor.
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\csharp-editor.pdb
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\csharp-editor.genruntimeconfig.cache
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\ref\csharp-editor.dll
-C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\csharp_editor.UserControls.TilesetViewer.resources
-C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\csharp_editor.Properties.Resources.resources

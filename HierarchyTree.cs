@@ -11,19 +11,19 @@ namespace csharp_editor {
             public string Name { get; set; } = "";
             public LayerType Type { get; set; } = LayerType.TileLayer;
             public bool Visible { get; set; } = true;
+            public bool Locked { get; set; } = false;
             public string TilesetName { get; set; } = ""; // For TileLayer only
             public TreeNode TreeNodeRef { get; set; }
             
             public override string ToString() {
-                string typePrefix = Type == LayerType.TileLayer ? "[T]" : "[E]";
-                string visiblePrefix = Visible ? "" : "(Hidden) ";
-                string tilesetInfo = Type == LayerType.TileLayer && !string.IsNullOrEmpty(TilesetName) ? $" - {TilesetName}" : "";
-                return $"{typePrefix} {visiblePrefix}{Name}{tilesetInfo}";
+                return Name;
             }
         }
 
         private List<LayerNode> _layers = new List<LayerNode>();
         private ExternView _externView;
+        private const int IconSize = 16;
+        private const int IconSpacing = 4;
         
         public event EventHandler<LayerNode>? LayerSelected;
         public event EventHandler? LayersChanged;
@@ -40,6 +40,10 @@ namespace csharp_editor {
         private void InitializeTreeView() {
             treeViewLayers.HideSelection = false;
             treeViewLayers.FullRowSelect = true;
+            treeViewLayers.DrawMode = TreeViewDrawMode.OwnerDrawText;
+            treeViewLayers.DrawNode += TreeViewLayers_DrawNode;
+            treeViewLayers.MouseDown += TreeViewLayers_MouseDown;
+            treeViewLayers.KeyDown += TreeViewLayers_KeyDown;
             UpdateButtonStates();
         }
 
@@ -150,6 +154,21 @@ namespace csharp_editor {
                 if (layer != null) {
                     layer.Visible = !layer.Visible;
                     node.Text = layer.ToString();
+                    treeViewLayers.Invalidate(); // Refresh to update icons
+
+                    LayersChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public void ToggleLayerLock() {
+            if (treeViewLayers.SelectedNode != null) {
+                TreeNode node = treeViewLayers.SelectedNode;
+                LayerNode layer = node.Tag as LayerNode;
+
+                if (layer != null) {
+                    layer.Locked = !layer.Locked;
+                    treeViewLayers.Invalidate(); // Refresh to update icons
 
                     LayersChanged?.Invoke(this, EventArgs.Empty);
                 }
@@ -411,6 +430,113 @@ namespace csharp_editor {
 
         private void treeViewLayers_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e) {
             ToggleLayerVisibility();
+        }
+
+        private void TreeViewLayers_DrawNode(object sender, DrawTreeNodeEventArgs e) {
+            if (e.Node == null) return;
+
+            LayerNode layer = e.Node.Tag as LayerNode;
+            if (layer == null) return;
+
+            // Use full row width
+            int fullRowWidth = treeViewLayers.ClientSize.Width;
+            Rectangle fullRowBounds = new Rectangle(0, e.Bounds.Top, fullRowWidth, e.Bounds.Height);
+
+            // Draw background for full row
+            Color backColor = (e.State & TreeNodeStates.Selected) != 0 
+                ? Color.FromArgb(51, 153, 255) 
+                : treeViewLayers.BackColor;
+            
+            using (SolidBrush brush = new SolidBrush(backColor)) {
+                e.Graphics.FillRectangle(brush, fullRowBounds);
+            }
+
+            // Draw type icon on the left
+            int typeIconX = e.Bounds.Left;
+            int iconY = e.Bounds.Top + (e.Bounds.Height - IconSize) / 2;
+            
+            Image typeIcon = layer.Type == LayerType.TileLayer 
+                ? Properties.Resources.tiles 
+                : Properties.Resources.entities;
+            e.Graphics.DrawImage(typeIcon, typeIconX, iconY, IconSize, IconSize);
+
+            // Calculate space needed for icons (2 icons + spacing on right)
+            int iconsWidth = (IconSize * 2) + (IconSpacing * 3);
+            
+            // Calculate text bounds (leave room for type icon on left and action icons on right)
+            int textStartX = typeIconX + IconSize + IconSpacing;
+            Rectangle textBounds = new Rectangle(
+                textStartX,
+                e.Bounds.Top,
+                fullRowWidth - textStartX - iconsWidth,
+                e.Bounds.Height
+            );
+
+            // Draw node text with clipping
+            Color textColor = treeViewLayers.ForeColor;
+            TextRenderer.DrawText(e.Graphics, e.Node.Text, treeViewLayers.Font, 
+                textBounds, textColor, 
+                TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
+
+            // Calculate icon positions (from right to left, docked to control edge)
+            
+            // Draw lock icon (rightmost)
+            int lockIconX = fullRowWidth - IconSize - IconSpacing;
+            Image lockIcon = layer.Locked 
+                ? Properties.Resources._lock 
+                : Properties.Resources.unlock;
+            e.Graphics.DrawImage(lockIcon, lockIconX, iconY, IconSize, IconSize);
+
+            // Draw visibility icon (second from right)
+            int visibilityIconX = lockIconX - IconSize - IconSpacing;
+            Image visibilityIcon = layer.Visible 
+                ? Properties.Resources.visible 
+                : Properties.Resources.invisible;
+            e.Graphics.DrawImage(visibilityIcon, visibilityIconX, iconY, IconSize, IconSize);
+        }
+
+        private void TreeViewLayers_MouseDown(object sender, MouseEventArgs e) {
+            TreeNode node = treeViewLayers.GetNodeAt(e.Location);
+            if (node == null) return;
+
+            LayerNode layer = node.Tag as LayerNode;
+            if (layer == null) return;
+
+            // Use full control width for icon positioning
+            int fullRowWidth = treeViewLayers.ClientSize.Width;
+            
+            // Calculate icon bounds (from right to left, docked to control edge)
+            int lockIconX = fullRowWidth - IconSize - IconSpacing;
+            int visibilityIconX = lockIconX - IconSize - IconSpacing;
+            int iconY = node.Bounds.Top + (node.Bounds.Height - IconSize) / 2;
+
+            Rectangle lockIconBounds = new Rectangle(lockIconX, iconY, IconSize, IconSize);
+            Rectangle visibilityIconBounds = new Rectangle(visibilityIconX, iconY, IconSize, IconSize);
+
+            // Check if click was on lock icon
+            if (lockIconBounds.Contains(e.Location)) {
+                treeViewLayers.SelectedNode = node;
+                layer.Locked = !layer.Locked;
+                treeViewLayers.Invalidate();
+                LayersChanged?.Invoke(this, EventArgs.Empty);
+                return;
+            }
+
+            // Check if click was on visibility icon
+            if (visibilityIconBounds.Contains(e.Location)) {
+                treeViewLayers.SelectedNode = node;
+                layer.Visible = !layer.Visible;
+                treeViewLayers.Invalidate();
+                LayersChanged?.Invoke(this, EventArgs.Empty);
+                return;
+            }
+        }
+
+        private void TreeViewLayers_KeyDown(object sender, KeyEventArgs e) {
+            // Suppress all default TreeView keyboard behavior to prevent error sounds
+            // The main form handles all keyboard input via KeyPreview
+            e.Handled = true;
+            e.SuppressKeyPress = true;
         }
     }
 }
