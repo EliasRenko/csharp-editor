@@ -7,36 +7,36 @@ namespace csharp_editor.UserControls {
 
         #region Component Designer generated code
 
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
+        /// <summary>
+        /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
-            this.pictureBoxTexture = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTexture)).BeginInit();
-            this.SuspendLayout();
+        private void InitializeComponent()
+        {
+            pictureBoxTexture = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxTexture).BeginInit();
+            SuspendLayout();
             // 
             // pictureBoxTexture
             // 
-            this.pictureBoxTexture.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.pictureBoxTexture.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBoxTexture.Location = new System.Drawing.Point(0, 0);
-            this.pictureBoxTexture.Name = "pictureBoxTexture";
-            this.pictureBoxTexture.Size = new System.Drawing.Size(600, 500);
-            this.pictureBoxTexture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBoxTexture.TabIndex = 0;
-            this.pictureBoxTexture.TabStop = false;
+            pictureBoxTexture.BackColor = System.Drawing.SystemColors.Control;
+            pictureBoxTexture.Dock = System.Windows.Forms.DockStyle.Fill;
+            pictureBoxTexture.Location = new System.Drawing.Point(0, 0);
+            pictureBoxTexture.Name = "pictureBoxTexture";
+            pictureBoxTexture.Size = new System.Drawing.Size(600, 500);
+            pictureBoxTexture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            pictureBoxTexture.TabIndex = 0;
+            pictureBoxTexture.TabStop = false;
             // 
             // TilesetViewer
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.Controls.Add(this.pictureBoxTexture);
-            this.Name = "TilesetViewer";
-            this.Size = new System.Drawing.Size(600, 500);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTexture)).EndInit();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            BackColor = System.Drawing.SystemColors.Control;
+            Controls.Add(pictureBoxTexture);
+            Size = new System.Drawing.Size(600, 500);
+            ((System.ComponentModel.ISupportInitialize)pictureBoxTexture).EndInit();
+            ResumeLayout(false);
         }
 
         #endregion

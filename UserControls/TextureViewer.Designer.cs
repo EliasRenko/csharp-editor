@@ -7,107 +7,102 @@ namespace csharp_editor.UserControls {
 
         #region Component Designer generated code
 
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
+        /// <summary>
+        /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
-            this.panelInfo = new System.Windows.Forms.Panel();
-            this.labelTransparent = new System.Windows.Forms.Label();
-            this.labelDataLength = new System.Windows.Forms.Label();
-            this.labelBPP = new System.Windows.Forms.Label();
-            this.labelHeight = new System.Windows.Forms.Label();
-            this.labelWidth = new System.Windows.Forms.Label();
-            this.tilesetViewer = new TilesetViewer();
-            this.panelInfo.SuspendLayout();
-            this.SuspendLayout();
+        private void InitializeComponent()
+        {
+            panelInfo = new System.Windows.Forms.Panel();
+            labelTransparent = new System.Windows.Forms.Label();
+            labelDataLength = new System.Windows.Forms.Label();
+            labelBPP = new System.Windows.Forms.Label();
+            labelHeight = new System.Windows.Forms.Label();
+            labelWidth = new System.Windows.Forms.Label();
+            tilesetViewer = new csharp_editor.UserControls.TilesetViewer();
+            panelInfo.SuspendLayout();
+            SuspendLayout();
             // 
             // panelInfo
             // 
-            this.panelInfo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
-            this.panelInfo.Controls.Add(this.labelTransparent);
-            this.panelInfo.Controls.Add(this.labelDataLength);
-            this.panelInfo.Controls.Add(this.labelBPP);
-            this.panelInfo.Controls.Add(this.labelHeight);
-            this.panelInfo.Controls.Add(this.labelWidth);
-            this.panelInfo.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelInfo.Location = new System.Drawing.Point(0, 0);
-            this.panelInfo.Name = "panelInfo";
-            this.panelInfo.Padding = new System.Windows.Forms.Padding(10);
-            this.panelInfo.Size = new System.Drawing.Size(600, 120);
-            this.panelInfo.TabIndex = 0;
+            panelInfo.BackColor = System.Drawing.SystemColors.Control;
+            panelInfo.Controls.Add(labelTransparent);
+            panelInfo.Controls.Add(labelDataLength);
+            panelInfo.Controls.Add(labelBPP);
+            panelInfo.Controls.Add(labelHeight);
+            panelInfo.Controls.Add(labelWidth);
+            panelInfo.Dock = System.Windows.Forms.DockStyle.Top;
+            panelInfo.Location = new System.Drawing.Point(0, 0);
+            panelInfo.Name = "panelInfo";
+            panelInfo.Padding = new System.Windows.Forms.Padding(10);
+            panelInfo.Size = new System.Drawing.Size(600, 120);
+            panelInfo.TabIndex = 0;
             // 
             // labelTransparent
             // 
-            this.labelTransparent.AutoSize = true;
-            this.labelTransparent.ForeColor = System.Drawing.Color.White;
-            this.labelTransparent.Location = new System.Drawing.Point(13, 90);
-            this.labelTransparent.Name = "labelTransparent";
-            this.labelTransparent.Size = new System.Drawing.Size(81, 15);
-            this.labelTransparent.TabIndex = 4;
-            this.labelTransparent.Text = "Transparent: -";
+            labelTransparent.AutoSize = true;
+            labelTransparent.Location = new System.Drawing.Point(13, 90);
+            labelTransparent.Name = "labelTransparent";
+            labelTransparent.Size = new System.Drawing.Size(79, 15);
+            labelTransparent.TabIndex = 4;
+            labelTransparent.Text = "Transparent: -";
             // 
             // labelDataLength
             // 
-            this.labelDataLength.AutoSize = true;
-            this.labelDataLength.ForeColor = System.Drawing.Color.White;
-            this.labelDataLength.Location = new System.Drawing.Point(13, 70);
-            this.labelDataLength.Name = "labelDataLength";
-            this.labelDataLength.Size = new System.Drawing.Size(85, 15);
-            this.labelDataLength.TabIndex = 3;
-            this.labelDataLength.Text = "Data Length: -";
+            labelDataLength.AutoSize = true;
+            labelDataLength.Location = new System.Drawing.Point(13, 70);
+            labelDataLength.Name = "labelDataLength";
+            labelDataLength.Size = new System.Drawing.Size(82, 15);
+            labelDataLength.TabIndex = 3;
+            labelDataLength.Text = "Data Length: -";
             // 
             // labelBPP
             // 
-            this.labelBPP.AutoSize = true;
-            this.labelBPP.ForeColor = System.Drawing.Color.White;
-            this.labelBPP.Location = new System.Drawing.Point(13, 50);
-            this.labelBPP.Name = "labelBPP";
-            this.labelBPP.Size = new System.Drawing.Size(108, 15);
-            this.labelBPP.TabIndex = 2;
-            this.labelBPP.Text = "Bytes Per Pixel: -";
+            labelBPP.AutoSize = true;
+            labelBPP.Location = new System.Drawing.Point(13, 50);
+            labelBPP.Name = "labelBPP";
+            labelBPP.Size = new System.Drawing.Size(94, 15);
+            labelBPP.TabIndex = 2;
+            labelBPP.Text = "Bytes Per Pixel: -";
             // 
             // labelHeight
             // 
-            this.labelHeight.AutoSize = true;
-            this.labelHeight.ForeColor = System.Drawing.Color.White;
-            this.labelHeight.Location = new System.Drawing.Point(13, 30);
-            this.labelHeight.Name = "labelHeight";
-            this.labelHeight.Size = new System.Drawing.Size(54, 15);
-            this.labelHeight.TabIndex = 1;
-            this.labelHeight.Text = "Height: -";
+            labelHeight.AutoSize = true;
+            labelHeight.Location = new System.Drawing.Point(13, 30);
+            labelHeight.Name = "labelHeight";
+            labelHeight.Size = new System.Drawing.Size(54, 15);
+            labelHeight.TabIndex = 1;
+            labelHeight.Text = "Height: -";
             // 
             // labelWidth
             // 
-            this.labelWidth.AutoSize = true;
-            this.labelWidth.ForeColor = System.Drawing.Color.White;
-            this.labelWidth.Location = new System.Drawing.Point(13, 10);
-            this.labelWidth.Name = "labelWidth";
-            this.labelWidth.Size = new System.Drawing.Size(51, 15);
-            this.labelWidth.TabIndex = 0;
-            this.labelWidth.Text = "Width: -";
+            labelWidth.AutoSize = true;
+            labelWidth.Location = new System.Drawing.Point(13, 10);
+            labelWidth.Name = "labelWidth";
+            labelWidth.Size = new System.Drawing.Size(50, 15);
+            labelWidth.TabIndex = 0;
+            labelWidth.Text = "Width: -";
             // 
             // tilesetViewer
             // 
-            this.tilesetViewer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.tilesetViewer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tilesetViewer.Location = new System.Drawing.Point(0, 120);
-            this.tilesetViewer.Name = "tilesetViewer";
-            this.tilesetViewer.Size = new System.Drawing.Size(600, 380);
-            this.tilesetViewer.TabIndex = 1;
+            tilesetViewer.BackColor = System.Drawing.SystemColors.Control;
+            tilesetViewer.Dock = System.Windows.Forms.DockStyle.Fill;
+            tilesetViewer.Location = new System.Drawing.Point(0, 120);
+            tilesetViewer.Name = "tilesetViewer";
+            tilesetViewer.Size = new System.Drawing.Size(600, 380);
+            tilesetViewer.TabIndex = 1;
             // 
             // TextureViewer
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.Controls.Add(this.tilesetViewer);
-            this.Controls.Add(this.panelInfo);
-            this.Name = "TextureViewer";
-            this.Size = new System.Drawing.Size(600, 500);
-            this.panelInfo.ResumeLayout(false);
-            this.panelInfo.PerformLayout();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            BackColor = System.Drawing.Color.FromArgb(((int)((byte)30)), ((int)((byte)30)), ((int)((byte)30)));
+            Controls.Add(tilesetViewer);
+            Controls.Add(panelInfo);
+            Size = new System.Drawing.Size(600, 500);
+            panelInfo.ResumeLayout(false);
+            panelInfo.PerformLayout();
+            ResumeLayout(false);
         }
 
         #endregion
@@ -118,6 +113,6 @@ namespace csharp_editor.UserControls {
         private System.Windows.Forms.Label labelBPP;
         private System.Windows.Forms.Label labelDataLength;
         private System.Windows.Forms.Label labelTransparent;
-        private TilesetViewer tilesetViewer;
+        private csharp_editor.UserControls.TilesetViewer tilesetViewer;
     }
 }

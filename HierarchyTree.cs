@@ -253,36 +253,28 @@ namespace csharp_editor {
                 dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
                 dialog.MaximizeBox = false;
                 dialog.MinimizeBox = false;
-                dialog.BackColor = Color.FromArgb(30, 30, 30);
-                dialog.ForeColor = Color.White;
 
                 Label labelName = new Label {
                     Text = "Name:",
                     Location = new Point(10, 20),
-                    Size = new Size(60, 20),
-                    ForeColor = Color.White
+                    Size = new Size(60, 20)
                 };
 
                 TextBox textBoxName = new TextBox {
                     Location = new Point(80, 18),
-                    Size = new Size(240, 23),
-                    BackColor = Color.FromArgb(45, 45, 48),
-                    ForeColor = Color.White
+                    Size = new Size(240, 23)
                 };
 
                 Label labelTileset = new Label {
                     Text = "Tileset:",
                     Location = new Point(10, 55),
-                    Size = new Size(60, 20),
-                    ForeColor = Color.White
+                    Size = new Size(60, 20)
                 };
 
                 ComboBox comboBoxTileset = new ComboBox {
                     Location = new Point(80, 53),
                     Size = new Size(240, 23),
-                    DropDownStyle = ComboBoxStyle.DropDownList,
-                    BackColor = Color.FromArgb(45, 45, 48),
-                    ForeColor = Color.White
+                    DropDownStyle = ComboBoxStyle.DropDownList
                 };
                 
                 // Load available tilesets
@@ -302,16 +294,14 @@ namespace csharp_editor {
                     Text = "Add",
                     DialogResult = DialogResult.OK,
                     Location = new Point(165, 130),
-                    Size = new Size(75, 30),
-                    ForeColor = Color.Black
+                    Size = new Size(75, 30)
                 };
 
                 Button buttonCancel = new Button {
                     Text = "Cancel",
                     DialogResult = DialogResult.Cancel,
                     Location = new Point(245, 130),
-                    Size = new Size(75, 30),
-                    ForeColor = Color.Black
+                    Size = new Size(75, 30)
                 };
 
                 dialog.Controls.AddRange(new Control[] { 
@@ -339,37 +329,30 @@ namespace csharp_editor {
                 dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
                 dialog.MaximizeBox = false;
                 dialog.MinimizeBox = false;
-                dialog.BackColor = Color.FromArgb(30, 30, 30);
-                dialog.ForeColor = Color.White;
 
                 Label labelName = new Label {
                     Text = "Name:",
                     Location = new Point(10, 20),
-                    Size = new Size(60, 20),
-                    ForeColor = Color.White
+                    Size = new Size(60, 20)
                 };
 
                 TextBox textBoxName = new TextBox {
                     Location = new Point(80, 18),
-                    Size = new Size(240, 23),
-                    BackColor = Color.FromArgb(45, 45, 48),
-                    ForeColor = Color.White
+                    Size = new Size(240, 23)
                 };
 
                 Button buttonOk = new Button {
                     Text = "Add",
                     DialogResult = DialogResult.OK,
                     Location = new Point(165, 70),
-                    Size = new Size(75, 30),
-                    ForeColor = Color.Black
+                    Size = new Size(75, 30)
                 };
 
                 Button buttonCancel = new Button {
                     Text = "Cancel",
                     DialogResult = DialogResult.Cancel,
                     Location = new Point(245, 70),
-                    Size = new Size(75, 30),
-                    ForeColor = Color.Black
+                    Size = new Size(75, 30)
                 };
 
                 dialog.Controls.AddRange(new Control[] { 

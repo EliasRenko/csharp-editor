@@ -40,9 +40,7 @@ namespace csharp_editor {
             this.treeViewLayers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.treeViewLayers.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(37)))), ((int)(((byte)(38)))));
             this.treeViewLayers.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.treeViewLayers.ForeColor = System.Drawing.Color.White;
             this.treeViewLayers.Location = new System.Drawing.Point(0, 25);
             this.treeViewLayers.Name = "treeViewLayers";
             this.treeViewLayers.Size = new System.Drawing.Size(250, 375);
@@ -69,93 +67,73 @@ namespace csharp_editor {
             // 
             this.buttonToggleVisibility.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonToggleVisibility.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(62)))), ((int)(((byte)(66)))));
-            this.buttonToggleVisibility.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonToggleVisibility.ForeColor = System.Drawing.Color.White;
+
             this.buttonToggleVisibility.Location = new System.Drawing.Point(5, 65);
             this.buttonToggleVisibility.Name = "buttonToggleVisibility";
             this.buttonToggleVisibility.Size = new System.Drawing.Size(240, 25);
             this.buttonToggleVisibility.TabIndex = 4;
             this.buttonToggleVisibility.Text = "Toggle Visibility";
-            this.buttonToggleVisibility.UseVisualStyleBackColor = false;
             this.buttonToggleVisibility.Click += new System.EventHandler(this.buttonToggleVisibility_Click);
             // 
             // buttonMoveDown
             // 
-            this.buttonMoveDown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(62)))), ((int)(((byte)(66)))));
-            this.buttonMoveDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonMoveDown.ForeColor = System.Drawing.Color.White;
+
             this.buttonMoveDown.Location = new System.Drawing.Point(125, 35);
             this.buttonMoveDown.Name = "buttonMoveDown";
             this.buttonMoveDown.Size = new System.Drawing.Size(60, 25);
             this.buttonMoveDown.TabIndex = 3;
             this.buttonMoveDown.Text = "Down";
-            this.buttonMoveDown.UseVisualStyleBackColor = false;
             this.buttonMoveDown.Click += new System.EventHandler(this.buttonMoveDown_Click);
             // 
             // buttonMoveUp
             // 
-            this.buttonMoveUp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(62)))), ((int)(((byte)(66)))));
-            this.buttonMoveUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonMoveUp.ForeColor = System.Drawing.Color.White;
+
             this.buttonMoveUp.Location = new System.Drawing.Point(65, 35);
             this.buttonMoveUp.Name = "buttonMoveUp";
             this.buttonMoveUp.Size = new System.Drawing.Size(55, 25);
             this.buttonMoveUp.TabIndex = 2;
             this.buttonMoveUp.Text = "Up";
-            this.buttonMoveUp.UseVisualStyleBackColor = false;
             this.buttonMoveUp.Click += new System.EventHandler(this.buttonMoveUp_Click);
             // 
             // buttonRemove
             // 
-            this.buttonRemove.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(62)))), ((int)(((byte)(66)))));
-            this.buttonRemove.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonRemove.ForeColor = System.Drawing.Color.White;
+
             this.buttonRemove.Location = new System.Drawing.Point(5, 35);
             this.buttonRemove.Name = "buttonRemove";
             this.buttonRemove.Size = new System.Drawing.Size(55, 25);
             this.buttonRemove.TabIndex = 1;
             this.buttonRemove.Text = "Delete";
-            this.buttonRemove.UseVisualStyleBackColor = false;
             this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
             // 
             // buttonAddTileLayer
             // 
             this.buttonAddTileLayer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonAddTileLayer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(62)))), ((int)(((byte)(66)))));
-            this.buttonAddTileLayer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonAddTileLayer.ForeColor = System.Drawing.Color.White;
+
             this.buttonAddTileLayer.Location = new System.Drawing.Point(5, 5);
             this.buttonAddTileLayer.Name = "buttonAddTileLayer";
             this.buttonAddTileLayer.Size = new System.Drawing.Size(115, 25);
             this.buttonAddTileLayer.TabIndex = 0;
             this.buttonAddTileLayer.Text = "Add Tile Layer";
-            this.buttonAddTileLayer.UseVisualStyleBackColor = false;
             this.buttonAddTileLayer.Click += new System.EventHandler(this.buttonAddTileLayer_Click);
             // 
             // buttonAddEntityLayer
             // 
             this.buttonAddEntityLayer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonAddEntityLayer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(62)))), ((int)(((byte)(66)))));
-            this.buttonAddEntityLayer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonAddEntityLayer.ForeColor = System.Drawing.Color.White;
+
             this.buttonAddEntityLayer.Location = new System.Drawing.Point(125, 5);
             this.buttonAddEntityLayer.Name = "buttonAddEntityLayer";
             this.buttonAddEntityLayer.Size = new System.Drawing.Size(120, 25);
             this.buttonAddEntityLayer.TabIndex = 5;
             this.buttonAddEntityLayer.Text = "Add Entity Layer";
-            this.buttonAddEntityLayer.UseVisualStyleBackColor = false;
             this.buttonAddEntityLayer.Click += new System.EventHandler(this.buttonAddEntityLayer_Click);
             // 
             // labelTitle
             // 
             this.labelTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelTitle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
             this.labelTitle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.labelTitle.ForeColor = System.Drawing.Color.White;
             this.labelTitle.Location = new System.Drawing.Point(0, 0);
             this.labelTitle.Name = "labelTitle";
             this.labelTitle.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
@@ -168,7 +146,7 @@ namespace csharp_editor {
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+
             this.Controls.Add(this.labelTitle);
             this.Controls.Add(this.panelButtons);
             this.Controls.Add(this.treeViewLayers);

@@ -53,7 +53,6 @@ namespace csharp_editor {
             this.groupBoxExisting.Controls.Add(this.buttonUse);
             this.groupBoxExisting.Controls.Add(this.buttonDelete);
             this.groupBoxExisting.Controls.Add(this.listBoxEntities);
-            this.groupBoxExisting.ForeColor = System.Drawing.Color.White;
             this.groupBoxExisting.Location = new System.Drawing.Point(12, 12);
             this.groupBoxExisting.Name = "groupBoxExisting";
             this.groupBoxExisting.Size = new System.Drawing.Size(560, 180);
@@ -65,7 +64,6 @@ namespace csharp_editor {
             // 
             this.buttonDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonDelete.Enabled = false;
-            this.buttonDelete.ForeColor = System.Drawing.Color.Black;
             this.buttonDelete.Location = new System.Drawing.Point(375, 145);
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.Size = new System.Drawing.Size(85, 25);
@@ -78,7 +76,6 @@ namespace csharp_editor {
             // 
             this.buttonUse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonUse.Enabled = false;
-            this.buttonUse.ForeColor = System.Drawing.Color.Black;
             this.buttonUse.Location = new System.Drawing.Point(465, 145);
             this.buttonUse.Name = "buttonUse";
             this.buttonUse.Size = new System.Drawing.Size(85, 25);
@@ -92,8 +89,7 @@ namespace csharp_editor {
             this.listBoxEntities.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.listBoxEntities.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
-            this.listBoxEntities.ForeColor = System.Drawing.Color.White;
+
             this.listBoxEntities.FormattingEnabled = true;
             this.listBoxEntities.ItemHeight = 15;
             this.listBoxEntities.Location = new System.Drawing.Point(10, 25);
@@ -117,7 +113,6 @@ namespace csharp_editor {
             this.groupBoxNew.Controls.Add(this.labelHeight);
             this.groupBoxNew.Controls.Add(this.labelWidth);
             this.groupBoxNew.Controls.Add(this.labelName);
-            this.groupBoxNew.ForeColor = System.Drawing.Color.White;
             this.groupBoxNew.Location = new System.Drawing.Point(12, 198);
             this.groupBoxNew.Name = "groupBoxNew";
             this.groupBoxNew.Size = new System.Drawing.Size(560, 200);
@@ -129,9 +124,7 @@ namespace csharp_editor {
             // 
             this.comboBoxTilemap.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxTilemap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
             this.comboBoxTilemap.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxTilemap.ForeColor = System.Drawing.Color.White;
             this.comboBoxTilemap.FormattingEnabled = true;
             this.comboBoxTilemap.Location = new System.Drawing.Point(90, 145);
             this.comboBoxTilemap.Name = "comboBoxTilemap";
@@ -142,9 +135,7 @@ namespace csharp_editor {
             // 
             this.comboBoxType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxType.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
             this.comboBoxType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxType.ForeColor = System.Drawing.Color.White;
             this.comboBoxType.FormattingEnabled = true;
             this.comboBoxType.Location = new System.Drawing.Point(90, 115);
             this.comboBoxType.Name = "comboBoxType";
@@ -154,7 +145,6 @@ namespace csharp_editor {
             // buttonAdd
             // 
             this.buttonAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonAdd.ForeColor = System.Drawing.Color.Black;
             this.buttonAdd.Location = new System.Drawing.Point(465, 169);
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.Size = new System.Drawing.Size(85, 25);
@@ -165,8 +155,7 @@ namespace csharp_editor {
             // 
             // numericUpDownHeight
             // 
-            this.numericUpDownHeight.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
-            this.numericUpDownHeight.ForeColor = System.Drawing.Color.White;
+
             this.numericUpDownHeight.Location = new System.Drawing.Point(90, 85);
             this.numericUpDownHeight.Maximum = new decimal(new int[] {
             1024,
@@ -189,8 +178,7 @@ namespace csharp_editor {
             // 
             // numericUpDownWidth
             // 
-            this.numericUpDownWidth.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
-            this.numericUpDownWidth.ForeColor = System.Drawing.Color.White;
+
             this.numericUpDownWidth.Location = new System.Drawing.Point(90, 55);
             this.numericUpDownWidth.Maximum = new decimal(new int[] {
             1024,
@@ -215,8 +203,7 @@ namespace csharp_editor {
             // 
             this.textBoxName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
-            this.textBoxName.ForeColor = System.Drawing.Color.White;
+
             this.textBoxName.Location = new System.Drawing.Point(90, 25);
             this.textBoxName.Name = "textBoxName";
             this.textBoxName.Size = new System.Drawing.Size(460, 23);
@@ -270,7 +257,6 @@ namespace csharp_editor {
             // buttonClose
             // 
             this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonClose.ForeColor = System.Drawing.Color.Black;
             this.buttonClose.Location = new System.Drawing.Point(477, 404);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(95, 30);
@@ -283,12 +269,11 @@ namespace csharp_editor {
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+
             this.ClientSize = new System.Drawing.Size(584, 446);
             this.Controls.Add(this.buttonClose);
             this.Controls.Add(this.groupBoxNew);
             this.Controls.Add(this.groupBoxExisting);
-            this.ForeColor = System.Drawing.Color.White;
             this.MinimumSize = new System.Drawing.Size(600, 485);
             this.Name = "EntitiesDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

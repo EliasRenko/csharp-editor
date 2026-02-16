@@ -49,7 +49,6 @@ namespace csharp_editor {
             this.groupBoxExisting.Controls.Add(this.buttonUse);
             this.groupBoxExisting.Controls.Add(this.buttonRemove);
             this.groupBoxExisting.Controls.Add(this.listBoxTilesets);
-            this.groupBoxExisting.ForeColor = System.Drawing.Color.White;
             this.groupBoxExisting.Location = new System.Drawing.Point(12, 12);
             this.groupBoxExisting.Name = "groupBoxExisting";
             this.groupBoxExisting.Size = new System.Drawing.Size(560, 180);
@@ -60,7 +59,6 @@ namespace csharp_editor {
             // buttonRemove
             // 
             this.buttonRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonRemove.ForeColor = System.Drawing.Color.Black;
             this.buttonRemove.Location = new System.Drawing.Point(375, 145);
             this.buttonRemove.Name = "buttonRemove";
             this.buttonRemove.Size = new System.Drawing.Size(85, 25);
@@ -72,7 +70,6 @@ namespace csharp_editor {
             // buttonUse
             // 
             this.buttonUse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonUse.ForeColor = System.Drawing.Color.Black;
             this.buttonUse.Location = new System.Drawing.Point(465, 145);
             this.buttonUse.Name = "buttonUse";
             this.buttonUse.Size = new System.Drawing.Size(85, 25);
@@ -86,8 +83,7 @@ namespace csharp_editor {
             this.listBoxTilesets.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.listBoxTilesets.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
-            this.listBoxTilesets.ForeColor = System.Drawing.Color.White;
+
             this.listBoxTilesets.FormattingEnabled = true;
             this.listBoxTilesets.ItemHeight = 15;
             this.listBoxTilesets.Location = new System.Drawing.Point(10, 25);
@@ -169,8 +165,7 @@ namespace csharp_editor {
             // 
             this.textBoxImagePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxImagePath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
-            this.textBoxImagePath.ForeColor = System.Drawing.Color.White;
+
             this.textBoxImagePath.Location = new System.Drawing.Point(90, 55);
             this.textBoxImagePath.Name = "textBoxImagePath";
             this.textBoxImagePath.Size = new System.Drawing.Size(369, 23);
@@ -180,8 +175,7 @@ namespace csharp_editor {
             // 
             this.textBoxName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
-            this.textBoxName.ForeColor = System.Drawing.Color.White;
+
             this.textBoxName.Location = new System.Drawing.Point(90, 25);
             this.textBoxName.Name = "textBoxName";
             this.textBoxName.Size = new System.Drawing.Size(460, 23);
@@ -229,7 +223,7 @@ namespace csharp_editor {
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+
             this.ClientSize = new System.Drawing.Size(584, 410);
             this.Controls.Add(this.buttonClose);
             this.Controls.Add(this.groupBoxNew);

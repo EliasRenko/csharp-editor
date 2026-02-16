@@ -1,8 +1,5 @@
-using System;
-using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 namespace csharp_editor.UserControls {
     public partial class TilesetViewer : UserControl {
