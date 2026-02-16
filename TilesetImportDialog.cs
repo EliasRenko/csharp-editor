@@ -40,24 +40,25 @@ namespace csharp_editor {
             
             // Loop through and get each tileset info
             for (int i = 0; i < count; i++) {
-                IntPtr namePtr = _externView.GetTilesetNameAt(i);
-                string tilesetName = Marshal.PtrToStringAnsi(namePtr) ?? "";
+                Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
+                int result = _externView.GetTilesetAt(i, out tilesetInfo);
                 
-                if (!string.IsNullOrEmpty(tilesetName)) {
-                    // Get full tileset info
-                    Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
-                    _externView.GetTileset(tilesetName, out tilesetInfo);
+                if (result != 0) {
+                    string tilesetName = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "";
                     
-                    string texturePath = Marshal.PtrToStringAnsi(tilesetInfo.texturePath) ?? "";
+                    if (!string.IsNullOrEmpty(tilesetName)) {
+                    
+                        string texturePath = Marshal.PtrToStringAnsi(tilesetInfo.texturePath) ?? "";
                         
-                    TilesetEntry entry = new TilesetEntry {
-                        Name = tilesetName,
-                        ImagePath = texturePath,
-                        TileSize = tilesetInfo.tileSize
-                    };
-                    
-                    _tilesets.Add(entry);
-                    listBoxTilesets.Items.Add(entry);
+                        TilesetEntry entry = new TilesetEntry {
+                            Name = tilesetName,
+                            ImagePath = texturePath,
+                            TileSize = tilesetInfo.tileSize
+                        };
+                        
+                        _tilesets.Add(entry);
+                        listBoxTilesets.Items.Add(entry);
+                    }
                 }
             }
         }
@@ -110,7 +111,7 @@ namespace csharp_editor {
 
             // Send to C++
             try {
-                _externView.SetupTileset(newTileset.ImagePath, newTileset.Name, newTileset.TileSize);
+                _externView.SetTileset(newTileset.ImagePath, newTileset.Name, newTileset.TileSize);
                 
                 // Add to list
                 _tilesets.Add(newTileset);
@@ -143,7 +144,7 @@ namespace csharp_editor {
                 TilesetEntry selectedTileset = _tilesets[listBoxTilesets.SelectedIndex];
                 
                 try {
-                    bool result = _externView.SetCurrentTileset(selectedTileset.Name);
+                    bool result = _externView.SetActiveTileset(selectedTileset.Name);
                     
                     if (result) {
                         SelectedTilesetName = selectedTileset.Name;

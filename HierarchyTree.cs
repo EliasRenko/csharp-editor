@@ -280,10 +280,14 @@ namespace csharp_editor {
                 // Load available tilesets
                 int count = _externView?.GetTilesetCount() ?? 0;
                 for (int i = 0; i < count; i++) {
-                    IntPtr namePtr = _externView.GetTilesetNameAt(i);
-                    string tilesetName = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(namePtr) ?? "";
-                    if (!string.IsNullOrEmpty(tilesetName)) {
-                        comboBoxTileset.Items.Add(tilesetName);
+                    Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
+                    int result = _externView.GetTilesetAt(i, out tilesetInfo);
+                    
+                    if (result != 0) {
+                        string tilesetName = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "";
+                        if (!string.IsNullOrEmpty(tilesetName)) {
+                            comboBoxTileset.Items.Add(tilesetName);
+                        }
                     }
                 }
                 if (comboBoxTileset.Items.Count > 0) {

@@ -114,23 +114,27 @@ namespace csharp_editor {
         
         #endregion
 
+        #region Tilesets
+        
         [DllImport(DLL, EntryPoint = "getTileset", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetTileset(string tilesetName, out TilesetInfoStruct outInfo);
+        
+        [DllImport(DLL, EntryPoint = "getTilesetAt", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetTilesetAt(int index, out TilesetInfoStruct outInfo);
         
         [DllImport(DLL, EntryPoint = "getTilesetCount", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetTilesetCount();
         
-        [DllImport(DLL, EntryPoint = "getTilesetNameAt", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr GetTilesetNameAt(int index);
+        [DllImport(DLL, EntryPoint = "setTileset", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int SetTileset(string texturePath, string name, int tileSize);
         
-        [DllImport(DLL, EntryPoint = "setCurrentTileset", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern bool SetCurrentTileset(string tilesetName);
+        [DllImport(DLL, EntryPoint = "setActiveTileset", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern bool SetActiveTileset(string tilesetName);
         
-        [DllImport(DLL, EntryPoint = "setupTileset", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int SetupTileset(string texturePath, string name, int tileSize);
+        [DllImport(DLL, EntryPoint = "setActiveTile")]
+        public static extern int SetActiveTile(int tileRegionId);
         
-        [DllImport(DLL, EntryPoint = "setSelectedTile")]
-        public static extern int SetSelectedTile(int tileRegionId);
+        #endregion
         
         [DllImport(DLL, EntryPoint = "exportMap")]
         public static extern int ExportMap(string path);
@@ -149,17 +153,13 @@ namespace csharp_editor {
         [DllImport(DLL, EntryPoint = "createFolderLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void CreateFolderLayer(string layerName);
         
+        // --
+        
         [DllImport(DLL, EntryPoint = "setActiveLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int SetActiveLayer(string layerName);
         
-        [DllImport(DLL, EntryPoint = "setActiveLayerByIndex", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int SetActiveLayerByIndex(int index);
-        
-        [DllImport(DLL, EntryPoint = "getActiveLayerName", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr GetActiveLayerName();
-        
-        [DllImport(DLL, EntryPoint = "getActiveLayerIndex", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int GetActiveLayerIndex();
+        [DllImport(DLL, EntryPoint = "setActiveLayerAt", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int SetActiveLayerAt(int index);
         
         [DllImport(DLL, EntryPoint = "removeLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int RemoveLayer(string layerName);

@@ -58,11 +58,15 @@ namespace csharp_editor {
             int count = _externView.GetTilesetCount();
             
             for (int i = 0; i < count; i++) {
-                IntPtr namePtr = _externView.GetTilesetNameAt(i);
-                string tilesetName = Marshal.PtrToStringAnsi(namePtr) ?? "";
+                Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
+                int result = _externView.GetTilesetAt(i, out tilesetInfo);
                 
-                if (!string.IsNullOrEmpty(tilesetName)) {
-                    comboBoxTilemap.Items.Add(tilesetName);
+                if (result != 0) {
+                    string tilesetName = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "";
+                    
+                    if (!string.IsNullOrEmpty(tilesetName)) {
+                        comboBoxTilemap.Items.Add(tilesetName);
+                    }
                 }
             }
             

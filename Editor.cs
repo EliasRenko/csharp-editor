@@ -117,7 +117,7 @@ namespace csharp_editor {
                         int regionId = viewer.SelectedRegionId;
                         Log($"Selected tile from layer '{selectedLayer.Name}': X={selectedTile.X}, Y={selectedTile.Y}, RegionId={regionId}");
                         
-                        view_extern.SetSelectedTile(regionId);
+                        view_extern.SetActiveTile(regionId);
                     }
                 }
             }
@@ -330,7 +330,7 @@ namespace csharp_editor {
 
         private void TilesetViewer_SelectionChanged(object? sender, int regionId) {
             // Update the selected tile in the backend
-            view_extern.SetSelectedTile(regionId);
+            view_extern.SetActiveTile(regionId);
             
             var selectedLayer = hierarchyTree.GetSelectedLayer();
             if (selectedLayer != null) {

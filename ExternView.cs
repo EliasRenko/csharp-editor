@@ -150,25 +150,25 @@ namespace csharp_editor {
         public int GetTileset(string tilesetName, out TilesetInfoStruct outInfo) {
             return Externs.GetTileset(tilesetName, out outInfo);
         }
+        
+        public int GetTilesetAt(int index, out TilesetInfoStruct outInfo) {
+            return Externs.GetTilesetAt(index, out outInfo);
+        }
 
         public int GetTilesetCount() {
             return Externs.GetTilesetCount();
         }
 
-        public IntPtr GetTilesetNameAt(int index) {
-            return Externs.GetTilesetNameAt(index);
+        public bool SetActiveTileset(string tilesetName) {
+            return Externs.SetActiveTileset(tilesetName);
         }
 
-        public bool SetCurrentTileset(string tilesetName) {
-            return Externs.SetCurrentTileset(tilesetName);
+        public void SetTileset(string texturePath, string name, int tileSize) {
+            Externs.SetTileset(texturePath, name, tileSize);
         }
 
-        public void SetupTileset(string texturePath, string name, int tileSize) {
-            Externs.SetupTileset(texturePath, name, tileSize);
-        }
-
-        public void SetSelectedTile(int tileRegionId) {
-            Externs.SetSelectedTile(tileRegionId);
+        public void SetActiveTile(int tileRegionId) {
+            Externs.SetActiveTile(tileRegionId);
         }
         
         public void ImportMap(string path) {
@@ -198,20 +198,11 @@ namespace csharp_editor {
         public int SetActiveLayer(string layerName) {
             return Externs.SetActiveLayer(layerName);
         }
-        
-        public int SetActiveLayerByIndex(int index) {
-            return Externs.SetActiveLayerByIndex(index);
+
+        public int SetActiveLayerAt(int index) {
+            return Externs.SetActiveLayerAt(index);
         }
-        
-        public string GetActiveLayerName() {
-            IntPtr namePtr = Externs.GetActiveLayerName();
-            return System.Runtime.InteropServices.Marshal.PtrToStringAnsi(namePtr) ?? "";
-        }
-        
-        public int GetActiveLayerIndex() {
-            return Externs.GetActiveLayerIndex();
-        }
-        
+
         public int RemoveLayer(string layerName) {
             return Externs.RemoveLayer(layerName);
         }
