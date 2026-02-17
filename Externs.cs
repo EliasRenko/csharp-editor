@@ -176,6 +176,18 @@ namespace csharp_editor {
         [DllImport(DLL, EntryPoint = "getLayerInfo", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int GetLayerInfo(string layerName, out LayerInfoStruct outInfo);
         
+        [DllImport(DLL, EntryPoint = "moveLayerUp", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int MoveLayerUp(string layerName);
+        
+        [DllImport(DLL, EntryPoint = "moveLayerDown", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int MoveLayerDown(string layerName);
+        
+        [DllImport(DLL, EntryPoint = "moveLayerUpByIndex", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int MoveLayerUpByIndex(int index);
+        
+        [DllImport(DLL, EntryPoint = "moveLayerDownByIndex", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int MoveLayerDownByIndex(int index);
+        
         // BMFG
 
         [DllImport(DLL, EntryPoint = "importFont", CharSet = CharSet.Ansi)]

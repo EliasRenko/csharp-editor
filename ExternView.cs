@@ -223,6 +223,22 @@ namespace csharp_editor {
             return Externs.GetLayerInfo(layerName, out outInfo);
         }
         
+        public int MoveLayerUp(string layerName) {
+            return Externs.MoveLayerUp(layerName);
+        }
+        
+        public int MoveLayerDown(string layerName) {
+            return Externs.MoveLayerDown(layerName);
+        }
+        
+        public int MoveLayerUpByIndex(int index) {
+            return Externs.MoveLayerUpByIndex(index);
+        }
+        
+        public int MoveLayerDownByIndex(int index) {
+            return Externs.MoveLayerDownByIndex(index);
+        }
+        
         #endregion
         
         private Panel panel_extern;

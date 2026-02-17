@@ -113,6 +113,9 @@ namespace csharp_editor {
                         _layers.RemoveAt(layerIndex);
                         _layers.Insert(layerIndex - 1, layer);
                     }
+                    
+                    // Notify backend
+                    _externView?.MoveLayerUpByIndex(index);
                 }
 
                 LayersChanged?.Invoke(this, EventArgs.Empty);
@@ -140,6 +143,9 @@ namespace csharp_editor {
                         _layers.RemoveAt(layerIndex);
                         _layers.Insert(layerIndex + 1, layer);
                     }
+                    
+                    // Notify backend
+                    _externView?.MoveLayerDownByIndex(index);
                 }
 
                 LayersChanged?.Invoke(this, EventArgs.Empty);
@@ -460,7 +466,9 @@ namespace csharp_editor {
             );
 
             // Draw node text with clipping
-            Color textColor = treeViewLayers.ForeColor;
+            Color textColor = (e.State & TreeNodeStates.Selected) != 0 
+                ? Color.White 
+                : treeViewLayers.ForeColor;
             TextRenderer.DrawText(e.Graphics, e.Node.Text, treeViewLayers.Font, 
                 textBounds, textColor, 
                 TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
