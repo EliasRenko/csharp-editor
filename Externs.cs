@@ -39,6 +39,18 @@ namespace csharp_editor {
             public int visible;              // Visibility flag (0 = hidden, 1 = visible)
         }
         
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        public struct EntityDataStruct {
+            public IntPtr name;              // Entity name (use Marshal.PtrToStringAnsi to read)
+            public int width;                // Entity width in pixels
+            public int height;               // Entity height in pixels
+            public IntPtr tilesetName;       // Tileset name (use Marshal.PtrToStringAnsi to read)
+            public int regionX;              // Region X in tiles
+            public int regionY;              // Region Y in tiles
+            public int regionWidth;          // Region width in tiles
+            public int regionHeight;         // Region height in tiles
+        }
+        
         // Core functionality
         [DllImport(DLL, EntryPoint = "init")]
         public static extern int Init();
@@ -148,7 +160,7 @@ namespace csharp_editor {
         public static extern void CreateTilemapLayer(string layerName, string tilesetName, int index);
         
         [DllImport(DLL, EntryPoint = "createEntityLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void CreateEntityLayer(string layerName, int index);
+        public static extern void CreateEntityLayer(string layerName, string tilesetName);
         
         [DllImport(DLL, EntryPoint = "createFolderLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void CreateFolderLayer(string layerName);
@@ -175,6 +187,32 @@ namespace csharp_editor {
         
         [DllImport(DLL, EntryPoint = "getLayerInfo", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int GetLayerInfo(string layerName, out LayerInfoStruct outInfo);
+        
+        // Entity Management
+        
+        [DllImport(DLL, EntryPoint = "getEntity", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void GetEntity(string entityName, out EntityDataStruct outData);
+        
+        [DllImport(DLL, EntryPoint = "getEntityAt", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void GetEntityAt(int index, out EntityDataStruct outData);
+        
+        [DllImport(DLL, EntryPoint = "getEntityCount", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetEntityCount();
+        
+        [DllImport(DLL, EntryPoint = "setEntity", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void SetEntity(string entityName, int width, int height, string tilesetName);
+        
+        [DllImport(DLL, EntryPoint = "setEntityRegion", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void SetEntityRegion(string entityName, int x, int y, int width, int height);
+        
+        [DllImport(DLL, EntryPoint = "removeEntity", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int RemoveEntity(string entityName);
+        
+        [DllImport(DLL, EntryPoint = "setActiveEntity", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int SetActiveEntity(string entityName);
+        
+        [DllImport(DLL, EntryPoint = "placeEntity", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int PlaceEntity(int x, int y);
         
         [DllImport(DLL, EntryPoint = "moveLayerUp", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int MoveLayerUp(string layerName);

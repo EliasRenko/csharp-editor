@@ -79,8 +79,32 @@ namespace csharp_editor {
             listBoxEntities.Items.Clear();
             _entities.Clear();
             
-            // TODO: Get entities from C++ when the API is ready
-            // For now, we'll start with an empty list
+            // Get entities from C++
+            int count = _externView.GetEntityCount();
+            
+            for (int i = 0; i < count; i++) {
+                Externs.EntityDataStruct entityData = new Externs.EntityDataStruct();
+                _externView.GetEntityAt(i, out entityData);
+                
+                string name = Marshal.PtrToStringAnsi(entityData.name) ?? "";
+                string tilesetName = Marshal.PtrToStringAnsi(entityData.tilesetName) ?? "";
+                
+                if (!string.IsNullOrEmpty(name)) {
+                    EntityEntry entry = new EntityEntry {
+                        Name = name,
+                        Width = entityData.width,
+                        Height = entityData.height,
+                        TilemapName = tilesetName,
+                        TileX = entityData.regionX,
+                        TileY = entityData.regionY,
+                        TileWidth = entityData.regionWidth,
+                        TileHeight = entityData.regionHeight
+                    };
+                    
+                    _entities.Add(entry);
+                    listBoxEntities.Items.Add(entry);
+                }
+            }
         }
 
         private void LoadAvailableTilemaps() {
@@ -142,9 +166,16 @@ namespace csharp_editor {
                 TileHeight = _currentRegion.Height
             };
 
-            // TODO: Send to C++ when the API is ready
+            // Send to C++
             try {
-                // For now, just add to local list
+                // Set entity basic properties
+                _externView.SetEntity(newEntity.Name, newEntity.Width, newEntity.Height, newEntity.TilemapName);
+                
+                // Set entity region
+                _externView.SetEntityRegion(newEntity.Name, newEntity.TileX, newEntity.TileY, 
+                    newEntity.TileWidth, newEntity.TileHeight);
+                
+                // Add to local list
                 _entities.Add(newEntity);
                 listBoxEntities.Items.Add(newEntity);
                 
@@ -178,10 +209,25 @@ namespace csharp_editor {
                 if (result == DialogResult.Yes) {
                     int index = listBoxEntities.SelectedIndex;
                     
-                    // TODO: Remove from C++ when the API is ready
-                    
-                    _entities.RemoveAt(index);
-                    listBoxEntities.Items.RemoveAt(index);
+                    try {
+                        // Remove from C++
+                        int removeResult = _externView.RemoveEntity(entity.Name);
+                        
+                        if (removeResult != 0) {
+                            _entities.RemoveAt(index);
+                            listBoxEntities.Items.RemoveAt(index);
+                            
+                            MessageBox.Show($"Entity '{entity.Name}' has been deleted.", 
+                                "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        } else {
+                            MessageBox.Show($"Failed to delete entity '{entity.Name}'.", 
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    catch (Exception ex) {
+                        MessageBox.Show($"Error deleting entity: {ex.Message}", 
+                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             } else {
                 MessageBox.Show("Please select an entity to delete.",

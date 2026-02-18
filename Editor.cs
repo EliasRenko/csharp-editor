@@ -30,6 +30,10 @@ namespace csharp_editor {
             // Initialize TilesetViewer
             tilesetViewer.SelectionChanged += TilesetViewer_SelectionChanged;
             
+            // Initialize EntitySelector
+            entitySelector.SetExternView(view_extern);
+            entitySelector.SelectionChanged += EntitySelector_SelectionChanged;
+            
             // Enable keyboard events at form level
             KeyPreview = true;
 
@@ -207,6 +211,17 @@ namespace csharp_editor {
         private void view_extern_MouseDown(object sender, MouseEventArgs e) {
             int button = MouseButtonMapper.ToSDLMouseButton(e.Button);
             view_extern.OnMouseButtonDown(e.X, e.Y, button);
+            
+            // If left click and we have an entity selected, place it
+            // if (e.Button == MouseButtons.Left && !string.IsNullOrEmpty(_currentEntityName)) {
+            //     var selectedLayer = hierarchyTree.GetSelectedLayer();
+            //     if (selectedLayer != null && selectedLayer.Type == LayerType.EntityLayer) {
+            //         int result = view_extern.PlaceEntity(e.X, e.Y);
+            //         if (result != 0) {
+            //             Log($"Placed entity '{_currentEntityName}' at ({e.X}, {e.Y})");
+            //         }
+            //     }
+            // }
         }
 
         private void view_extern_MouseUp(object sender, MouseEventArgs e) {
@@ -280,10 +295,21 @@ namespace csharp_editor {
 
         private void HierarchyTree_LayerSelected(object sender, HierarchyTree.LayerNode layer) {
             Log($"Layer selected: {layer.Name} ({layer.Type})");
-            // TODO: Notify backend when selected layer changes
             
-            // Update the embedded texture viewer when a tile layer is selected
-            UpdateTextureViewer(layer);
+            // Switch between TilesetViewer and EntitySelector based on layer type
+            if (layer.Type == LayerType.TileLayer) {
+                tilesetViewer.Visible = true;
+                entitySelector.Visible = false;
+                UpdateTextureViewer(layer);
+            } else if (layer.Type == LayerType.EntityLayer) {
+                tilesetViewer.Visible = false;
+                entitySelector.Visible = true;
+                entitySelector.LoadEntities();
+            } else {
+                // Default or unknown layer type
+                tilesetViewer.Visible = false;
+                entitySelector.Visible = false;
+            }
         }
 
         private void HierarchyTree_LayersChanged(object sender, EventArgs e) {
@@ -335,6 +361,18 @@ namespace csharp_editor {
             var selectedLayer = hierarchyTree.GetSelectedLayer();
             if (selectedLayer != null) {
                 Log($"Selected tile from '{selectedLayer.Name}': RegionId={regionId}");
+            }
+        }
+        
+        private void EntitySelector_SelectionChanged(object? sender, string entityName) {
+            _currentEntityName = entityName;
+            
+            // Set active entity in backend
+            view_extern.SetActiveEntity(entityName);
+            
+            var selectedLayer = hierarchyTree.GetSelectedLayer();
+            if (selectedLayer != null) {
+                Log($"Selected entity from '{selectedLayer.Name}': {entityName}");
             }
         }
     }

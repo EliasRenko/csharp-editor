@@ -187,8 +187,8 @@ namespace csharp_editor {
             Externs.CreateTilemapLayer(layerName, tilesetName, index);
         }
         
-        public void CreateEntityLayer(string layerName, int index) {
-            Externs.CreateEntityLayer(layerName, index);
+        public void CreateEntityLayer(string layerName, string tilesetName) {
+            Externs.CreateEntityLayer(layerName, tilesetName);
         }
         
         public void CreateFolderLayer(string layerName) {
@@ -237,6 +237,40 @@ namespace csharp_editor {
         
         public int MoveLayerDownByIndex(int index) {
             return Externs.MoveLayerDownByIndex(index);
+        }
+        
+        // Entity Management
+        
+        public void GetEntity(string entityName, out Externs.EntityDataStruct outData) {
+            Externs.GetEntity(entityName, out outData);
+        }
+        
+        public void GetEntityAt(int index, out Externs.EntityDataStruct outData) {
+            Externs.GetEntityAt(index, out outData);
+        }
+        
+        public int GetEntityCount() {
+            return Externs.GetEntityCount();
+        }
+        
+        public void SetEntity(string entityName, int width, int height, string tilesetName) {
+            Externs.SetEntity(entityName, width, height, tilesetName);
+        }
+        
+        public void SetEntityRegion(string entityName, int x, int y, int width, int height) {
+            Externs.SetEntityRegion(entityName, x, y, width, height);
+        }
+        
+        public int RemoveEntity(string entityName) {
+            return Externs.RemoveEntity(entityName);
+        }
+        
+        public int SetActiveEntity(string entityName) {
+            return Externs.SetActiveEntity(entityName);
+        }
+        
+        public int PlaceEntity(int x, int y) {
+            return Externs.PlaceEntity(x, y);
         }
         
         #endregion

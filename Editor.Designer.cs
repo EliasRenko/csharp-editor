@@ -43,6 +43,7 @@ namespace csharp_editor {
             panelRight = new System.Windows.Forms.Panel();
             hierarchyTree = new csharp_editor.HierarchyTree();
             tilesetViewer = new csharp_editor.UserControls.TilesetViewer();
+            entitySelector = new csharp_editor.UserControls.EntitySelector();
             toolStrip1 = new System.Windows.Forms.ToolStrip();
             toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             toolStripButton2 = new System.Windows.Forms.ToolStripButton();
@@ -156,6 +157,7 @@ namespace csharp_editor {
             // panelRight
             // 
             panelRight.BackColor = System.Drawing.SystemColors.ControlDark;
+            panelRight.Controls.Add(entitySelector);
             panelRight.Controls.Add(tilesetViewer);
             panelRight.Controls.Add(hierarchyTree);
             panelRight.Dock = System.Windows.Forms.DockStyle.Right;
@@ -181,6 +183,15 @@ namespace csharp_editor {
             tilesetViewer.Name = "tilesetViewer";
             tilesetViewer.Size = new System.Drawing.Size(317, 225);
             tilesetViewer.TabIndex = 1;
+            // 
+            // entitySelector
+            // 
+            entitySelector.Dock = System.Windows.Forms.DockStyle.Fill;
+            entitySelector.Location = new System.Drawing.Point(0, 344);
+            entitySelector.Name = "entitySelector";
+            entitySelector.Size = new System.Drawing.Size(317, 225);
+            entitySelector.TabIndex = 2;
+            entitySelector.Visible = false;
             // 
             // toolStrip1
             // 
@@ -327,6 +338,7 @@ namespace csharp_editor {
         private System.Windows.Forms.Panel panelRight;
         private csharp_editor.HierarchyTree hierarchyTree;
         private csharp_editor.UserControls.TilesetViewer tilesetViewer;
+        private csharp_editor.UserControls.EntitySelector entitySelector;
         private ToolStrip toolStrip1;
         private ToolStripButton toolStripButton1;
         private ToolStripButton toolStripButton2;

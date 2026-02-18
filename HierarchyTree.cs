@@ -74,7 +74,7 @@ namespace csharp_editor {
             if (type == LayerType.TileLayer) {
                 _externView?.CreateTilemapLayer(name, tilesetName, insertIndex);
             } else if (type == LayerType.EntityLayer) {
-                _externView?.CreateEntityLayer(name, insertIndex);
+                _externView?.CreateEntityLayer(name, tilesetName);
             }
 
             LayersChanged?.Invoke(this, EventArgs.Empty);
@@ -342,7 +342,7 @@ namespace csharp_editor {
         private void buttonAddEntityLayer_Click(object sender, EventArgs e) {
             using (var dialog = new Form()) {
                 dialog.Text = "Add Entity Layer";
-                dialog.Size = new Size(350, 150);
+                dialog.Size = new Size(350, 180);
                 dialog.StartPosition = FormStartPosition.CenterParent;
                 dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
                 dialog.MaximizeBox = false;
@@ -358,31 +358,62 @@ namespace csharp_editor {
                     Location = new Point(80, 18),
                     Size = new Size(240, 23)
                 };
+                
+                Label labelTileset = new Label {
+                    Text = "Tileset:",
+                    Location = new Point(10, 55),
+                    Size = new Size(60, 20)
+                };
+
+                ComboBox comboBoxTileset = new ComboBox {
+                    Location = new Point(80, 53),
+                    Size = new Size(240, 23),
+                    DropDownStyle = ComboBoxStyle.DropDownList
+                };
+                
+                // Load available tilesets
+                int count = _externView?.GetTilesetCount() ?? 0;
+                for (int i = 0; i < count; i++) {
+                    Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
+                    int result = _externView.GetTilesetAt(i, out tilesetInfo);
+                    
+                    if (result != 0) {
+                        string tilesetName = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "";
+                        if (!string.IsNullOrEmpty(tilesetName)) {
+                            comboBoxTileset.Items.Add(tilesetName);
+                        }
+                    }
+                }
+                if (comboBoxTileset.Items.Count > 0) {
+                    comboBoxTileset.SelectedIndex = 0;
+                }
 
                 Button buttonOk = new Button {
                     Text = "Add",
                     DialogResult = DialogResult.OK,
-                    Location = new Point(165, 70),
+                    Location = new Point(165, 100),
                     Size = new Size(75, 30)
                 };
 
                 Button buttonCancel = new Button {
                     Text = "Cancel",
                     DialogResult = DialogResult.Cancel,
-                    Location = new Point(245, 70),
+                    Location = new Point(245, 100),
                     Size = new Size(75, 30)
                 };
 
                 dialog.Controls.AddRange(new Control[] { 
-                    labelName, textBoxName, buttonOk, buttonCancel 
+                    labelName, textBoxName, labelTileset, comboBoxTileset, buttonOk, buttonCancel 
                 });
                 dialog.AcceptButton = buttonOk;
                 dialog.CancelButton = buttonCancel;
 
-                if (dialog.ShowDialog(this) == DialogResult.OK && !string.IsNullOrWhiteSpace(textBoxName.Text)) {
-                    AddLayer(textBoxName.Text.Trim(), LayerType.EntityLayer);
+                if (dialog.ShowDialog(this) == DialogResult.OK && 
+                    !string.IsNullOrWhiteSpace(textBoxName.Text) &&
+                    comboBoxTileset.SelectedItem != null) {
+                    AddLayer(textBoxName.Text.Trim(), LayerType.EntityLayer, comboBoxTileset.SelectedItem.ToString());
                 } else if (dialog.DialogResult == DialogResult.OK) {
-                    MessageBox.Show("Please enter a name.", "Validation Error",
+                    MessageBox.Show("Please enter a name and select a tileset.", "Validation Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
