@@ -8,6 +8,8 @@ namespace csharp_editor.UserControls {
         private Bitmap? _bitmap;
         private Point _selectedTile = new Point(-1, -1);
         private Rectangle _selectionRect = Rectangle.Empty;
+        private float _zoomLevel = 1.0f;
+        private Point _scrollOffset = Point.Empty;
 
         public Point SelectedTile => _selectedTile;
         public bool HasSelection => _selectedTile.X >= 0 && _selectedTile.Y >= 0;
@@ -26,6 +28,43 @@ namespace csharp_editor.UserControls {
             InitializeComponent();
             pictureBoxTexture.MouseDown += PictureBoxTexture_MouseDown;
             pictureBoxTexture.Paint += PictureBoxTexture_Paint;
+            pictureBoxTexture.MouseWheel += PictureBoxTexture_MouseWheel;
+            
+            InitializeZoomComboBox();
+        }
+        
+        private void InitializeZoomComboBox() {
+            toolStripComboBoxZoom.Items.AddRange(new object[] {
+                "25%", "50%", "75%", "100%", "150%", "200%", "300%", "400%"
+            });
+            toolStripComboBoxZoom.SelectedIndex = 3; // 100%
+            toolStripComboBoxZoom.SelectedIndexChanged += ToolStripComboBoxZoom_SelectedIndexChanged;
+        }
+        
+        private void ToolStripComboBoxZoom_SelectedIndexChanged(object? sender, EventArgs e) {
+            if (toolStripComboBoxZoom.SelectedItem == null) return;
+            
+            string zoomText = toolStripComboBoxZoom.SelectedItem.ToString() ?? "100%";
+            if (int.TryParse(zoomText.TrimEnd('%'), out int zoomPercent)) {
+                _zoomLevel = zoomPercent / 100f;
+                UpdateDisplay();
+            }
+        }
+        
+        private void PictureBoxTexture_MouseWheel(object? sender, MouseEventArgs e) {
+            if (e.Delta > 0) {
+                // Zoom in
+                int currentIndex = toolStripComboBoxZoom.SelectedIndex;
+                if (currentIndex < toolStripComboBoxZoom.Items.Count - 1) {
+                    toolStripComboBoxZoom.SelectedIndex = currentIndex + 1;
+                }
+            } else {
+                // Zoom out
+                int currentIndex = toolStripComboBoxZoom.SelectedIndex;
+                if (currentIndex > 0) {
+                    toolStripComboBoxZoom.SelectedIndex = currentIndex - 1;
+                }
+            }
         }
 
         public void SetTextureData(Externs.TextureDataStruct textureData, Externs.TilesetInfoStruct tilesetInfo) {
@@ -37,9 +76,9 @@ namespace csharp_editor.UserControls {
         public void Clear() {
             _bitmap?.Dispose();
             _bitmap = null;
-            pictureBoxTexture.Image = null;
             _selectedTile = new Point(-1, -1);
             _selectionRect = Rectangle.Empty;
+            pictureBoxTexture.Invalidate();
         }
 
         private void UpdateDisplay() {
@@ -48,7 +87,15 @@ namespace csharp_editor.UserControls {
                 try {
                     _bitmap?.Dispose();
                     _bitmap = CreateBitmapFromTextureData(_textureData);
-                    pictureBoxTexture.Image = _bitmap;
+                    
+                    // Set PictureBox size to zoomed dimensions (this determines the scrollable area)
+                    int zoomedWidth = (int)(_bitmap.Width * _zoomLevel);
+                    int zoomedHeight = (int)(_bitmap.Height * _zoomLevel);
+                    pictureBoxTexture.Width = zoomedWidth;
+                    pictureBoxTexture.Height = zoomedHeight;
+                    
+                    // Don't set the Image property - we'll draw manually in Paint event
+                    pictureBoxTexture.Invalidate();
                 }
                 catch (Exception ex) {
                     MessageBox.Show($"Error creating bitmap: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -88,43 +135,34 @@ namespace csharp_editor.UserControls {
         }
 
         private Point GetImageCoordinates(Point pictureBoxPoint) {
-            if (_bitmap == null || pictureBoxTexture.Image == null) return new Point(-1, -1);
+            if (_bitmap == null) return new Point(-1, -1);
 
-            // Get the actual display rectangle of the image (considering Zoom mode)
-            int imgWidth = _bitmap.Width;
-            int imgHeight = _bitmap.Height;
-            int pbWidth = pictureBoxTexture.ClientSize.Width;
-            int pbHeight = pictureBoxTexture.ClientSize.Height;
+            // Since we're using AutoScroll and Normal size mode, just scale by zoom
+            int imageX = (int)(pictureBoxPoint.X / _zoomLevel);
+            int imageY = (int)(pictureBoxPoint.Y / _zoomLevel);
 
-            // Calculate the scale factor
-            float scaleX = (float)pbWidth / imgWidth;
-            float scaleY = (float)pbHeight / imgHeight;
-            float scale = Math.Min(scaleX, scaleY);
-
-            // Calculate the display size
-            int displayWidth = (int)(imgWidth * scale);
-            int displayHeight = (int)(imgHeight * scale);
-
-            // Calculate the offset (image is centered)
-            int offsetX = (pbWidth - displayWidth) / 2;
-            int offsetY = (pbHeight - displayHeight) / 2;
-
-            // Check if click is within the image bounds
-            if (pictureBoxPoint.X < offsetX || pictureBoxPoint.X >= offsetX + displayWidth ||
-                pictureBoxPoint.Y < offsetY || pictureBoxPoint.Y >= offsetY + displayHeight) {
+            // Validate bounds
+            if (imageX < 0 || imageX >= _bitmap.Width || imageY < 0 || imageY >= _bitmap.Height) {
                 return new Point(-1, -1);
             }
-
-            // Convert to image coordinates
-            int imageX = (int)((pictureBoxPoint.X - offsetX) / scale);
-            int imageY = (int)((pictureBoxPoint.Y - offsetY) / scale);
 
             return new Point(imageX, imageY);
         }
 
         private void PictureBoxTexture_Paint(object? sender, PaintEventArgs e) {
+            // Draw the zoomed bitmap
+            if (_bitmap != null) {
+                e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+                
+                int zoomedWidth = (int)(_bitmap.Width * _zoomLevel);
+                int zoomedHeight = (int)(_bitmap.Height * _zoomLevel);
+                
+                e.Graphics.DrawImage(_bitmap, 0, 0, zoomedWidth, zoomedHeight);
+            }
+            
+            // Draw selection rectangle
             if (_selectionRect != Rectangle.Empty && _bitmap != null) {
-                // Convert selection rectangle to display coordinates
                 Rectangle displayRect = GetDisplayRectangle(_selectionRect);
                 if (displayRect != Rectangle.Empty) {
                     using (Pen pen = new Pen(Color.Yellow, 2)) {
@@ -135,27 +173,13 @@ namespace csharp_editor.UserControls {
         }
 
         private Rectangle GetDisplayRectangle(Rectangle imageRect) {
-            if (_bitmap == null || pictureBoxTexture.Image == null) return Rectangle.Empty;
-
-            int imgWidth = _bitmap.Width;
-            int imgHeight = _bitmap.Height;
-            int pbWidth = pictureBoxTexture.ClientSize.Width;
-            int pbHeight = pictureBoxTexture.ClientSize.Height;
-
-            float scaleX = (float)pbWidth / imgWidth;
-            float scaleY = (float)pbHeight / imgHeight;
-            float scale = Math.Min(scaleX, scaleY);
-
-            int displayWidth = (int)(imgWidth * scale);
-            int displayHeight = (int)(imgHeight * scale);
-            int offsetX = (pbWidth - displayWidth) / 2;
-            int offsetY = (pbHeight - displayHeight) / 2;
+            if (_bitmap == null) return Rectangle.Empty;
 
             return new Rectangle(
-                offsetX + (int)(imageRect.X * scale),
-                offsetY + (int)(imageRect.Y * scale),
-                (int)(imageRect.Width * scale),
-                (int)(imageRect.Height * scale)
+                (int)(imageRect.X * _zoomLevel),
+                (int)(imageRect.Y * _zoomLevel),
+                (int)(imageRect.Width * _zoomLevel),
+                (int)(imageRect.Height * _zoomLevel)
             );
         }
 
