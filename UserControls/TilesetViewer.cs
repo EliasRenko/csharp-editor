@@ -10,6 +10,14 @@ namespace csharp_editor.UserControls {
         private Rectangle _selectionRect = Rectangle.Empty;
         private float _zoomLevel = 1.0f;
         private Point _scrollOffset = Point.Empty;
+        
+        // Region selection mode
+        private bool _regionSelectionMode = false;
+        private Point _regionStart = new Point(-1, -1);
+        private Point _regionEnd = new Point(-1, -1);
+        private Rectangle _selectedRegion = Rectangle.Empty;
+        private bool _isDragging = false;
+        private bool _snapToGrid = true;
 
         public Point SelectedTile => _selectedTile;
         public bool HasSelection => _selectedTile.X >= 0 && _selectedTile.Y >= 0;
@@ -21,12 +29,50 @@ namespace csharp_editor.UserControls {
             }
         }
         
+        // Region selection properties
+        public bool RegionSelectionMode {
+            get => _regionSelectionMode;
+            set {
+                _regionSelectionMode = value;
+                if (!value) {
+                    // Clear region selection when exiting mode
+                    _regionStart = new Point(-1, -1);
+                    _regionEnd = new Point(-1, -1);
+                    _selectedRegion = Rectangle.Empty;
+                    _isDragging = false;
+                }
+                pictureBoxTexture.Invalidate();
+            }
+        }
+        
+        public bool SnapToGrid {
+            get => _snapToGrid;
+            set => _snapToGrid = value;
+        }
+        
+        public Rectangle SelectedRegionInTiles {
+            get {
+                if (_regionStart.X < 0 || _regionStart.Y < 0 || _regionEnd.X < 0 || _regionEnd.Y < 0) {
+                    return Rectangle.Empty;
+                }
+                
+                int x = Math.Min(_regionStart.X, _regionEnd.X);
+                int y = Math.Min(_regionStart.Y, _regionEnd.Y);
+                int width = Math.Abs(_regionEnd.X - _regionStart.X) + 1;
+                int height = Math.Abs(_regionEnd.Y - _regionStart.Y) + 1;
+                
+                return new Rectangle(x, y, width, height);
+            }
+        }
+        
         // Event for when tile selection changes
         public event EventHandler<int>? SelectionChanged;
 
         public TilesetViewer() {
             InitializeComponent();
             pictureBoxTexture.MouseDown += PictureBoxTexture_MouseDown;
+            pictureBoxTexture.MouseMove += PictureBoxTexture_MouseMove;
+            pictureBoxTexture.MouseUp += PictureBoxTexture_MouseUp;
             pictureBoxTexture.Paint += PictureBoxTexture_Paint;
             pictureBoxTexture.MouseWheel += PictureBoxTexture_MouseWheel;
             
@@ -78,7 +124,20 @@ namespace csharp_editor.UserControls {
             _bitmap = null;
             _selectedTile = new Point(-1, -1);
             _selectionRect = Rectangle.Empty;
+            _regionStart = new Point(-1, -1);
+            _regionEnd = new Point(-1, -1);
+            _selectedRegion = Rectangle.Empty;
+            _isDragging = false;
             pictureBoxTexture.Invalidate();
+        }
+        
+        public void SetInitialRegion(int tileX, int tileY, int tileWidth, int tileHeight) {
+            if (_regionSelectionMode && _tilesetInfo.tileSize > 0) {
+                _regionStart = new Point(tileX, tileY);
+                _regionEnd = new Point(tileX + tileWidth - 1, tileY + tileHeight - 1);
+                UpdateRegionRectangle();
+                pictureBoxTexture.Invalidate();
+            }
         }
 
         private void UpdateDisplay() {
@@ -117,21 +176,75 @@ namespace csharp_editor.UserControls {
             // Validate tile position
             if (tileX >= 0 && tileX < _tilesetInfo.tilesPerRow && 
                 tileY >= 0 && tileY < _tilesetInfo.tilesPerCol) {
-                _selectedTile = new Point(tileX, tileY);
                 
-                // Calculate selection rectangle in image coordinates
-                _selectionRect = new Rectangle(
-                    tileX * _tilesetInfo.tileSize,
-                    tileY * _tilesetInfo.tileSize,
-                    _tilesetInfo.tileSize,
-                    _tilesetInfo.tileSize
-                );
-                
-                pictureBoxTexture.Invalidate();
-                
-                // Raise selection changed event
-                SelectionChanged?.Invoke(this, SelectedRegionId);
+                if (_regionSelectionMode) {
+                    // Start region selection
+                    _isDragging = true;
+                    _regionStart = new Point(tileX, tileY);
+                    _regionEnd = new Point(tileX, tileY);
+                    UpdateRegionRectangle();
+                    pictureBoxTexture.Invalidate();
+                } else {
+                    // Single tile selection (existing behavior)
+                    _selectedTile = new Point(tileX, tileY);
+                    
+                    // Calculate selection rectangle in image coordinates
+                    _selectionRect = new Rectangle(
+                        tileX * _tilesetInfo.tileSize,
+                        tileY * _tilesetInfo.tileSize,
+                        _tilesetInfo.tileSize,
+                        _tilesetInfo.tileSize
+                    );
+                    
+                    pictureBoxTexture.Invalidate();
+                    
+                    // Raise selection changed event
+                    SelectionChanged?.Invoke(this, SelectedRegionId);
+                }
             }
+        }
+        
+        private void PictureBoxTexture_MouseMove(object? sender, MouseEventArgs e) {
+            if (!_regionSelectionMode || !_isDragging || _bitmap == null || _tilesetInfo.tileSize <= 0) return;
+
+            // Convert mouse coordinates to image coordinates
+            Point imagePoint = GetImageCoordinates(e.Location);
+            if (imagePoint.X < 0 || imagePoint.Y < 0) return;
+
+            // Calculate tile position
+            int tileX = imagePoint.X / _tilesetInfo.tileSize;
+            int tileY = imagePoint.Y / _tilesetInfo.tileSize;
+
+            // Clamp to valid range
+            tileX = Math.Max(0, Math.Min(tileX, _tilesetInfo.tilesPerRow - 1));
+            tileY = Math.Max(0, Math.Min(tileY, _tilesetInfo.tilesPerCol - 1));
+
+            if (_regionEnd.X != tileX || _regionEnd.Y != tileY) {
+                _regionEnd = new Point(tileX, tileY);
+                UpdateRegionRectangle();
+                pictureBoxTexture.Invalidate();
+            }
+        }
+        
+        private void PictureBoxTexture_MouseUp(object? sender, MouseEventArgs e) {
+            if (_regionSelectionMode && _isDragging) {
+                _isDragging = false;
+                // Region is set, keep it selected
+            }
+        }
+        
+        private void UpdateRegionRectangle() {
+            if (_regionStart.X < 0 || _regionStart.Y < 0 || _regionEnd.X < 0 || _regionEnd.Y < 0) {
+                _selectedRegion = Rectangle.Empty;
+                return;
+            }
+            
+            int x1 = Math.Min(_regionStart.X, _regionEnd.X) * _tilesetInfo.tileSize;
+            int y1 = Math.Min(_regionStart.Y, _regionEnd.Y) * _tilesetInfo.tileSize;
+            int x2 = (Math.Max(_regionStart.X, _regionEnd.X) + 1) * _tilesetInfo.tileSize;
+            int y2 = (Math.Max(_regionStart.Y, _regionEnd.Y) + 1) * _tilesetInfo.tileSize;
+            
+            _selectedRegion = new Rectangle(x1, y1, x2 - x1, y2 - y1);
         }
 
         private Point GetImageCoordinates(Point pictureBoxPoint) {
@@ -161,8 +274,22 @@ namespace csharp_editor.UserControls {
                 e.Graphics.DrawImage(_bitmap, 0, 0, zoomedWidth, zoomedHeight);
             }
             
-            // Draw selection rectangle
-            if (_selectionRect != Rectangle.Empty && _bitmap != null) {
+            // Draw region selection (in region mode)
+            if (_regionSelectionMode && _selectedRegion != Rectangle.Empty && _bitmap != null) {
+                Rectangle displayRect = GetDisplayRectangle(_selectedRegion);
+                if (displayRect != Rectangle.Empty) {
+                    // Draw semi-transparent overlay
+                    using (SolidBrush brush = new SolidBrush(Color.FromArgb(64, 0, 120, 215))) {
+                        e.Graphics.FillRectangle(brush, displayRect);
+                    }
+                    // Draw border
+                    using (Pen pen = new Pen(Color.FromArgb(255, 0, 120, 215), 2)) {
+                        e.Graphics.DrawRectangle(pen, displayRect);
+                    }
+                }
+            }
+            // Draw single tile selection (in normal mode)
+            else if (!_regionSelectionMode && _selectionRect != Rectangle.Empty && _bitmap != null) {
                 Rectangle displayRect = GetDisplayRectangle(_selectionRect);
                 if (displayRect != Rectangle.Empty) {
                     using (Pen pen = new Pen(Color.Yellow, 2)) {

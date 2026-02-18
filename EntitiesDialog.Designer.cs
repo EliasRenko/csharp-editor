@@ -28,14 +28,14 @@ namespace csharp_editor {
             this.buttonDelete = new System.Windows.Forms.Button();
             this.listBoxEntities = new System.Windows.Forms.ListBox();
             this.groupBoxNew = new System.Windows.Forms.GroupBox();
+            this.labelRegionInfo = new System.Windows.Forms.Label();
+            this.buttonSelectRegion = new System.Windows.Forms.Button();
             this.comboBoxTilemap = new System.Windows.Forms.ComboBox();
-            this.comboBoxType = new System.Windows.Forms.ComboBox();
             this.buttonAdd = new System.Windows.Forms.Button();
             this.numericUpDownHeight = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownWidth = new System.Windows.Forms.NumericUpDown();
             this.textBoxName = new System.Windows.Forms.TextBox();
             this.labelTilemap = new System.Windows.Forms.Label();
-            this.labelType = new System.Windows.Forms.Label();
             this.labelHeight = new System.Windows.Forms.Label();
             this.labelWidth = new System.Windows.Forms.Label();
             this.labelName = new System.Windows.Forms.Label();
@@ -102,14 +102,14 @@ namespace csharp_editor {
             // 
             this.groupBoxNew.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxNew.Controls.Add(this.labelRegionInfo);
+            this.groupBoxNew.Controls.Add(this.buttonSelectRegion);
             this.groupBoxNew.Controls.Add(this.comboBoxTilemap);
-            this.groupBoxNew.Controls.Add(this.comboBoxType);
             this.groupBoxNew.Controls.Add(this.buttonAdd);
             this.groupBoxNew.Controls.Add(this.numericUpDownHeight);
             this.groupBoxNew.Controls.Add(this.numericUpDownWidth);
             this.groupBoxNew.Controls.Add(this.textBoxName);
             this.groupBoxNew.Controls.Add(this.labelTilemap);
-            this.groupBoxNew.Controls.Add(this.labelType);
             this.groupBoxNew.Controls.Add(this.labelHeight);
             this.groupBoxNew.Controls.Add(this.labelWidth);
             this.groupBoxNew.Controls.Add(this.labelName);
@@ -126,21 +126,28 @@ namespace csharp_editor {
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxTilemap.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxTilemap.FormattingEnabled = true;
-            this.comboBoxTilemap.Location = new System.Drawing.Point(90, 145);
+            this.comboBoxTilemap.Location = new System.Drawing.Point(90, 115);
             this.comboBoxTilemap.Name = "comboBoxTilemap";
             this.comboBoxTilemap.Size = new System.Drawing.Size(460, 23);
             this.comboBoxTilemap.TabIndex = 9;
             // 
-            // comboBoxType
+            // labelRegionInfo
             // 
-            this.comboBoxType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxType.FormattingEnabled = true;
-            this.comboBoxType.Location = new System.Drawing.Point(90, 115);
-            this.comboBoxType.Name = "comboBoxType";
-            this.comboBoxType.Size = new System.Drawing.Size(460, 23);
-            this.comboBoxType.TabIndex = 7;
+            this.labelRegionInfo.AutoSize = true;
+            this.labelRegionInfo.Location = new System.Drawing.Point(90, 148);
+            this.labelRegionInfo.Name = "labelRegionInfo";
+            this.labelRegionInfo.Size = new System.Drawing.Size(127, 15);
+            this.labelRegionInfo.TabIndex = 12;
+            this.labelRegionInfo.Text = "Region: (0,0) 1×1 tiles";
+            // 
+            // buttonSelectRegion
+            // 
+            this.buttonSelectRegion.Location = new System.Drawing.Point(10, 144);
+            this.buttonSelectRegion.Name = "buttonSelectRegion";
+            this.buttonSelectRegion.Size = new System.Drawing.Size(74, 23);
+            this.buttonSelectRegion.TabIndex = 11;
+            this.buttonSelectRegion.Text = "Region...";
+            this.buttonSelectRegion.UseVisualStyleBackColor = true;
             // 
             // buttonAdd
             // 
@@ -212,20 +219,11 @@ namespace csharp_editor {
             // labelTilemap
             // 
             this.labelTilemap.AutoSize = true;
-            this.labelTilemap.Location = new System.Drawing.Point(10, 148);
+            this.labelTilemap.Location = new System.Drawing.Point(10, 118);
             this.labelTilemap.Name = "labelTilemap";
             this.labelTilemap.Size = new System.Drawing.Size(52, 15);
             this.labelTilemap.TabIndex = 8;
             this.labelTilemap.Text = "Tilemap:";
-            // 
-            // labelType
-            // 
-            this.labelType.AutoSize = true;
-            this.labelType.Location = new System.Drawing.Point(10, 118);
-            this.labelType.Name = "labelType";
-            this.labelType.Size = new System.Drawing.Size(34, 15);
-            this.labelType.TabIndex = 6;
-            this.labelType.Text = "Type:";
             // 
             // labelHeight
             // 
@@ -299,12 +297,12 @@ namespace csharp_editor {
         private System.Windows.Forms.NumericUpDown numericUpDownWidth;
         private System.Windows.Forms.TextBox textBoxName;
         private System.Windows.Forms.Label labelTilemap;
-        private System.Windows.Forms.Label labelType;
         private System.Windows.Forms.Label labelHeight;
         private System.Windows.Forms.Label labelWidth;
         private System.Windows.Forms.Label labelName;
         private System.Windows.Forms.Button buttonClose;
-        private System.Windows.Forms.ComboBox comboBoxType;
         private System.Windows.Forms.ComboBox comboBoxTilemap;
+        private System.Windows.Forms.Button buttonSelectRegion;
+        private System.Windows.Forms.Label labelRegionInfo;
     }
 }

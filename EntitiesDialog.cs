@@ -11,11 +11,16 @@ namespace csharp_editor {
             public string Name { get; set; } = "";
             public int Width { get; set; } = 32;
             public int Height { get; set; } = 32;
-            public EntityType Type { get; set; } = EntityType.Tilemap;
             public string TilemapName { get; set; } = "";
             
+            // Tileset region (in tile coordinates)
+            public int TileX { get; set; } = 0;
+            public int TileY { get; set; } = 0;
+            public int TileWidth { get; set; } = 1;
+            public int TileHeight { get; set; } = 1;
+            
             public override string ToString() {
-                return $"{Name} ({Width}x{Height}) - Type: {Type}, Tilemap: {TilemapName}";
+                return $"{Name} ({Width}x{Height}) - Tilemap: {TilemapName} - Region: ({TileX},{TileY}) {TileWidth}×{TileHeight}";
             }
         }
 
@@ -24,23 +29,50 @@ namespace csharp_editor {
         private List<EntityEntry> _entities = new List<EntityEntry>();
         private ExternView _externView;
         private Action<string>? _onEntitySelected;
+        private Rectangle _currentRegion = new Rectangle(0, 0, 1, 1); // Default region in tiles
 
         public EntitiesDialog(ExternView externView, Action<string>? onEntitySelected = null) {
             InitializeComponent();
             _externView = externView;
             _onEntitySelected = onEntitySelected;
             
-            // Initialize Type combobox with EntityType enum values
-            comboBoxType.Items.Clear();
-            foreach (EntityType type in Enum.GetValues(typeof(EntityType))) {
-                comboBoxType.Items.Add(type);
-            }
-            if (comboBoxType.Items.Count > 0) {
-                comboBoxType.SelectedIndex = 0;
-            }
+            buttonSelectRegion.Click += ButtonSelectRegion_Click;
             
             LoadExistingEntities();
             LoadAvailableTilemaps();
+            UpdateRegionLabel();
+        }
+        
+        private void UpdateRegionLabel() {
+            labelRegionInfo.Text = $"Region: ({_currentRegion.X},{_currentRegion.Y}) {_currentRegion.Width}×{_currentRegion.Height} tiles";
+        }
+        
+        private void ButtonSelectRegion_Click(object? sender, EventArgs e) {
+            if (comboBoxTilemap.SelectedItem == null) {
+                MessageBox.Show("Please select a tilemap first.", "Validation Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            
+            string tilesetName = comboBoxTilemap.SelectedItem.ToString() ?? "";
+            int entityWidth = (int)numericUpDownWidth.Value;
+            int entityHeight = (int)numericUpDownHeight.Value;
+            
+            using (TilesetRegionDialog dialog = new TilesetRegionDialog(
+                _externView, 
+                tilesetName, 
+                entityWidth, 
+                entityHeight,
+                _currentRegion.X,
+                _currentRegion.Y,
+                _currentRegion.Width,
+                _currentRegion.Height)) {
+                
+                if (dialog.ShowDialog() == DialogResult.OK) {
+                    _currentRegion = dialog.SelectedRegion;
+                    UpdateRegionLabel();
+                }
+            }
         }
 
         private void LoadExistingEntities() {
@@ -103,8 +135,11 @@ namespace csharp_editor {
                 Name = textBoxName.Text.Trim(),
                 Width = width,
                 Height = height,
-                Type = (EntityType)comboBoxType.SelectedItem,
-                TilemapName = comboBoxTilemap.SelectedItem.ToString() ?? ""
+                TilemapName = comboBoxTilemap.SelectedItem.ToString() ?? "",
+                TileX = _currentRegion.X,
+                TileY = _currentRegion.Y,
+                TileWidth = _currentRegion.Width,
+                TileHeight = _currentRegion.Height
             };
 
             // TODO: Send to C++ when the API is ready
@@ -117,10 +152,11 @@ namespace csharp_editor {
                 textBoxName.Clear();
                 numericUpDownWidth.Value = 32;
                 numericUpDownHeight.Value = 32;
-                comboBoxType.SelectedIndex = 0;
                 if (comboBoxTilemap.Items.Count > 0) {
                     comboBoxTilemap.SelectedIndex = 0;
                 }
+                _currentRegion = new Rectangle(0, 0, 1, 1);
+                UpdateRegionLabel();
                 
                 MessageBox.Show($"Entity '{newEntity.Name}' has been created successfully.", 
                     "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
