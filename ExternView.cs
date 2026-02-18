@@ -183,12 +183,12 @@ namespace csharp_editor {
         
         #region Layer Management
         
-        public void CreateTilemapLayer(string layerName, string tilesetName) {
-            Externs.CreateTilemapLayer(layerName, tilesetName);
+        public void CreateTilemapLayer(string layerName, string tilesetName, int index) {
+            Externs.CreateTilemapLayer(layerName, tilesetName, index);
         }
         
-        public void CreateEntityLayer(string layerName) {
-            Externs.CreateEntityLayer(layerName);
+        public void CreateEntityLayer(string layerName, int index) {
+            Externs.CreateEntityLayer(layerName, index);
         }
         
         public void CreateFolderLayer(string layerName) {

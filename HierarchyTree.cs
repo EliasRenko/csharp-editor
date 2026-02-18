@@ -59,14 +59,22 @@ namespace csharp_editor {
             treeNode.Tag = layer;
             layer.TreeNodeRef = treeNode;
 
-            treeViewLayers.Nodes.Add(treeNode);
-            _layers.Add(layer);
+            // Insert at the position of the selected node, or at the beginning if none selected
+            int insertIndex = 0;
+            if (treeViewLayers.SelectedNode != null) {
+                insertIndex = treeViewLayers.SelectedNode.Index;
+                treeViewLayers.Nodes.Insert(insertIndex, treeNode);
+                _layers.Insert(insertIndex, layer);
+            } else {
+                treeViewLayers.Nodes.Insert(0, treeNode);
+                _layers.Insert(0, layer);
+            }
 
-            // Notify backend
+            // Notify backend - pass index for insertion
             if (type == LayerType.TileLayer) {
-                _externView?.CreateTilemapLayer(name, tilesetName);
+                _externView?.CreateTilemapLayer(name, tilesetName, insertIndex);
             } else if (type == LayerType.EntityLayer) {
-                _externView?.CreateEntityLayer(name);
+                _externView?.CreateEntityLayer(name, insertIndex);
             }
 
             LayersChanged?.Invoke(this, EventArgs.Empty);
