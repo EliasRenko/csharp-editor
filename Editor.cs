@@ -351,6 +351,10 @@ namespace csharp_editor {
             // Update tileset viewer
             tilesetViewer.SetTextureData(textureData, tilesetInfo);
             
+            // Get and select the active tile from backend
+            int activeTile = view_extern.GetActiveTile();
+            tilesetViewer.SetSelectedTile(activeTile);
+            
             Log($"Tileset viewer updated with tileset: {layer.TilesetName}");
         }
 

@@ -169,7 +169,12 @@ namespace csharp_editor {
             // Send to C++
             try {
                 // Set entity basic properties
-                _externView.SetEntity(newEntity.Name, newEntity.Width, newEntity.Height, newEntity.TilemapName);
+                var error = _externView.CreateEntity(newEntity.Name, newEntity.Width, newEntity.Height, newEntity.TilemapName);
+                if (error != null) {
+                    MessageBox.Show(error, "Entity Creation Error", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
                 
                 // Set entity region
                 _externView.SetEntityRegion(newEntity.Name, newEntity.TileX, newEntity.TileY, 

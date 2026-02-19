@@ -137,14 +137,17 @@ namespace csharp_editor {
         [DllImport(DLL, EntryPoint = "getTilesetCount", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetTilesetCount();
         
-        [DllImport(DLL, EntryPoint = "setTileset", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int SetTileset(string texturePath, string name, int tileSize);
+        [DllImport(DLL, EntryPoint = "createTileset", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern IntPtr CreateTileset(string texturePath, string name, int tileSize);
         
         [DllImport(DLL, EntryPoint = "setActiveTileset", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern bool SetActiveTileset(string tilesetName);
         
         [DllImport(DLL, EntryPoint = "setActiveTile")]
-        public static extern int SetActiveTile(int tileRegionId);
+        public static extern void SetActiveTile(int tileRegionId);
+        
+        [DllImport(DLL, EntryPoint = "getActiveTile")]
+        public static extern int GetActiveTile();       
         
         #endregion
         
@@ -199,8 +202,8 @@ namespace csharp_editor {
         [DllImport(DLL, EntryPoint = "getEntityCount", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetEntityCount();
         
-        [DllImport(DLL, EntryPoint = "setEntity", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void SetEntity(string entityName, int width, int height, string tilesetName);
+        [DllImport(DLL, EntryPoint = "createEntity", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern IntPtr CreateEntity(string entityName, int width, int height, string tilesetName);
         
         [DllImport(DLL, EntryPoint = "setEntityRegion", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void SetEntityRegion(string entityName, int x, int y, int width, int height);

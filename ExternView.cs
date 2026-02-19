@@ -1,4 +1,5 @@
-﻿using static csharp_editor.Externs;
+﻿using System.Runtime.InteropServices;
+using static csharp_editor.Externs;
 
 namespace csharp_editor {
     public partial class ExternView : UserControl {
@@ -163,10 +164,18 @@ namespace csharp_editor {
             return Externs.SetActiveTileset(tilesetName);
         }
 
-        public void SetTileset(string texturePath, string name, int tileSize) {
-            Externs.SetTileset(texturePath, name, tileSize);
+        public string? CreateTileset(string texturePath, string name, int tileSize) {
+            IntPtr result = Externs.CreateTileset(texturePath, name, tileSize);
+            if (result == IntPtr.Zero) {
+                return null;
+            }
+            return Marshal.PtrToStringAnsi(result);
         }
 
+        public int GetActiveTile() {
+            return Externs.GetActiveTile();
+        }
+        
         public void SetActiveTile(int tileRegionId) {
             Externs.SetActiveTile(tileRegionId);
         }
@@ -253,8 +262,12 @@ namespace csharp_editor {
             return Externs.GetEntityCount();
         }
         
-        public void SetEntity(string entityName, int width, int height, string tilesetName) {
-            Externs.SetEntity(entityName, width, height, tilesetName);
+        public string? CreateEntity(string entityName, int width, int height, string tilesetName) {
+            IntPtr result = Externs.CreateEntity(entityName, width, height, tilesetName);
+            if (result == IntPtr.Zero) {
+                return null;
+            }
+            return Marshal.PtrToStringAnsi(result);
         }
         
         public void SetEntityRegion(string entityName, int x, int y, int width, int height) {

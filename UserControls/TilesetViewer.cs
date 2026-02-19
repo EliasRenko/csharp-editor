@@ -118,6 +118,34 @@ namespace csharp_editor.UserControls {
             _tilesetInfo = tilesetInfo;
             UpdateDisplay();
         }
+        
+        public void SetSelectedTile(int regionId) {
+            // Only set selection if not in region selection mode
+            if (_regionSelectionMode) return;
+            
+            // Calculate tile position from region ID
+            if (_tilesetInfo.tilesPerRow > 0 && regionId >= 0) {
+                int tileX = regionId % _tilesetInfo.tilesPerRow;
+                int tileY = regionId / _tilesetInfo.tilesPerRow;
+                
+                _selectedTile = new Point(tileX, tileY);
+                
+                // Calculate selection rectangle
+                _selectionRect = new Rectangle(
+                    tileX * _tilesetInfo.tileSize,
+                    tileY * _tilesetInfo.tileSize,
+                    _tilesetInfo.tileSize,
+                    _tilesetInfo.tileSize
+                );
+                
+                pictureBoxTexture.Invalidate();
+            } else {
+                // Clear selection for invalid region ID
+                _selectedTile = new Point(-1, -1);
+                _selectionRect = Rectangle.Empty;
+                pictureBoxTexture.Invalidate();
+            }
+        }
 
         public void Clear() {
             _bitmap?.Dispose();

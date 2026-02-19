@@ -111,7 +111,13 @@ namespace csharp_editor {
 
             // Send to C++
             try {
-                _externView.SetTileset(newTileset.ImagePath, newTileset.Name, newTileset.TileSize);
+                var error = _externView.CreateTileset(newTileset.ImagePath, newTileset.Name, newTileset.TileSize);
+                if (error != null) {
+                    MessageBox.Show(error, "Tileset Creation Error", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                
                 
                 // Add to list
                 _tilesets.Add(newTileset);

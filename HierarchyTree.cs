@@ -455,6 +455,8 @@ namespace csharp_editor {
                 // Notify backend that this layer is now active
                 _externView?.SetActiveLayer(layer.Name);
                 
+                
+                
                 // Notify any listeners in C#
                 LayerSelected?.Invoke(this, layer);
             }
