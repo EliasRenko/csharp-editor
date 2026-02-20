@@ -145,6 +145,26 @@ namespace csharp_editor.UserControls {
                 _selectionRect = Rectangle.Empty;
                 pictureBoxTexture.Invalidate();
             }
+
+            CenterOnSelectedTile();
+        }
+
+        private void CenterOnSelectedTile() {
+            if (pictureBoxTexture.Parent is ScrollableControl scrollPanel && _selectedTile.X >= 0 && _selectedTile.Y >= 0) {
+                int tilePixelX = _selectedTile.X * _tilesetInfo.tileSize;
+                int tilePixelY = _selectedTile.Y * _tilesetInfo.tileSize;
+
+                int zoomedTileX = (int)(tilePixelX * _zoomLevel);
+                int zoomedTileY = (int)(tilePixelY * _zoomLevel);
+
+                int viewportWidth = scrollPanel.ClientSize.Width;
+                int viewportHeight = scrollPanel.ClientSize.Height;
+
+                int scrollX = Math.Max(0, zoomedTileX - viewportWidth / 2 + (int)(_tilesetInfo.tileSize * _zoomLevel) / 2);
+                int scrollY = Math.Max(0, zoomedTileY - viewportHeight / 2 + (int)(_tilesetInfo.tileSize * _zoomLevel) / 2);
+
+                scrollPanel.AutoScrollPosition = new Point(scrollX, scrollY);
+            }
         }
 
         public void Clear() {
