@@ -11,25 +11,28 @@ namespace csharp_editor.UserControls
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
         private void InitializeComponent()
         {
-            this.propertyGrid = new PropertyGrid();
-            this.SuspendLayout();
+            propertyGrid = new System.Windows.Forms.PropertyGrid();
+            SuspendLayout();
             // 
             // propertyGrid
             // 
-            this.propertyGrid.Dock = DockStyle.Fill;
-            this.propertyGrid.Location = new System.Drawing.Point(0, 0);
-            this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.Size = new System.Drawing.Size(300, 400);
-            this.propertyGrid.TabIndex = 0;
+            propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            propertyGrid.Location = new System.Drawing.Point(0, 0);
+            propertyGrid.Name = "propertyGrid";
+            propertyGrid.Size = new System.Drawing.Size(300, 400);
+            propertyGrid.TabIndex = 0;
             // 
             // PropertyGridPanel
             // 
-            this.Controls.Add(this.propertyGrid);
-            this.Name = "PropertyGridPanel";
-            this.Size = new System.Drawing.Size(300, 400);
-            this.ResumeLayout(false);
+            Controls.Add(propertyGrid);
+            Size = new System.Drawing.Size(300, 400);
+            ResumeLayout(false);
         }
 
         public PropertyGrid PropertyGrid => propertyGrid;

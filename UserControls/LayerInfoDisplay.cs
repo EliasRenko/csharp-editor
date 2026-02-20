@@ -15,7 +15,7 @@ namespace csharp_editor.UserControls {
             }
         }
 
-        [Category("Layer"), Description("Silhouette color")]
+        [Category("Layer"), Description("Silhouette color"), Editor(typeof(ModalOnlyColorEditor), typeof(System.Drawing.Design.UITypeEditor)), TypeConverter(typeof(ColorNoTextTypeConverter))]
         public System.Drawing.Color SilhouetteColor {
             get => _silhouetteColor;
             set {
@@ -48,7 +48,7 @@ namespace csharp_editor.UserControls {
             }
         }
 
-        [Category("Layer"), Description("Layer type (0 = TileLayer, 1 = EntityLayer)"), ReadOnly(true)]
+        [Category("Layer"), Description("Silhouette color"), Editor(typeof(System.Drawing.Design.ColorEditor), typeof(System.Drawing.Design.UITypeEditor))]
         public int Type {
             get => _type;
             set {
