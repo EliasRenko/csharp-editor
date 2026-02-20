@@ -41,9 +41,9 @@ namespace csharp_editor {
             console = new csharp_editor.UserControls.Console();
             toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             panelRight = new System.Windows.Forms.Panel();
-            hierarchyTree = new csharp_editor.HierarchyTree();
-            tilesetViewer = new csharp_editor.UserControls.TilesetViewer();
             entitySelector = new csharp_editor.UserControls.EntitySelector();
+            tilesetViewer = new csharp_editor.UserControls.TilesetViewer();
+            hierarchyTree = new csharp_editor.HierarchyTree();
             toolStrip1 = new System.Windows.Forms.ToolStrip();
             toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             toolStripButton2 = new System.Windows.Forms.ToolStripButton();
@@ -57,6 +57,7 @@ namespace csharp_editor {
             toolStripButton_entities = new System.Windows.Forms.ToolStripButton();
             toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             toolStripButton7 = new System.Windows.Forms.ToolStripButton();
+            propertyGridPanel1 = new csharp_editor.UserControls.PropertyGridPanel();
             menuStrip1.SuspendLayout();
             panelRight.SuspendLayout();
             toolStrip1.SuspendLayout();
@@ -66,9 +67,9 @@ namespace csharp_editor {
             // 
             view_extern.BackColor = System.Drawing.SystemColors.ControlDark;
             view_extern.Dock = System.Windows.Forms.DockStyle.Fill;
-            view_extern.Location = new System.Drawing.Point(0, 49);
+            view_extern.Location = new System.Drawing.Point(265, 49);
             view_extern.Name = "view_extern";
-            view_extern.Size = new System.Drawing.Size(741, 569);
+            view_extern.Size = new System.Drawing.Size(476, 569);
             view_extern.TabIndex = 0;
             // 
             // menuStrip1
@@ -166,24 +167,6 @@ namespace csharp_editor {
             panelRight.Size = new System.Drawing.Size(317, 569);
             panelRight.TabIndex = 7;
             // 
-            // hierarchyTree
-            // 
-            hierarchyTree.BackColor = System.Drawing.SystemColors.Control;
-            hierarchyTree.Dock = System.Windows.Forms.DockStyle.Top;
-            hierarchyTree.Location = new System.Drawing.Point(0, 0);
-            hierarchyTree.Name = "hierarchyTree";
-            hierarchyTree.Size = new System.Drawing.Size(317, 344);
-            hierarchyTree.TabIndex = 0;
-            // 
-            // tilesetViewer
-            // 
-            tilesetViewer.BackColor = System.Drawing.SystemColors.ControlDark;
-            tilesetViewer.Dock = System.Windows.Forms.DockStyle.Fill;
-            tilesetViewer.Location = new System.Drawing.Point(0, 344);
-            tilesetViewer.Name = "tilesetViewer";
-            tilesetViewer.Size = new System.Drawing.Size(317, 225);
-            tilesetViewer.TabIndex = 1;
-            // 
             // entitySelector
             // 
             entitySelector.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -192,6 +175,26 @@ namespace csharp_editor {
             entitySelector.Size = new System.Drawing.Size(317, 225);
             entitySelector.TabIndex = 2;
             entitySelector.Visible = false;
+            // 
+            // tilesetViewer
+            // 
+            tilesetViewer.BackColor = System.Drawing.SystemColors.ControlDark;
+            tilesetViewer.Dock = System.Windows.Forms.DockStyle.Fill;
+            tilesetViewer.Location = new System.Drawing.Point(0, 344);
+            tilesetViewer.Name = "tilesetViewer";
+            tilesetViewer.RegionSelectionMode = false;
+            tilesetViewer.Size = new System.Drawing.Size(317, 225);
+            tilesetViewer.SnapToGrid = true;
+            tilesetViewer.TabIndex = 1;
+            // 
+            // hierarchyTree
+            // 
+            hierarchyTree.BackColor = System.Drawing.SystemColors.Control;
+            hierarchyTree.Dock = System.Windows.Forms.DockStyle.Top;
+            hierarchyTree.Location = new System.Drawing.Point(0, 0);
+            hierarchyTree.Name = "hierarchyTree";
+            hierarchyTree.Size = new System.Drawing.Size(317, 344);
+            hierarchyTree.TabIndex = 0;
             // 
             // toolStrip1
             // 
@@ -299,12 +302,21 @@ namespace csharp_editor {
             toolStripButton7.Size = new System.Drawing.Size(23, 22);
             toolStripButton7.Text = "toolStripButton7";
             // 
+            // propertyGridPanel1
+            // 
+            propertyGridPanel1.Dock = System.Windows.Forms.DockStyle.Left;
+            propertyGridPanel1.Location = new System.Drawing.Point(0, 49);
+            propertyGridPanel1.Name = "propertyGridPanel1";
+            propertyGridPanel1.Size = new System.Drawing.Size(265, 569);
+            propertyGridPanel1.TabIndex = 9;
+            // 
             // Editor
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(1058, 768);
             Controls.Add(view_extern);
+            Controls.Add(propertyGridPanel1);
             Controls.Add(panelRight);
             Controls.Add(toolStrip1);
             Controls.Add(console);
@@ -320,6 +332,8 @@ namespace csharp_editor {
             ResumeLayout(false);
             PerformLayout();
         }
+
+        private csharp_editor.UserControls.PropertyGridPanel propertyGridPanel1;
 
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
 

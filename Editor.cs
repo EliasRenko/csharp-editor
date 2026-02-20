@@ -295,7 +295,28 @@ namespace csharp_editor {
 
         private void HierarchyTree_LayerSelected(object sender, HierarchyTree.LayerNode layer) {
             Log($"Layer selected: {layer.Name} ({layer.Type})");
-            
+
+            // Retrieve layer info from backend
+            Externs.LayerInfoStruct layerInfo = new Externs.LayerInfoStruct();
+            int infoResult = view_extern.GetLayerInfo(layer.Name, out layerInfo);
+            if (infoResult == 0)
+            {
+                Log($"Failed to retrieve layer info for '{layer.Name}'");
+                propertyGridPanel1.PropertyGrid.SelectedObject = null;
+            }
+            else
+            {
+                // Convert IntPtr fields to strings for display
+                var layerInfoDisplay = new
+                {
+                    Name = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(layerInfo.name),
+                    Type = layerInfo.type,
+                    TilesetName = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(layerInfo.tilesetName),
+                    Visible = layerInfo.visible == 1
+                };
+                propertyGridPanel1.PropertyGrid.SelectedObject = layerInfoDisplay;
+            }
+
             // Switch between TilesetViewer and EntitySelector based on layer type
             if (layer.Type == LayerType.TileLayer) {
                 tilesetViewer.Visible = true;
@@ -321,6 +342,7 @@ namespace csharp_editor {
             if (layer.Type != LayerType.TileLayer || string.IsNullOrEmpty(layer.TilesetName)) {
                 // Clear the tileset viewer if no valid tileset
                 tilesetViewer.Clear();
+                propertyGridPanel1.PropertyGrid.SelectedObject = null;
                 return;
             }
             
