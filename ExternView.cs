@@ -231,6 +231,21 @@ namespace csharp_editor {
         public int GetLayerInfo(string layerName, out Externs.LayerInfoStruct outInfo) {
             return Externs.GetLayerInfo(layerName, out outInfo);
         }
+
+        public void SetLayerProperties(string originalName, string newName, bool visible) {
+            IntPtr namePtr = Marshal.StringToHGlobalAnsi(newName);
+            try {
+                var info = new Externs.LayerInfoStruct {
+                    name = namePtr,
+                    tilesetName = IntPtr.Zero,
+                    type = 0,       // read-only, ignored by backend
+                    visible = visible ? 1 : 0
+                };
+                Externs.SetLayerProperties(originalName, ref info);
+            } finally {
+                Marshal.FreeHGlobal(namePtr);
+            }
+        }
         
         public int MoveLayerUp(string layerName) {
             return Externs.MoveLayerUp(layerName);

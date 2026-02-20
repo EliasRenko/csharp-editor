@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using csharp_editor.UserControls;
 
 namespace csharp_editor {
     public partial class Editor : Form {
@@ -306,14 +307,29 @@ namespace csharp_editor {
             }
             else
             {
-                // Convert IntPtr fields to strings for display
-                var layerInfoDisplay = new
+                // Use editable LayerInfoDisplay class
+                var layerInfoDisplay = new LayerInfoDisplay
                 {
-                    Name = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(layerInfo.name),
+                    Name = Marshal.PtrToStringAnsi(layerInfo.name) ?? "",
                     Type = layerInfo.type,
-                    TilesetName = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(layerInfo.tilesetName),
+                    TilesetName = Marshal.PtrToStringAnsi(layerInfo.tilesetName) ?? "",
                     Visible = layerInfo.visible == 1
                 };
+                layerInfoDisplay.SetOriginalName(layerInfoDisplay.Name);
+
+                layerInfoDisplay.PropertyChanged += (s, e) => {
+                    if (s is not LayerInfoDisplay display) return;
+
+                    // Push updated properties to the backend using the original name as ID
+                    view_extern.SetLayerProperties(display.OriginalName, display.Name, display.Visible);
+
+                    // If name changed, update the hierarchy tree and refresh the original name
+                    if (e.PropertyName == nameof(LayerInfoDisplay.Name) && display.OriginalName != display.Name) {
+                        hierarchyTree.RenameLayer(display.OriginalName, display.Name);
+                        display.SetOriginalName(display.Name);
+                    }
+                };
+
                 propertyGridPanel1.PropertyGrid.SelectedObject = layerInfoDisplay;
             }
 

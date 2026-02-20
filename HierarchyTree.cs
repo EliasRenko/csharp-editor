@@ -196,6 +196,15 @@ namespace csharp_editor {
             return null;
         }
 
+        public void RenameLayer(string oldName, string newName) {
+            var layer = _layers.Find(l => l.Name == oldName);
+            if (layer != null) {
+                layer.Name = newName;
+                if (layer.TreeNodeRef != null)
+                    layer.TreeNodeRef.Text = newName;
+            }
+        }
+
         public List<LayerNode> GetAllLayers() {
             return new List<LayerNode>(_layers);
         }

@@ -158,6 +158,11 @@ namespace csharp_editor {
         public static extern int ImportMap(string path);
         
         // Layer Management
+        [DllImport(DLL, EntryPoint = "setLayerProperties", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void SetLayerProperties(string layerName, ref LayerInfoStruct properties);
+
+        [DllImport(DLL, EntryPoint = "setLayerPropertiesAt", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SetLayerPropertiesAt(int index, ref LayerInfoStruct properties);
         
         [DllImport(DLL, EntryPoint = "createTilemapLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void CreateTilemapLayer(string layerName, string tilesetName, int index);
