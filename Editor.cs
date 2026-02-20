@@ -321,7 +321,7 @@ namespace csharp_editor {
                     if (s is not LayerInfoDisplay display) return;
 
                     // Push updated properties to the backend using the original name as ID
-                    view_extern.SetLayerProperties(display.OriginalName, display.Name, display.Visible);
+                    view_extern.SetLayerProperties(display.OriginalName, display.Name, display.Visible, display.TilesetName, display.Type, display.Silhouette, display.SilhouetteColor);
 
                     // If name changed, update the hierarchy tree and refresh the original name
                     if (e.PropertyName == nameof(LayerInfoDisplay.Name) && display.OriginalName != display.Name) {

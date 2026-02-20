@@ -232,18 +232,26 @@ namespace csharp_editor {
             return Externs.GetLayerInfo(layerName, out outInfo);
         }
 
-        public void SetLayerProperties(string originalName, string newName, bool visible) {
+        public void SetLayerProperties(string originalName, string newName, bool visible, string? tilesetName = null, int type = 0, bool silhouette = false, System.Drawing.Color silhouetteColor = default) {
             IntPtr namePtr = Marshal.StringToHGlobalAnsi(newName);
+            IntPtr tilesetNamePtr = tilesetName != null ? Marshal.StringToHGlobalAnsi(tilesetName) : IntPtr.Zero;
             try {
+                // Convert Color to RGBA (0xRRGGBBAA)
+                int rgba = (silhouetteColor.R << 24) | (silhouetteColor.G << 16) | (silhouetteColor.B << 8) | silhouetteColor.A;
                 var info = new Externs.LayerInfoStruct {
                     name = namePtr,
-                    tilesetName = IntPtr.Zero,
-                    type = 0,       // read-only, ignored by backend
-                    visible = visible ? 1 : 0
+                    tilesetName = tilesetNamePtr,
+                    type = type,
+                    visible = visible ? 1 : 0,
+                    silhouette = silhouette,
+                    silhouetteColor = rgba
                 };
                 Externs.SetLayerProperties(originalName, ref info);
             } finally {
                 Marshal.FreeHGlobal(namePtr);
+                if (tilesetNamePtr != IntPtr.Zero) {
+                    Marshal.FreeHGlobal(tilesetNamePtr);
+                }
             }
         }
         

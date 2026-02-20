@@ -2,6 +2,29 @@ using System.ComponentModel;
 
 namespace csharp_editor.UserControls {
     public class LayerInfoDisplay : INotifyPropertyChanged {
+    private bool _silhouette;
+    private System.Drawing.Color _silhouetteColor = System.Drawing.Color.Black;
+        [Category("Layer"), Description("Show silhouette")]
+        public bool Silhouette {
+            get => _silhouette;
+            set {
+                if (_silhouette != value) {
+                    _silhouette = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Silhouette)));
+                }
+            }
+        }
+
+        [Category("Layer"), Description("Silhouette color")]
+        public System.Drawing.Color SilhouetteColor {
+            get => _silhouetteColor;
+            set {
+                if (_silhouetteColor != value) {
+                    _silhouetteColor = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SilhouetteColor)));
+                }
+            }
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

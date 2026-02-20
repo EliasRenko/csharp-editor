@@ -37,6 +37,8 @@ namespace csharp_editor {
             public int type;                 // Layer type (0 = TileLayer, 1 = EntityLayer)
             public IntPtr tilesetName;       // Tileset name for TileLayers (use Marshal.PtrToStringAnsi to read)
             public int visible;              // Visibility flag (0 = hidden, 1 = visible)
+            public bool silhouette;
+            public int silhouetteColor;      // RGBA hex color for silhouette
         }
         
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
