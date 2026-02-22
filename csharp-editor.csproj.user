@@ -22,13 +22,22 @@
     <Compile Update="TilesetImportDialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="TilesetRegionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="UserControls\Console.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\EntitySelector.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="UserControls\InputView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="UserControls\LogView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\PropertyGridPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="UserControls\TextureViewer.cs">

@@ -27,6 +27,7 @@ namespace csharp_editor {
         
         public event EventHandler<LayerNode>? LayerSelected;
         public event EventHandler? LayersChanged;
+        public event EventHandler? ReplaceTilesetClicked;
 
         public HierarchyTree() {
             InitializeComponent();
@@ -61,13 +62,14 @@ namespace csharp_editor {
 
             // Insert at the position of the selected node, or at the beginning if none selected
             int insertIndex = 0;
+            int lastIndex = treeViewLayers.Nodes.Count;
             if (treeViewLayers.SelectedNode != null) {
                 insertIndex = treeViewLayers.SelectedNode.Index;
                 treeViewLayers.Nodes.Insert(insertIndex, treeNode);
                 _layers.Insert(insertIndex, layer);
             } else {
-                treeViewLayers.Nodes.Insert(0, treeNode);
-                _layers.Insert(0, layer);
+                treeViewLayers.Nodes.Insert(lastIndex, treeNode);
+                _layers.Insert(lastIndex, layer);
             }
 
             // Notify backend - pass index for insertion
@@ -266,6 +268,11 @@ namespace csharp_editor {
             buttonMoveDown.Enabled = hasSelection && 
                 treeViewLayers.SelectedNode?.Index < (treeViewLayers.Nodes.Count - 1);
             buttonToggleVisibility.Enabled = hasSelection;
+        }
+
+        private void button_replaceTileset_Click(object sender, EventArgs e)
+        {
+            ReplaceTilesetClicked?.Invoke(this, EventArgs.Empty);
         }
 
         private void buttonAddTileLayer_Click(object sender, EventArgs e) {

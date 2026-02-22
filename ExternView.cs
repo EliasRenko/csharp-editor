@@ -232,6 +232,10 @@ namespace csharp_editor {
             return Externs.GetLayerInfo(layerName, out outInfo);
         }
 
+        public void ReplaceLayerTileset(string layerName, string tilesetName) {
+            Externs.ReplaceLayerTileset(layerName, tilesetName);
+        }
+
         public void SetLayerProperties(string originalName, string newName, bool visible, string? tilesetName = null, int type = 0, bool silhouette = false, System.Drawing.Color silhouetteColor = default) {
             IntPtr namePtr = Marshal.StringToHGlobalAnsi(newName);
             IntPtr tilesetNamePtr = tilesetName != null ? Marshal.StringToHGlobalAnsi(tilesetName) : IntPtr.Zero;

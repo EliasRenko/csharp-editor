@@ -1,27 +1,28 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\efedorenko\\Documents\\projects\\csharp\\csharp-editor\\csharp-editor.csproj": {}
+    "C:\\Users\\Renko\\Documents\\Libraries\\csharp-editor\\csharp-editor.csproj": {}
   },
   "projects": {
-    "C:\\Users\\efedorenko\\Documents\\projects\\csharp\\csharp-editor\\csharp-editor.csproj": {
+    "C:\\Users\\Renko\\Documents\\Libraries\\csharp-editor\\csharp-editor.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\efedorenko\\Documents\\projects\\csharp\\csharp-editor\\csharp-editor.csproj",
+        "projectUniqueName": "C:\\Users\\Renko\\Documents\\Libraries\\csharp-editor\\csharp-editor.csproj",
         "projectName": "csharp-editor",
-        "projectPath": "C:\\Users\\efedorenko\\Documents\\projects\\csharp\\csharp-editor\\csharp-editor.csproj",
-        "packagesPath": "C:\\Users\\efedorenko\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\efedorenko\\Documents\\projects\\csharp\\csharp-editor\\obj\\",
+        "projectPath": "C:\\Users\\Renko\\Documents\\Libraries\\csharp-editor\\csharp-editor.csproj",
+        "packagesPath": "C:\\Users\\Renko\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Renko\\Documents\\Libraries\\csharp-editor\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\efedorenko\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Renko\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0-windows7.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://www.nuget.org/api/v2/": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0-windows7.0": {
@@ -38,7 +39,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
         "net8.0-windows7.0": {
@@ -62,7 +64,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -1,19 +1,24 @@
 using System.Runtime.InteropServices;
 using csharp_editor.UserControls;
 
-namespace csharp_editor {
-    public partial class Editor : Form {
+namespace csharp_editor
+{
+    public partial class Editor : Form
+    {
 
         public bool active = false;
         private string _currentTilesetName = "";
         private string _currentEntityName = "";
-        
-        public Editor() {
+
+        public Editor()
+        {
             InitializeComponent();
 
             active = true;
+            KeyPreview = true;
 
-            Externs.CallbackDelegate callback = (value) => {
+            Externs.CallbackDelegate callback = (value) =>
+            {
                 Log(value);
             };
 
@@ -22,21 +27,20 @@ namespace csharp_editor {
             // Toolstrip Events
             toolStripMenuItem_open.MouseUp += toolStripButton_openFile;
             toolStripMenuItem_export.MouseUp += toolStripButton_export;
-            
+
             // Initialize HierarchyTree
             hierarchyTree.SetExternView(view_extern);
             hierarchyTree.LayerSelected += HierarchyTree_LayerSelected;
             hierarchyTree.LayersChanged += HierarchyTree_LayersChanged;
-            
+            // subscribe to replace tileset button
+            hierarchyTree.ReplaceTilesetClicked += ReplaceTilesetButton_Click;
+
             // Initialize TilesetViewer
             tilesetViewer.SelectionChanged += TilesetViewer_SelectionChanged;
-            
+
             // Initialize EntitySelector
             entitySelector.SetExternView(view_extern);
             entitySelector.SelectionChanged += EntitySelector_SelectionChanged;
-            
-            // Enable keyboard events at form level
-            KeyPreview = true;
 
             // Editor Events
             FormClosing += Editor_FormClosing;
@@ -53,122 +57,165 @@ namespace csharp_editor {
             toolStripButton_tilesets.MouseDown += ButtonTilesetsOnMouseDown;
             toolStripButton_entities.MouseDown += ButtonEntitiesOnMouseDown;
 
-            void ButtonTextureViewOnMouseDown(object? sender, MouseEventArgs e) {
-                
+            void ButtonTextureViewOnMouseDown(object? sender, MouseEventArgs e)
+            {
+
                 // Check if a layer is currently selected
                 var selectedLayer = hierarchyTree.GetSelectedLayer();
-                if (selectedLayer == null) {
+                if (selectedLayer == null)
+                {
                     MessageBox.Show("No layer is currently selected. Please select a layer from the Hierarchy first.",
                         "No Layer Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-                
+
                 // Check if it's a TileLayer
-                if (selectedLayer.Type != LayerType.TileLayer) {
-                    MessageBox.Show("The selected layer is not a Tile Layer. Please select a Tile Layer to view its tileset.",
-                        "Invalid Layer Type", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-                
+                // if (selectedLayer.Type != LayerType.TileLayer)
+                // {
+                //     MessageBox.Show("The selected layer is not a Tile Layer. Please select a Tile Layer to view its tileset.",
+                //         "Invalid Layer Type", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //     return;
+                // }
+
                 // Check if the layer has a tileset assigned
-                if (string.IsNullOrEmpty(selectedLayer.TilesetName)) {
+                if (string.IsNullOrEmpty(selectedLayer.TilesetName))
+                {
                     MessageBox.Show("The selected layer does not have a tileset assigned.",
                         "No Tileset", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-                
+
                 Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
-                
+
                 // Get tileset info from C++ using the layer's tileset
                 int result = view_extern.GetTileset(selectedLayer.TilesetName, out tilesetInfo);
-                
-                if (result == 0) {
+
+                if (result == 0)
+                {
                     MessageBox.Show($"Failed to get tileset '{selectedLayer.TilesetName}'. Please try reloading the tileset.",
                         "Tileset Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                
+
                 // Get texture path from tileset info
                 string texturePath = Marshal.PtrToStringAnsi(tilesetInfo.texturePath) ?? "";
-                
-                if (string.IsNullOrEmpty(texturePath)) {
+
+                if (string.IsNullOrEmpty(texturePath))
+                {
                     MessageBox.Show("Invalid texture path in tileset", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                
+
                 // Get texture data
                 Externs.TextureDataStruct textureData;
                 view_extern.GetTextureData(texturePath, out textureData);
-                
+
                 // Create and show TextureViewer dialog
-                using (Form dialog = new Form()) {
+                using (Form dialog = new Form())
+                {
                     string tilesetName = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "Unknown";
                     dialog.Text = $"Texture Viewer - {selectedLayer.Name} ({tilesetName})";
                     dialog.Size = new Size(620, 560);
                     dialog.StartPosition = FormStartPosition.CenterParent;
                     dialog.FormBorderStyle = FormBorderStyle.Sizable;
                     dialog.MinimumSize = new Size(400, 300);
-                    
+
                     UserControls.TextureViewer viewer = new UserControls.TextureViewer();
                     viewer.Dock = DockStyle.Fill;
                     viewer.SetTextureData(textureData, tilesetInfo);
-                    
+
                     dialog.Controls.Add(viewer);
                     dialog.ShowDialog(this);
-                    
+
                     // Get selection after dialog closes
-                    if (viewer.HasSelection) {
+                    if (viewer.HasSelection)
+                    {
                         Point selectedTile = viewer.SelectedTile;
                         int regionId = viewer.SelectedRegionId;
                         Log($"Selected tile from layer '{selectedLayer.Name}': X={selectedTile.X}, Y={selectedTile.Y}, RegionId={regionId}");
-                        
+
                         view_extern.SetActiveTile(regionId);
                     }
                 }
             }
-            
-            void ButtonTilesetsOnMouseDown(object? sender, MouseEventArgs e) {
+
+            void ButtonTilesetsOnMouseDown(object? sender, MouseEventArgs e)
+            {
                 ShowTilesetImportDialog();
             }
         }
 
-        private void ButtonEntitiesOnMouseDown(object? sender, MouseEventArgs e) {
+        private void ReplaceTilesetButton_Click(object? sender, EventArgs e) {
+            var layer = hierarchyTree.GetSelectedLayer();
+
+            // if (selectedLayer.Type != LayerType.TileLayer)
+            // {
+            //     MessageBox.Show("The selected layer is not a Tile Layer. Please select a Tile Layer to view its tileset.",
+            //         "Invalid Layer Type", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //     return;
+            // }
+
+            if (layer is not { Type: LayerType.TileLayer or LayerType.EntityLayer } selectedLayer) {
+
+                MessageBox.Show("Please select a Tile Layer to replace its tileset.", "No Tile Layer Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string? selectedTileset = ShowTilesetSelectionDialog();
+            if (!string.IsNullOrEmpty(selectedTileset))
+            {
+                view_extern.ReplaceLayerTileset(selectedLayer.Name, selectedTileset);
+
+                layer.TilesetName = selectedTileset; // Update local layer info
+                UpdateTextureViewer(selectedLayer);
+            }
+        }
+
+        private void ButtonEntitiesOnMouseDown(object? sender, MouseEventArgs e)
+        {
             ShowEntitiesDialog();
         }
 
-        public void UpdateFrame(float deltaTime) {
+        public void UpdateFrame(float deltaTime)
+        {
             view_extern.UpdateFrame(deltaTime);
         }
 
-        public void PreRender() {
+        public void PreRender()
+        {
             //view_extern.PreRender();
         }
 
-        public void Render() {
+        public void Render()
+        {
             view_extern.Render();
         }
 
-        public void SwapBuffers() {
+        public void SwapBuffers()
+        {
             view_extern.SwapBuffers();
         }
 
         #region Core
 
-        private void LoadMap(string path) {
+        private void LoadMap(string path)
+        {
             view_extern.ImportMap(path);
-            
+
             // Refresh the hierarchy tree to show loaded layers
             hierarchyTree.LoadLayersFromBackend();
-            
+
             Log($"Map loaded from: {path}");
         }
 
         #endregion
 
         #region Log
-        public void Log(string text) {
+        public void Log(string text)
+        {
             // Check if form and console are not disposed
-            if (!IsDisposed && console != null && !console.IsDisposed) {
+            if (!IsDisposed && console != null && !console.IsDisposed)
+            {
                 console.Log(text);
             }
         }
@@ -177,70 +224,82 @@ namespace csharp_editor {
 
         #region Events
 
-        private void Editor_FormClosing(object sender, FormClosingEventArgs e) {
+        private void Editor_FormClosing(object sender, FormClosingEventArgs e)
+        {
             active = false;
             Application.DoEvents(); // Process remaining messages
             System.Threading.Thread.Sleep(50); // Give loop time to exit
             view_extern.Release();
         }
 
-        private void Editor_KeyDown(object sender, KeyEventArgs e) {
+        private void Editor_KeyDown(object sender, KeyEventArgs e)
+        {
             // Toggle console with tilde key (~) or F1
-            if (e.KeyCode == Keys.Oemtilde || e.KeyCode == Keys.F1) {
+            if (e.KeyCode == Keys.Oemtilde || e.KeyCode == Keys.F1)
+            {
                 console.Visible = !console.Visible;
                 e.Handled = true;
                 return; // Don't pass console toggle to SDL
+            }
+
+            // TODO: OPTIMIZE FURTHER
+            if (propertyGridPanel1.PropertyGrid.ContainsFocus)
+            {
+
+                if (e.KeyCode == Keys.Escape)
+                {
+                    view_extern.Focus();
+                }
+
+                e.Handled = true;
+                return;
             }
 
             // Convert C# KeyCode to SDL Scancode and pass to SDL
             view_extern.OnKeyboardDown(KeyMapper.ToSDLScancode(e.KeyCode));
         }
 
-        private void Editor_KeyUp(object sender, KeyEventArgs e) {
+        private void Editor_KeyUp(object sender, KeyEventArgs e)
+        {
             // Toggle console with tilde key (~) or F1
-            if (e.KeyCode == Keys.Oemtilde || e.KeyCode == Keys.F1) {
+            if (e.KeyCode == Keys.Oemtilde || e.KeyCode == Keys.F1)
+            {
                 e.Handled = true;
                 return; // Don't pass console toggle to SDL
             }
-            
+
             // Convert C# KeyCode to SDL Scancode and pass to SDL
             view_extern.OnKeyboardUp(KeyMapper.ToSDLScancode(e.KeyCode));
         }
 
         #endregion
 
-        private void view_extern_MouseDown(object sender, MouseEventArgs e) {
+        private void view_extern_MouseDown(object sender, MouseEventArgs e)
+        {
             int button = MouseButtonMapper.ToSDLMouseButton(e.Button);
             view_extern.OnMouseButtonDown(e.X, e.Y, button);
-            
-            // If left click and we have an entity selected, place it
-            // if (e.Button == MouseButtons.Left && !string.IsNullOrEmpty(_currentEntityName)) {
-            //     var selectedLayer = hierarchyTree.GetSelectedLayer();
-            //     if (selectedLayer != null && selectedLayer.Type == LayerType.EntityLayer) {
-            //         int result = view_extern.PlaceEntity(e.X, e.Y);
-            //         if (result != 0) {
-            //             Log($"Placed entity '{_currentEntityName}' at ({e.X}, {e.Y})");
-            //         }
-            //     }
-            // }
         }
 
-        private void view_extern_MouseUp(object sender, MouseEventArgs e) {
+        private void view_extern_MouseUp(object sender, MouseEventArgs e)
+        {
             int button = MouseButtonMapper.ToSDLMouseButton(e.Button);
             view_extern.OnMouseButtonUp(e.X, e.Y, button);
         }
 
-        private void toolStripButton_openFile(object sender, MouseEventArgs e) {
+        private void toolStripButton_openFile(object sender, MouseEventArgs e)
+        {
             string path = Utils.OpenFile("");
-            
+
             // User cancelled or invalid path
-            if (string.IsNullOrEmpty(path)) {
+            if (string.IsNullOrEmpty(path))
+            {
                 return;
             }
 
             string ext = Path.GetExtension(path).ToLowerInvariant();
 
-            switch (ext) {
+            switch (ext)
+            {
                 case ".json":
                     LoadMap(path);
                     break;
@@ -252,13 +311,16 @@ namespace csharp_editor {
             }
         }
 
-        private void toolStripButton_export(object sender, MouseEventArgs e) {
+        private void toolStripButton_export(object sender, MouseEventArgs e)
+        {
             string startingPath = AppContext.BaseDirectory;
             string name = "default";
             string exten = "json";
 
-            try {
-                using (var dialog = new SaveFileDialog()) {
+            try
+            {
+                using (var dialog = new SaveFileDialog())
+                {
                     dialog.Filter = $"{exten.ToUpper()} Files (*.{exten})|*.{exten}|All Files (*.*)|*.*";
                     dialog.FilterIndex = 1;
                     dialog.InitialDirectory = startingPath;
@@ -266,35 +328,44 @@ namespace csharp_editor {
                     dialog.DefaultExt = exten;
                     dialog.AddExtension = true;
 
-                    if (dialog.ShowDialog() == DialogResult.OK) {
+                    if (dialog.ShowDialog() == DialogResult.OK)
+                    {
                         view_extern.ExportMap(dialog.FileName);
                     }
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 MessageBox.Show($"Error saving file: {ex.Message}", "Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        public void ShowTilesetImportDialog() {
-            using (TilesetImportDialog dialog = new TilesetImportDialog(view_extern, (tilesetName) => {
+        public void ShowTilesetImportDialog()
+        {
+            using (TilesetImportDialog dialog = new TilesetImportDialog(view_extern, (tilesetName) =>
+            {
                 _currentTilesetName = tilesetName;
                 Log($"Current tileset set to: {_currentTilesetName}");
-            })) {
+            }))
+            {
                 dialog.ShowDialog(this);
             }
         }
 
-        public void ShowEntitiesDialog() {
-            using (EntitiesDialog dialog = new EntitiesDialog(view_extern, (entityName) => {
+        public void ShowEntitiesDialog()
+        {
+            using (EntitiesDialog dialog = new EntitiesDialog(view_extern, (entityName) =>
+            {
                 _currentEntityName = entityName;
                 Log($"Current entity set to: {_currentEntityName}");
-            })) {
+            }))
+            {
                 dialog.ShowDialog(this);
             }
         }
 
-        private void HierarchyTree_LayerSelected(object sender, HierarchyTree.LayerNode layer) {
+        private void HierarchyTree_LayerSelected(object sender, HierarchyTree.LayerNode layer)
+        {
             Log($"Layer selected: {layer.Name} ({layer.Type})");
 
             // Retrieve layer info from backend
@@ -317,14 +388,16 @@ namespace csharp_editor {
                 };
                 layerInfoDisplay.SetOriginalName(layerInfoDisplay.Name);
 
-                layerInfoDisplay.PropertyChanged += (s, e) => {
+                layerInfoDisplay.PropertyChanged += (s, e) =>
+                {
                     if (s is not LayerInfoDisplay display) return;
 
                     // Push updated properties to the backend using the original name as ID
                     view_extern.SetLayerProperties(display.OriginalName, display.Name, display.Visible, display.TilesetName, display.Type, display.Silhouette, display.SilhouetteColor);
 
                     // If name changed, update the hierarchy tree and refresh the original name
-                    if (e.PropertyName == nameof(LayerInfoDisplay.Name) && display.OriginalName != display.Name) {
+                    if (e.PropertyName == nameof(LayerInfoDisplay.Name) && display.OriginalName != display.Name)
+                    {
                         hierarchyTree.RenameLayer(display.OriginalName, display.Name);
                         display.SetOriginalName(display.Name);
                     }
@@ -334,87 +407,168 @@ namespace csharp_editor {
             }
 
             // Switch between TilesetViewer and EntitySelector based on layer type
-            if (layer.Type == LayerType.TileLayer) {
+            if (layer.Type == LayerType.TileLayer)
+            {
                 tilesetViewer.Visible = true;
                 entitySelector.Visible = false;
                 UpdateTextureViewer(layer);
-            } else if (layer.Type == LayerType.EntityLayer) {
+            }
+            else if (layer.Type == LayerType.EntityLayer)
+            {
                 tilesetViewer.Visible = false;
                 entitySelector.Visible = true;
                 entitySelector.LoadEntities();
-            } else {
+            }
+            else
+            {
                 // Default or unknown layer type
                 tilesetViewer.Visible = false;
                 entitySelector.Visible = false;
             }
         }
 
-        private void HierarchyTree_LayersChanged(object sender, EventArgs e) {
+        private void HierarchyTree_LayersChanged(object sender, EventArgs e)
+        {
             // TODO: Sync with backend when layers change
         }
 
-        private void UpdateTextureViewer(HierarchyTree.LayerNode layer) {
+        private void UpdateTextureViewer(HierarchyTree.LayerNode layer)
+        {
             // Only update if it's a tile layer with a tileset
-            if (layer.Type != LayerType.TileLayer || string.IsNullOrEmpty(layer.TilesetName)) {
+            if (layer.Type != LayerType.TileLayer || string.IsNullOrEmpty(layer.TilesetName))
+            {
                 // Clear the tileset viewer if no valid tileset
                 tilesetViewer.Clear();
                 propertyGridPanel1.PropertyGrid.SelectedObject = null;
                 return;
             }
-            
+
             Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
-            
+
             // Get tileset info from C++ using the layer's tileset
             int result = view_extern.GetTileset(layer.TilesetName, out tilesetInfo);
-            
-            if (result == 0) {
+
+            if (result == 0)
+            {
                 Log($"Failed to load tileset '{layer.TilesetName}' for tileset viewer");
                 tilesetViewer.Clear();
                 return;
             }
-            
+
             // Get texture path from tileset info
             string texturePath = Marshal.PtrToStringAnsi(tilesetInfo.texturePath) ?? "";
-            
-            if (string.IsNullOrEmpty(texturePath)) {
+
+            if (string.IsNullOrEmpty(texturePath))
+            {
                 Log("Invalid texture path in tileset");
                 tilesetViewer.Clear();
                 return;
             }
-            
+
             // Get texture data
             Externs.TextureDataStruct textureData;
             view_extern.GetTextureData(texturePath, out textureData);
-            
+
             // Update tileset viewer
             tilesetViewer.SetTextureData(textureData, tilesetInfo);
-            
+
             // Get and select the active tile from backend
             int activeTile = view_extern.GetActiveTile();
             tilesetViewer.SetSelectedTile(activeTile);
-            
+
             Log($"Tileset viewer updated with tileset: {layer.TilesetName}");
         }
 
-        private void TilesetViewer_SelectionChanged(object? sender, int regionId) {
+        private void TilesetViewer_SelectionChanged(object? sender, int regionId)
+        {
             // Update the selected tile in the backend
             view_extern.SetActiveTile(regionId);
-            
+
             var selectedLayer = hierarchyTree.GetSelectedLayer();
-            if (selectedLayer != null) {
+            if (selectedLayer != null)
+            {
                 Log($"Selected tile from '{selectedLayer.Name}': RegionId={regionId}");
             }
         }
-        
-        private void EntitySelector_SelectionChanged(object? sender, string entityName) {
+
+        private void EntitySelector_SelectionChanged(object? sender, string entityName)
+        {
             _currentEntityName = entityName;
-            
+
             // Set active entity in backend
             view_extern.SetActiveEntity(entityName);
-            
+
             var selectedLayer = hierarchyTree.GetSelectedLayer();
-            if (selectedLayer != null) {
+            if (selectedLayer != null)
+            {
                 Log($"Selected entity from '{selectedLayer.Name}': {entityName}");
+            }
+        }
+
+        /// <summary>
+        /// Display a simple dialog listing all available tilesets and return the selected name (or null).
+        /// </summary>
+        public string? ShowTilesetSelectionDialog()
+        {
+            using (var dialog = new Form())
+            {
+                dialog.Text = "Select Tileset";
+                dialog.Size = new Size(350, 240);
+                dialog.StartPosition = FormStartPosition.CenterParent;
+                dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
+                dialog.MaximizeBox = false;
+                dialog.MinimizeBox = false;
+
+                Label label = new Label
+                {
+                    Text = "Available Tilesets:",
+                    Location = new Point(10, 10),
+                    Size = new Size(320, 20)
+                };
+
+                ListBox listBox = new ListBox
+                {
+                    Location = new Point(10, 35),
+                    Size = new Size(320, 120)
+                };
+
+                int count = view_extern?.GetTilesetCount() ?? 0;
+                for (int i = 0; i < count; i++)
+                {
+                    Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
+                    int result = view_extern.GetTilesetAt(i, out tilesetInfo);
+                    if (result != 0)
+                    {
+                        string tilesetName = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "";
+                        if (!string.IsNullOrEmpty(tilesetName))
+                            listBox.Items.Add(tilesetName);
+                    }
+                }
+                if (listBox.Items.Count > 0)
+                    listBox.SelectedIndex = 0;
+
+                Button buttonOk = new Button
+                {
+                    Text = "OK",
+                    DialogResult = DialogResult.OK,
+                    Location = new Point(175, 170),
+                    Size = new Size(75, 30)
+                };
+                Button buttonCancel = new Button
+                {
+                    Text = "Cancel",
+                    DialogResult = DialogResult.Cancel,
+                    Location = new Point(255, 170),
+                    Size = new Size(75, 30)
+                };
+
+                dialog.Controls.AddRange(new Control[] { label, listBox, buttonOk, buttonCancel });
+                dialog.AcceptButton = buttonOk;
+                dialog.CancelButton = buttonCancel;
+
+                if (dialog.ShowDialog(this) == DialogResult.OK && listBox.SelectedItem != null)
+                    return listBox.SelectedItem.ToString();
+                return null;
             }
         }
     }

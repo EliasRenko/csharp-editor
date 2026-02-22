@@ -174,6 +174,9 @@ namespace csharp_editor {
         
         [DllImport(DLL, EntryPoint = "createFolderLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void CreateFolderLayer(string layerName);
+
+        [DllImport(DLL, EntryPoint = "replaceLayerTileset", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void ReplaceLayerTileset(string layerName, string tilesetName);
         
         // --
         
