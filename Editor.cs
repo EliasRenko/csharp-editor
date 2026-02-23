@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using System.Drawing;
 using csharp_editor.UserControls;
 
 namespace csharp_editor
@@ -155,9 +156,9 @@ namespace csharp_editor
             //     return;
             // }
 
-            if (layer is not { Type: LayerType.TileLayer or LayerType.EntityLayer } selectedLayer) {
+            if (layer is not { Type: LayerType.TileLayer} selectedLayer) {
 
-                MessageBox.Show("Please select a Tile Layer to replace its tileset.", "No Tile Layer Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("The selected layer is not a Tile Layer. Please select a Tile Layer to view its tileset.", "No Tile Layer Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -384,7 +385,9 @@ namespace csharp_editor
                     Name = Marshal.PtrToStringAnsi(layerInfo.name) ?? "",
                     Type = layerInfo.type,
                     TilesetName = Marshal.PtrToStringAnsi(layerInfo.tilesetName) ?? "",
-                    Visible = layerInfo.visible == 1
+                    Visible = layerInfo.visible == 1,
+                    Silhouette = layerInfo.silhouette,
+                    SilhouetteColor = Utils.ConvertFromRGBA(layerInfo.silhouetteColor)
                 };
                 layerInfoDisplay.SetOriginalName(layerInfoDisplay.Name);
 

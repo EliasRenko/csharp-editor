@@ -242,7 +242,7 @@ namespace csharp_editor {
                             Name = layerName,
                             Type = (LayerType)layerInfo.type,
                             Visible = layerInfo.visible != 0,
-                            TilesetName = tilesetName
+                            TilesetName = tilesetName,
                         };
 
                         TreeNode treeNode = new TreeNode(layer.ToString());

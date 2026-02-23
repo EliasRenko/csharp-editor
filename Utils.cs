@@ -54,5 +54,17 @@ namespace csharp_editor {
         public static bool SaveFile(string startingPath, string data, string name, string exten) {
             return SaveFileAsync(startingPath, data, name, exten).GetAwaiter().GetResult();
         }
+
+        /// <summary>
+        /// Converts a 0xRRGGBBAA RGBA integer (backend format) into a <see cref="System.Drawing.Color"/>.
+        /// </summary>
+        public static System.Drawing.Color ConvertFromRGBA(int rgba)
+        {
+            byte r = (byte)((rgba >> 24) & 0xFF);
+            byte g = (byte)((rgba >> 16) & 0xFF);
+            byte b = (byte)((rgba >> 8) & 0xFF);
+            byte a = (byte)(rgba & 0xFF);
+            return System.Drawing.Color.FromArgb(a, r, g, b);
+        }
     }
 }
