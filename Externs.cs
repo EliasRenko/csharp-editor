@@ -203,25 +203,27 @@ namespace csharp_editor {
         
         // Entity Management
         
-        [DllImport(DLL, EntryPoint = "getEntity", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void GetEntity(string entityName, out EntityDataStruct outData);
+        [DllImport(DLL, EntryPoint = "getEntityDef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern IntPtr GetEntity(string entityName, out EntityDataStruct outData);
         
-        [DllImport(DLL, EntryPoint = "getEntityAt", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void GetEntityAt(int index, out EntityDataStruct outData);
+        [DllImport(DLL, EntryPoint = "getEntityDefAt", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr GetEntityAt(int index, out EntityDataStruct outData);
         
-        [DllImport(DLL, EntryPoint = "getEntityCount", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLL, EntryPoint = "getEntityDefCount", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetEntityCount();
         
-        [DllImport(DLL, EntryPoint = "createEntity", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        [DllImport(DLL, EntryPoint = "createEntityDef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern IntPtr CreateEntity(string entityName, int width, int height, string tilesetName);
         
-        [DllImport(DLL, EntryPoint = "setEntityRegion", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        [DllImport(DLL, EntryPoint = "setEntityDefRegion", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void SetEntityRegion(string entityName, int x, int y, int width, int height);
+        
+        
         
         [DllImport(DLL, EntryPoint = "removeEntity", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int RemoveEntity(string entityName);
         
-        [DllImport(DLL, EntryPoint = "setActiveEntity", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        [DllImport(DLL, EntryPoint = "setActiveEntityDef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int SetActiveEntity(string entityName);
         
         [DllImport(DLL, EntryPoint = "placeEntity", CallingConvention = CallingConvention.Cdecl)]

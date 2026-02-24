@@ -21,6 +21,9 @@ C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\refint\csharp-edi
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp-editor.pdb
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp-editor.genruntimeconfig.cache
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\ref\csharp-editor.dll
+C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.Properties.Resources.resources
+C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.TilesetViewer.resources
+C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.PropertyGridPanel.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\bin\x64\Debug\csharp-editor.exe
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\bin\x64\Debug\csharp-editor.deps.json
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\bin\x64\Debug\csharp-editor.runtimeconfig.json
@@ -33,6 +36,7 @@ C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.Properties.Resources.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.TilesetImportDialog.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.Console.resources
+C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.PropertyGridPanel.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.TextureViewer.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.TilesetViewer.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp-editor.csproj.GenerateResource.cache
@@ -46,6 +50,3 @@ C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\refint
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp-editor.pdb
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp-editor.genruntimeconfig.cache
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\ref\csharp-editor.dll
-C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.Properties.Resources.resources
-C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.TilesetViewer.resources
-C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.PropertyGridPanel.resources

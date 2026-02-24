@@ -277,24 +277,23 @@ namespace csharp_editor {
         
         // Entity Management
         
-        public void GetEntity(string entityName, out Externs.EntityDataStruct outData) {
-            Externs.GetEntity(entityName, out outData);
+        public string? CreateEntity(string entityName, int width, int height, string tilesetName) {
+            IntPtr result = Externs.CreateEntity(entityName, width, height, tilesetName);
+            return result == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(result);
         }
         
-        public void GetEntityAt(int index, out Externs.EntityDataStruct outData) {
-            Externs.GetEntityAt(index, out outData);
+        public string? GetEntity(string entityName, out Externs.EntityDataStruct outData) {
+            var result = Externs.GetEntity(entityName, out outData);
+            return result == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(result);
+        }
+        
+        public string? GetEntityAt(int index, out Externs.EntityDataStruct outData) {
+            var result = Externs.GetEntityAt(index, out outData);
+            return result == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(result);
         }
         
         public int GetEntityCount() {
             return Externs.GetEntityCount();
-        }
-        
-        public string? CreateEntity(string entityName, int width, int height, string tilesetName) {
-            IntPtr result = Externs.CreateEntity(entityName, width, height, tilesetName);
-            if (result == IntPtr.Zero) {
-                return null;
-            }
-            return Marshal.PtrToStringAnsi(result);
         }
         
         public void SetEntityRegion(string entityName, int x, int y, int width, int height) {
