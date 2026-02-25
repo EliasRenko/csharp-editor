@@ -624,15 +624,41 @@ namespace csharp_editor {
                 Color backColor = (e.State & TreeNodeStates.Selected) != 0 
                     ? Color.FromArgb(51, 153, 255) 
                     : treeViewLayers.BackColor;
-                
                 using (SolidBrush brush = new SolidBrush(backColor)) {
                     e.Graphics.FillRectangle(brush, fullRowBounds);
                 }
 
-                // Draw type icon on the left
-                int typeIconX = e.Bounds.Left;
+                // Draw expand/collapse triangle in the empty space on the left if node has children
+                // Draw triangle and icon at a fixed position from the control's left edge
+                int leftEdge = 2; // 2px margin from the very left
+                int triangleSize = 8;
+                int triangleX = leftEdge;
+                int triangleY = e.Bounds.Top + (e.Bounds.Height - triangleSize) / 2;
                 int iconY = e.Bounds.Top + (e.Bounds.Height - IconSize) / 2;
-                
+                int typeIconX = triangleX + triangleSize + 2; // icon immediately after triangle, 2px gap
+                // Draw debug rectangle always for clarity
+                int debugWidth = triangleSize + 2 + IconSize;
+                using (SolidBrush debugBrush = new SolidBrush(Color.FromArgb(120, 255, 200, 0))) // semi-transparent orange
+                {
+                    e.Graphics.FillRectangle(debugBrush, leftEdge, e.Bounds.Top, debugWidth, e.Bounds.Height);
+                }
+                if (e.Node.Nodes.Count > 0) {
+                    Point[] triangle;
+                    if (e.Node.IsExpanded) {
+                        triangle = new[] {
+                            new Point(triangleX, triangleY),
+                            new Point(triangleX + triangleSize, triangleY),
+                            new Point(triangleX + triangleSize/2, triangleY + triangleSize)
+                        };
+                    } else {
+                        triangle = new[] {
+                            new Point(triangleX, triangleY),
+                            new Point(triangleX, triangleY + triangleSize),
+                            new Point(triangleX + triangleSize, triangleY + triangleSize/2)
+                        };
+                    }
+                    e.Graphics.FillPolygon(Brushes.Black, triangle);
+                }
                 Image typeIcon = layer.Type == LayerType.TileLayer 
                     ? Properties.Resources.tiles 
                     : Properties.Resources.entities;
@@ -640,7 +666,7 @@ namespace csharp_editor {
 
                 // Calculate space needed for icons (2 icons + spacing on right)
                 int iconsWidth = (IconSize * 2) + (IconSpacing * 3);
-                
+
                 // Calculate text bounds (leave room for type icon on left and action icons on right)
                 int textStartX = typeIconX + IconSize + IconSpacing;
                 Rectangle textBounds = new Rectangle(
@@ -659,7 +685,7 @@ namespace csharp_editor {
                     TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
 
                 // Calculate icon positions (from right to left, docked to control edge)
-                
+
                 // Draw lock icon (rightmost)
                 int lockIconX = fullRowWidth - IconSize - IconSpacing;
                 Image lockIcon = layer.Locked 
@@ -676,7 +702,7 @@ namespace csharp_editor {
                 return;
             }
 
-            // If this node is a batch, draw a small tile icon to its left
+            // If this node is a batch, draw a tile icon on the left with arrow overlay
             if (e.Node.Tag is BatchInfo batch) {
                 // draw background normally
                 int fullRowWidth = treeViewLayers.ClientSize.Width;
@@ -688,15 +714,44 @@ namespace csharp_editor {
                     e.Graphics.FillRectangle(brush, fullRowBounds);
                 }
 
-                // draw small icon to distinguish
-                int iconY = e.Bounds.Top + (e.Bounds.Height - IconSize) / 2;
-                e.Graphics.DrawImage(Properties.Resources.tiles, e.Bounds.Left, iconY, IconSize, IconSize);
+                int indent = 0;
+                if (e.Node.Nodes.Count > 0) {
+                    int hitWidth = IconSize + IconSpacing + 4;
+                    int iconX = e.Bounds.Left + (hitWidth - IconSize) / 2;
+                    int iconY = e.Bounds.Top + (e.Bounds.Height - IconSize) / 2;
+                    // tile icon inside hit area
+                    e.Graphics.DrawImage(Properties.Resources.tiles, iconX, iconY, IconSize, IconSize);
+                    // arrow overlay
+                    int arrowSize = 6;
+                    int ax = iconX + (IconSize - arrowSize) / 2;
+                    int ay = iconY + (IconSize - arrowSize) / 2;
+                    Point[] arrow;
+                    if (e.Node.IsExpanded) {
+                        arrow = new[] {
+                            new Point(ax, ay),
+                            new Point(ax + arrowSize, ay),
+                            new Point(ax + arrowSize/2, ay + arrowSize)
+                        };
+                    } else {
+                        arrow = new[] {
+                            new Point(ax, ay),
+                            new Point(ax, ay + arrowSize),
+                            new Point(ax + arrowSize, ay + arrowSize/2)
+                        };
+                    }
+                    e.Graphics.FillPolygon(Brushes.Black, arrow);
+                    indent = hitWidth;
+                }
+
+                // draw small icon to distinguish (shifted if glyph drawn)
+                int iconY2 = e.Bounds.Top + (e.Bounds.Height - IconSize) / 2;
+                e.Graphics.DrawImage(Properties.Resources.tiles, e.Bounds.Left + indent, iconY2, IconSize, IconSize);
 
                 // draw text offset by icon
                 Rectangle textBounds = new Rectangle(
-                    e.Bounds.Left + IconSize + IconSpacing,
+                    e.Bounds.Left + indent + IconSize + IconSpacing,
                     e.Bounds.Top,
-                    fullRowWidth - (IconSize + IconSpacing),
+                    fullRowWidth - (indent + IconSize + IconSpacing),
                     e.Bounds.Height
                 );
                 Color textColor = (e.State & TreeNodeStates.Selected) != 0 
@@ -745,6 +800,17 @@ namespace csharp_editor {
                 treeViewLayers.Invalidate();
                 LayersChanged?.Invoke(this, EventArgs.Empty);
                 return;
+            }
+
+            // support clicking anywhere in the left-hand hit zone (triangle + padding)
+            if (node.Nodes.Count > 0) {
+                // width roughly equals icon + spacing; triangle is drawn inside this area
+                int hitWidth = IconSize + IconSpacing + 4;
+                Rectangle hitRect = new Rectangle(node.Bounds.Left, node.Bounds.Top, hitWidth, node.Bounds.Height);
+                if (hitRect.Contains(e.Location)) {
+                    node.Toggle();
+                    return;
+                }
             }
         }
 
