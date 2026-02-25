@@ -32,6 +32,7 @@ namespace csharp_editor
             // Initialize HierarchyTree
             hierarchyTree.SetExternView(view_extern);
             hierarchyTree.LayerSelected += HierarchyTree_LayerSelected;
+            hierarchyTree.BatchSelected += HierarchyTree_BatchSelected;
             hierarchyTree.LayersChanged += HierarchyTree_LayersChanged;
             // subscribe to replace tileset button
             hierarchyTree.ReplaceTilesetClicked += ReplaceTilesetButton_Click;
@@ -206,6 +207,9 @@ namespace csharp_editor
             // Refresh the hierarchy tree to show loaded layers
             hierarchyTree.LoadLayersFromBackend();
 
+            // Reload entity definitions so selector is up-to-date (useful after import)
+            entitySelector.LoadEntities();
+
             Log($"Map loaded from: {path}");
         }
 
@@ -285,6 +289,10 @@ namespace csharp_editor
         {
             int button = MouseButtonMapper.ToSDLMouseButton(e.Button);
             view_extern.OnMouseButtonUp(e.X, e.Y, button);
+
+            // clicking in the extern view may have placed an entity – if the active layer
+            // is an entity layer, refresh its batch groups so the hierarchy tree stays current.
+            hierarchyTree.RefreshSelectedEntityBatches();
         }
 
         private void toolStripButton_openFile(object sender, MouseEventArgs e)
@@ -420,6 +428,7 @@ namespace csharp_editor
             {
                 tilesetViewer.Visible = false;
                 entitySelector.Visible = true;
+                // show all entities when switching to a new layer
                 entitySelector.LoadEntities();
             }
             else
@@ -433,6 +442,13 @@ namespace csharp_editor
         private void HierarchyTree_LayersChanged(object sender, EventArgs e)
         {
             // TODO: Sync with backend when layers change
+        }
+
+        private void HierarchyTree_BatchSelected(object? sender, string tilesetName)
+        {
+            // user picked a batch group: filter the entity selector
+            Log($"Batch selected for tileset: {tilesetName}");
+            entitySelector.LoadEntities(tilesetName);
         }
 
         private void UpdateTextureViewer(HierarchyTree.LayerNode layer)

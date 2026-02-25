@@ -170,7 +170,7 @@ namespace csharp_editor {
         public static extern void CreateTilemapLayer(string layerName, string tilesetName, int index);
         
         [DllImport(DLL, EntryPoint = "createEntityLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void CreateEntityLayer(string layerName, string tilesetName);
+        public static extern void CreateEntityLayer(string layerName);
         
         [DllImport(DLL, EntryPoint = "createFolderLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void CreateFolderLayer(string layerName);
@@ -228,6 +228,31 @@ namespace csharp_editor {
         
         [DllImport(DLL, EntryPoint = "placeEntity", CallingConvention = CallingConvention.Cdecl)]
         public static extern int PlaceEntity(int x, int y);
+
+        // Batch group queries for entity layers
+        [DllImport(DLL, EntryPoint = "getEntityLayerBatchCount", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int GetEntityLayerBatchCount(string layerName);
+
+        [DllImport(DLL, EntryPoint = "getEntityLayerBatchCountAt", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetEntityLayerBatchCountAt(int index);
+
+        [DllImport(DLL, EntryPoint = "getEntityLayerBatchTilesetName", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern IntPtr GetEntityLayerBatchTilesetName(string layerName, int batchIndex);
+
+        // movement operations for batch groups within an entity layer
+        [DllImport(DLL, EntryPoint = "moveEntityLayerBatchUp", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int MoveEntityLayerBatchUp(string layerName, int batchIndex);
+        [DllImport(DLL, EntryPoint = "moveEntityLayerBatchDown", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int MoveEntityLayerBatchDown(string layerName, int batchIndex);
+        [DllImport(DLL, EntryPoint = "moveEntityLayerBatchTo", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int MoveEntityLayerBatchTo(string layerName, int batchIndex, int newIndex);
+
+        [DllImport(DLL, EntryPoint = "moveEntityLayerBatchUpByIndex", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int MoveEntityLayerBatchUpByIndex(int layerIndex, int batchIndex);
+        [DllImport(DLL, EntryPoint = "moveEntityLayerBatchDownByIndex", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int MoveEntityLayerBatchDownByIndex(int layerIndex, int batchIndex);
+        [DllImport(DLL, EntryPoint = "moveEntityLayerBatchToByIndex", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int MoveEntityLayerBatchToByIndex(int layerIndex, int batchIndex, int newIndex);
         
         [DllImport(DLL, EntryPoint = "moveLayerUp", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int MoveLayerUp(string layerName);

@@ -20,7 +20,8 @@ namespace csharp_editor {
             public int TileHeight { get; set; } = 1;
             
             public override string ToString() {
-                return $"{Name} ({Width}x{Height}) - Tilemap: {TilemapName} - Region: ({TileX},{TileY}) {TileWidth}×{TileHeight}";
+                string tilemapPart = string.IsNullOrEmpty(TilemapName) ? "" : $" - Tilemap: {TilemapName}";
+                return $"{Name} ({Width}x{Height}){tilemapPart} - Region: ({TileX},{TileY}) {TileWidth}×{TileHeight}";
             }
         }
 
@@ -110,6 +111,7 @@ namespace csharp_editor {
         private void LoadAvailableTilemaps() {
             comboBoxTilemap.Items.Clear();
             
+            
             // Get tilesets from C++
             int count = _externView.GetTilesetCount();
             
@@ -159,7 +161,7 @@ namespace csharp_editor {
                 Name = textBoxName.Text.Trim(),
                 Width = width,
                 Height = height,
-                TilemapName = comboBoxTilemap.SelectedItem.ToString() ?? "",
+                TilemapName = comboBoxTilemap.SelectedItem?.ToString() ?? "",
                 TileX = _currentRegion.X,
                 TileY = _currentRegion.Y,
                 TileWidth = _currentRegion.Width,
@@ -168,7 +170,7 @@ namespace csharp_editor {
 
             // Send to C++
             try {
-                // Set entity basic properties
+                // Set entity basic properties (must provide tilemap)
                 var error = _externView.CreateEntity(newEntity.Name, newEntity.Width, newEntity.Height, newEntity.TilemapName);
                 if (error != null) {
                     MessageBox.Show(error, "Entity Creation Error", 

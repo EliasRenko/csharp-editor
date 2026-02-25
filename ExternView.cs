@@ -4,7 +4,7 @@ using static csharp_editor.Externs;
 namespace csharp_editor {
     public partial class ExternView : UserControl {
 
-        public CallbackDelegate logCallback;
+        public CallbackDelegate logCallback = null!; // initialized in Init()
         public bool active = false;
 
         private IntPtr sdlWindowHandle = IntPtr.Zero;
@@ -196,8 +196,9 @@ namespace csharp_editor {
             Externs.CreateTilemapLayer(layerName, tilesetName, index);
         }
         
-        public void CreateEntityLayer(string layerName, string tilesetName) {
-            Externs.CreateEntityLayer(layerName, tilesetName);
+        // layerName is used by backend; tileset selection is no longer part of the API.
+        public void CreateEntityLayer(string layerName) {
+            Externs.CreateEntityLayer(layerName);
         }
         
         public void CreateFolderLayer(string layerName) {
@@ -311,10 +312,44 @@ namespace csharp_editor {
         public int PlaceEntity(int x, int y) {
             return Externs.PlaceEntity(x, y);
         }
+
+        // --- batch group helpers ------------------------------------------------
+        public int GetEntityLayerBatchCount(string layerName) {
+            return Externs.GetEntityLayerBatchCount(layerName);
+        }
+
+        public int GetEntityLayerBatchCountAt(int index) {
+            return Externs.GetEntityLayerBatchCountAt(index);
+        }
+
+        public string? GetEntityLayerBatchTilesetName(string layerName, int batchIndex) {
+            IntPtr ptr = Externs.GetEntityLayerBatchTilesetName(layerName, batchIndex);
+            return ptr == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(ptr);
+        }
+
+        // movement helpers -------------------------------------------------------
+        public int MoveEntityLayerBatchUp(string layerName, int batchIndex) {
+            return Externs.MoveEntityLayerBatchUp(layerName, batchIndex);
+        }
+        public int MoveEntityLayerBatchDown(string layerName, int batchIndex) {
+            return Externs.MoveEntityLayerBatchDown(layerName, batchIndex);
+        }
+        public int MoveEntityLayerBatchTo(string layerName, int batchIndex, int newIndex) {
+            return Externs.MoveEntityLayerBatchTo(layerName, batchIndex, newIndex);
+        }
+        public int MoveEntityLayerBatchUpByIndex(int layerIndex, int batchIndex) {
+            return Externs.MoveEntityLayerBatchUpByIndex(layerIndex, batchIndex);
+        }
+        public int MoveEntityLayerBatchDownByIndex(int layerIndex, int batchIndex) {
+            return Externs.MoveEntityLayerBatchDownByIndex(layerIndex, batchIndex);
+        }
+        public int MoveEntityLayerBatchToByIndex(int layerIndex, int batchIndex, int newIndex) {
+            return Externs.MoveEntityLayerBatchToByIndex(layerIndex, batchIndex, newIndex);
+        }
         
         #endregion
         
-        private Panel panel_extern;
+        private Panel panel_extern = null!; // assigned in InitializeComponent()
 
         private void InitializeComponent() {
             panel_extern = new Panel();
