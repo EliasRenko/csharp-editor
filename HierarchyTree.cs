@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -59,6 +60,7 @@ namespace csharp_editor {
         }
         private const int IconSize = 16;
         private const int IconSpacing = 4;
+        private static Image? _stateIcon = null; // loaded lazily from Icons/map.png
         
         public event EventHandler<LayerNode>? LayerSelected;
         /// <summary>Raised when a batch group node is selected; argument is the tileset name.</summary>
@@ -662,13 +664,37 @@ namespace csharp_editor {
                 using (SolidBrush brush = new SolidBrush(backColor)) {
                     e.Graphics.FillRectangle(brush, fullRowBounds);
                 }
-                // draw its text using its nodefont/color
+                // draw its icon on left
+                int iconY = e.Bounds.Top + (e.Bounds.Height - IconSize) / 2;
+                if (_stateIcon == null) {
+                    // try resource first
+                    try {
+                        _stateIcon = Properties.Resources.map;
+                    } catch {
+                        _stateIcon = null;
+                    }
+                    // if resource not available, fall back to file
+                    if (_stateIcon == null) {
+                        try {
+                            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Icons", "map.png");
+                            if (File.Exists(path))
+                                _stateIcon = Image.FromFile(path);
+                        } catch {
+                            _stateIcon = null;
+                        }
+                    }
+                }
+                if (_stateIcon != null) {
+                    e.Graphics.DrawImage(_stateIcon, 2, iconY, IconSize, IconSize);
+                }
+
+                // draw its text using its nodefont/color (shifted right of icon)
                 Font font = e.Node.NodeFont ?? treeViewLayers.Font;
                 Color textColor = (e.State & TreeNodeStates.Selected) != 0
                     ? Color.White
                     : e.Node.ForeColor;
                 TextRenderer.DrawText(e.Graphics, e.Node.Text, font,
-                    new Rectangle(0, e.Bounds.Top, fullRowWidth, e.Bounds.Height),
+                    new Rectangle(IconSize + IconSpacing, e.Bounds.Top, fullRowWidth - (IconSize + IconSpacing), e.Bounds.Height),
                     textColor, TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
                 return;
             }
