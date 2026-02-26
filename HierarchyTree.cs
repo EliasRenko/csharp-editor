@@ -38,6 +38,25 @@ namespace csharp_editor {
 
         private List<LayerNode> _layers = new List<LayerNode>();
         private ExternView? _externView; // may be null until SetExternView called
+        private TreeNode? _stateNode; // root node holding all layers
+
+        /// <summary>
+        /// Ensure the special immutable "State" parent exists and return it.
+        /// </summary>
+        private TreeNode GetStateNode() {
+            if (_stateNode != null && treeViewLayers.Nodes.Contains(_stateNode)) {
+                _stateNode.Expand();
+                return _stateNode;
+            }
+            // create node only once, always at index 0
+            _stateNode = new TreeNode("State");
+            _stateNode.Tag = new object(); // sentinel
+            _stateNode.NodeFont = new Font(treeViewLayers.Font, FontStyle.Bold);
+            _stateNode.ForeColor = Color.DarkBlue;
+            treeViewLayers.Nodes.Insert(0, _stateNode);
+            _stateNode.Expand();
+            return _stateNode;
+        }
         private const int IconSize = 16;
         private const int IconSpacing = 4;
         
@@ -64,6 +83,8 @@ namespace csharp_editor {
             treeViewLayers.DrawNode += TreeViewLayers_DrawNode;
             treeViewLayers.MouseDown += TreeViewLayers_MouseDown;
             treeViewLayers.KeyDown += TreeViewLayers_KeyDown;
+            // prevent state node collapse
+            treeViewLayers.BeforeCollapse += TreeViewLayers_BeforeCollapse;
             // enable drag/drop of nodes
             treeViewLayers.AllowDrop = true;
             treeViewLayers.ItemDrag += TreeViewLayers_ItemDrag;
@@ -117,17 +138,18 @@ namespace csharp_editor {
             treeNode.Tag = layer;
             layer.TreeNodeRef = treeNode;
 
-            // Insert at the position of the selected node, or at the beginning if none selected
-            int insertIndex = 0;
-            int lastIndex = treeViewLayers.Nodes.Count;
-            if (treeViewLayers.SelectedNode != null) {
+            // Insert into the State parent at selected layer position, or at end if nothing is selected
+            TreeNode parent = GetStateNode();
+            int insertIndex;
+            if (treeViewLayers.SelectedNode != null &&
+                treeViewLayers.SelectedNode.Tag is LayerNode selLayer &&
+                treeViewLayers.SelectedNode.Parent == parent) {
                 insertIndex = treeViewLayers.SelectedNode.Index;
-                treeViewLayers.Nodes.Insert(insertIndex, treeNode);
-                _layers.Insert(insertIndex, layer);
             } else {
-                treeViewLayers.Nodes.Insert(lastIndex, treeNode);
-                _layers.Insert(lastIndex, layer);
+                insertIndex = parent.Nodes.Count;
             }
+            parent.Nodes.Insert(insertIndex, treeNode);
+            _layers.Insert(insertIndex, layer);
 
             // Notify backend - pass index for insertion
             if (type == LayerType.TileLayer) {
@@ -348,7 +370,9 @@ namespace csharp_editor {
         }
 
         public void ClearLayers() {
-            treeViewLayers.Nodes.Clear();
+            // preserve state node
+            GetStateNode();
+            _stateNode!.Nodes.Clear();
             _layers.Clear();
 
             LayersChanged?.Invoke(this, EventArgs.Empty);
@@ -356,8 +380,9 @@ namespace csharp_editor {
         }
         
         public void LoadLayersFromBackend() {
-            // Clear existing layers
-            treeViewLayers.Nodes.Clear();
+            // Clear existing layers (preserve state node)
+            GetStateNode();
+            _stateNode!.Nodes.Clear();
             _layers.Clear();
             
             if (_externView == null) return;
@@ -385,7 +410,8 @@ namespace csharp_editor {
                         treeNode.Tag = layer;
                         layer.TreeNodeRef = treeNode;
 
-                        treeViewLayers.Nodes.Add(treeNode);
+                        TreeNode container = GetStateNode();
+                        container.Nodes.Add(treeNode);
                         _layers.Add(layer);
                         // if it's an entity layer, populate and expand it so batches are visible
                         if (layer.Type == LayerType.EntityLayer) {
@@ -402,33 +428,39 @@ namespace csharp_editor {
 
         private void UpdateButtonStates() {
             bool hasSelection = treeViewLayers.SelectedNode != null;
-            bool hasLayers = treeViewLayers.Nodes.Count > 0;
-            
-            buttonRemove.Enabled = hasSelection;
-            
+            buttonRemove.Enabled = false;
+            bool layerSelected = false;
+            bool batchSelected = false;
+            TreeNode? sel = treeViewLayers.SelectedNode;
+            if (sel != null) {
+                layerSelected = sel.Tag is LayerNode;
+                batchSelected = sel.Tag is BatchInfo;
+                buttonRemove.Enabled = layerSelected;
+            }
             // Determine move up/down enablement
-            if (hasSelection) {
-                TreeNode sel = treeViewLayers.SelectedNode!; // safe due to hasSelection
-                if (sel.Tag is BatchInfo) {
-                    // enable based on sibling position
-                    TreeNode? parent = sel.Parent;
-                    if (parent != null) {
-                        buttonMoveUp.Enabled = sel.Index > 0;
-                        buttonMoveDown.Enabled = sel.Index < parent.Nodes.Count - 1;
-                    } else {
-                        buttonMoveUp.Enabled = false;
-                        buttonMoveDown.Enabled = false;
-                    }
-                } else {
+            if (batchSelected) {
+                TreeNode? parent = sel!.Parent;
+                if (parent != null) {
                     buttonMoveUp.Enabled = sel.Index > 0;
-                    buttonMoveDown.Enabled = sel.Index < (treeViewLayers.Nodes.Count - 1);
+                    buttonMoveDown.Enabled = sel.Index < parent.Nodes.Count - 1;
+                } else {
+                    buttonMoveUp.Enabled = false;
+                    buttonMoveDown.Enabled = false;
+                }
+            } else if (layerSelected) {
+                TreeNode? parent = sel!.Parent;
+                if (parent != null) {
+                    buttonMoveUp.Enabled = sel.Index > 0;
+                    buttonMoveDown.Enabled = sel.Index < parent.Nodes.Count - 1;
+                } else {
+                    buttonMoveUp.Enabled = false;
+                    buttonMoveDown.Enabled = false;
                 }
             } else {
                 buttonMoveUp.Enabled = false;
                 buttonMoveDown.Enabled = false;
             }
-            
-            buttonToggleVisibility.Enabled = hasSelection;
+            buttonToggleVisibility.Enabled = layerSelected || batchSelected;
         }
 
         private void button_replaceTileset_Click(object sender, EventArgs e)
@@ -620,6 +652,27 @@ namespace csharp_editor {
         private void TreeViewLayers_DrawNode(object? sender, DrawTreeNodeEventArgs e) {
             if (e.Node == null) return;
 
+            // special fixed parent node
+            if (_stateNode != null && e.Node == _stateNode) {
+                int fullRowWidth = treeViewLayers.ClientSize.Width;
+                Rectangle fullRowBounds = new Rectangle(0, e.Bounds.Top, fullRowWidth, e.Bounds.Height);
+                Color backColor = (e.State & TreeNodeStates.Selected) != 0
+                    ? Color.FromArgb(51, 153, 255)
+                    : treeViewLayers.BackColor;
+                using (SolidBrush brush = new SolidBrush(backColor)) {
+                    e.Graphics.FillRectangle(brush, fullRowBounds);
+                }
+                // draw its text using its nodefont/color
+                Font font = e.Node.NodeFont ?? treeViewLayers.Font;
+                Color textColor = (e.State & TreeNodeStates.Selected) != 0
+                    ? Color.White
+                    : e.Node.ForeColor;
+                TextRenderer.DrawText(e.Graphics, e.Node.Text, font,
+                    new Rectangle(0, e.Bounds.Top, fullRowWidth, e.Bounds.Height),
+                    textColor, TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
+                return;
+            }
+
             // If this is a layer node, draw the usual icons
             if (e.Node.Tag is LayerNode layer) {
                 // Use full row width
@@ -770,6 +823,12 @@ namespace csharp_editor {
             TreeNode node = treeViewLayers.GetNodeAt(e.Location);
             if (node == null) return;
 
+            // allow selecting the state root node
+            if (_stateNode != null && node == _stateNode) {
+                treeViewLayers.SelectedNode = node;
+                return;
+            }
+
             LayerNode? layer = node.Tag as LayerNode;
             if (layer == null) return;
 
@@ -804,9 +863,9 @@ namespace csharp_editor {
 
             // support clicking anywhere in the left-hand hit zone (triangle + padding)
             if (node.Nodes.Count > 0) {
-                // width roughly equals icon + spacing; triangle is drawn inside this area
                 int hitWidth = IconSize + IconSpacing + 4;
-                Rectangle hitRect = new Rectangle(node.Bounds.Left, node.Bounds.Top, hitWidth, node.Bounds.Height);
+                int leftEdge = 2; // match drawing offset
+                Rectangle hitRect = new Rectangle(leftEdge, node.Bounds.Top, hitWidth, node.Bounds.Height);
                 if (hitRect.Contains(e.Location)) {
                     node.Toggle();
                     return;
@@ -821,10 +880,19 @@ namespace csharp_editor {
             e.SuppressKeyPress = true;
         }
 
+        private void TreeViewLayers_BeforeCollapse(object? sender, TreeViewCancelEventArgs e) {
+            if (_stateNode != null && e.Node == _stateNode) {
+                e.Cancel = true;
+            }
+        }
+
         // --- drag/drop helpers ------------------------------------------------
         private void TreeViewLayers_ItemDrag(object? sender, ItemDragEventArgs e) {
             if (e.Item is TreeNode node) {
-                DoDragDrop(node, DragDropEffects.Move);
+                // only allow dragging real layers or batches
+                if (node.Tag is LayerNode || node.Tag is BatchInfo) {
+                    DoDragDrop(node, DragDropEffects.Move);
+                }
             }
         }
 
@@ -844,13 +912,15 @@ namespace csharp_editor {
             }
             bool canDrop = false;
             if (dragged.Tag is LayerNode) {
-                // drop onto another layer or onto whitespace at bottom
+                // drop onto another layer or onto whitespace at bottom within state node
+                TreeNode parent = GetStateNode();
                 if (target != null) {
-                    canDrop = target.Tag is LayerNode || target.Parent == null;
+                    // allow drop if we hit a layer or the state node itself
+                    canDrop = target.Tag is LayerNode || target == parent;
                 } else {
-                    // no node under cursor: allow if we're below last item
-                    if (treeViewLayers.Nodes.Count > 0) {
-                        TreeNode last = treeViewLayers.Nodes[treeViewLayers.Nodes.Count - 1];
+                    // check if cursor below last layer
+                    if (parent.Nodes.Count > 0) {
+                        TreeNode last = parent.Nodes[parent.Nodes.Count - 1];
                         if (pt.Y > last.Bounds.Bottom) {
                             canDrop = true;
                         }
@@ -879,32 +949,29 @@ namespace csharp_editor {
             if (dragged == null || dragged == target) return;
 
             if (dragged.Tag is LayerNode) {
+                TreeNode parent = dragged.Parent ?? GetStateNode();
                 int fromIndex = dragged.Index;
                 int toIndex;
                 if (target != null) {
-                    TreeNode destLayerNode = target.Tag is LayerNode ? target : target.Parent ?? target;
-                    toIndex = destLayerNode.Index;
+                    TreeNode dest = (target.Tag is LayerNode) ? target : target.Parent ?? target;
+                    toIndex = dest.Index;
                 } else {
-                    // drop at end
-                    toIndex = treeViewLayers.Nodes.Count - 1;
+                    // drop at end of parent
+                    toIndex = parent.Nodes.Count - 1;
                 }
                 if (fromIndex == toIndex) return;
-                // account for removal if dragging from above and we have a concrete target
                 if (target != null && fromIndex < toIndex) {
                     toIndex--;
                 }
-                // rearrange tree
-                TreeNodeCollection nodes = treeViewLayers.Nodes;
+                TreeNodeCollection nodes = parent.Nodes;
                 nodes.RemoveAt(fromIndex);
                 nodes.Insert(toIndex, dragged);
                 treeViewLayers.SelectedNode = dragged;
-                // update _layers list
                 LayerNode? layer = dragged.Tag as LayerNode;
                 if (layer != null && _layers.Contains(layer)) {
                     _layers.RemoveAt(fromIndex);
                     _layers.Insert(toIndex, layer);
                 }
-                // backend
                 _externView?.MoveLayerTo(layer?.Name ?? "", toIndex);
                 LayersChanged?.Invoke(this, EventArgs.Empty);
             } else if (dragged.Tag is BatchInfo) {
