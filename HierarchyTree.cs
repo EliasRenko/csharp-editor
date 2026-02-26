@@ -64,6 +64,12 @@ namespace csharp_editor {
             treeViewLayers.DrawNode += TreeViewLayers_DrawNode;
             treeViewLayers.MouseDown += TreeViewLayers_MouseDown;
             treeViewLayers.KeyDown += TreeViewLayers_KeyDown;
+            // enable drag/drop of nodes
+            treeViewLayers.AllowDrop = true;
+            treeViewLayers.ItemDrag += TreeViewLayers_ItemDrag;
+            treeViewLayers.DragEnter += TreeViewLayers_DragEnter;
+            treeViewLayers.DragOver += TreeViewLayers_DragOver;
+            treeViewLayers.DragDrop += TreeViewLayers_DragDrop;
             UpdateButtonStates();
         }
 
@@ -636,12 +642,6 @@ namespace csharp_editor {
                 int triangleY = e.Bounds.Top + (e.Bounds.Height - triangleSize) / 2;
                 int iconY = e.Bounds.Top + (e.Bounds.Height - IconSize) / 2;
                 int typeIconX = triangleX + triangleSize + 2; // icon immediately after triangle, 2px gap
-                // Draw debug rectangle always for clarity
-                int debugWidth = triangleSize + 2 + IconSize;
-                using (SolidBrush debugBrush = new SolidBrush(Color.FromArgb(120, 255, 200, 0))) // semi-transparent orange
-                {
-                    e.Graphics.FillRectangle(debugBrush, leftEdge, e.Bounds.Top, debugWidth, e.Bounds.Height);
-                }
                 if (e.Node.Nodes.Count > 0) {
                     Point[] triangle;
                     if (e.Node.IsExpanded) {
@@ -820,5 +820,116 @@ namespace csharp_editor {
             e.Handled = true;
             e.SuppressKeyPress = true;
         }
+
+        // --- drag/drop helpers ------------------------------------------------
+        private void TreeViewLayers_ItemDrag(object? sender, ItemDragEventArgs e) {
+            if (e.Item is TreeNode node) {
+                DoDragDrop(node, DragDropEffects.Move);
+            }
+        }
+
+        private void TreeViewLayers_DragEnter(object? sender, DragEventArgs e) {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void TreeViewLayers_DragOver(object? sender, DragEventArgs e) {
+            if (e == null) return;
+            Point pt = treeViewLayers.PointToClient(new Point(e.X, e.Y));
+            TreeNode? target = treeViewLayers.GetNodeAt(pt);
+            if (e.Data == null) { e.Effect = DragDropEffects.None; return; }
+            TreeNode? dragged = e.Data.GetData(typeof(TreeNode)) as TreeNode;
+            if (dragged == null) {
+                e.Effect = DragDropEffects.None;
+                return;
+            }
+            bool canDrop = false;
+            if (dragged.Tag is LayerNode) {
+                // drop onto another layer or onto whitespace at bottom
+                if (target != null) {
+                    canDrop = target.Tag is LayerNode || target.Parent == null;
+                } else {
+                    // no node under cursor: allow if we're below last item
+                    if (treeViewLayers.Nodes.Count > 0) {
+                        TreeNode last = treeViewLayers.Nodes[treeViewLayers.Nodes.Count - 1];
+                        if (pt.Y > last.Bounds.Bottom) {
+                            canDrop = true;
+                        }
+                    }
+                }
+            } else if (dragged.Tag is BatchInfo) {
+                TreeNode parent = dragged.Parent!;
+                // allow drop anywhere within vertical range spanned by batches of same parent
+                if (parent.Nodes.Count > 0) {
+                    int top = parent.Nodes[0].Bounds.Top;
+                    int bottom = parent.Nodes[parent.Nodes.Count - 1].Bounds.Bottom;
+                    if (pt.Y >= top && pt.Y <= bottom) {
+                        canDrop = true;
+                    }
+                }
+            }
+            e.Effect = canDrop ? DragDropEffects.Move : DragDropEffects.None;
+        }
+
+        private void TreeViewLayers_DragDrop(object? sender, DragEventArgs e) {
+            if (e == null) return;
+            Point pt = treeViewLayers.PointToClient(new Point(e.X, e.Y));
+            TreeNode? target = treeViewLayers.GetNodeAt(pt);
+            if (e.Data == null) return;
+            TreeNode? dragged = e.Data.GetData(typeof(TreeNode)) as TreeNode;
+            if (dragged == null || dragged == target) return;
+
+            if (dragged.Tag is LayerNode) {
+                int fromIndex = dragged.Index;
+                int toIndex;
+                if (target != null) {
+                    TreeNode destLayerNode = target.Tag is LayerNode ? target : target.Parent ?? target;
+                    toIndex = destLayerNode.Index;
+                } else {
+                    // drop at end
+                    toIndex = treeViewLayers.Nodes.Count - 1;
+                }
+                if (fromIndex == toIndex) return;
+                // account for removal if dragging from above and we have a concrete target
+                if (target != null && fromIndex < toIndex) {
+                    toIndex--;
+                }
+                // rearrange tree
+                TreeNodeCollection nodes = treeViewLayers.Nodes;
+                nodes.RemoveAt(fromIndex);
+                nodes.Insert(toIndex, dragged);
+                treeViewLayers.SelectedNode = dragged;
+                // update _layers list
+                LayerNode? layer = dragged.Tag as LayerNode;
+                if (layer != null && _layers.Contains(layer)) {
+                    _layers.RemoveAt(fromIndex);
+                    _layers.Insert(toIndex, layer);
+                }
+                // backend
+                _externView?.MoveLayerTo(layer?.Name ?? "", toIndex);
+                LayersChanged?.Invoke(this, EventArgs.Empty);
+            } else if (dragged.Tag is BatchInfo) {
+                TreeNode parent = dragged.Parent!;
+                int fromIndex = dragged.Index;
+                int toIndex = parent.Nodes.Count;
+                // calculate insertion index by y position
+                for (int i = 0; i < parent.Nodes.Count; i++) {
+                    var childBounds = parent.Nodes[i].Bounds;
+                    if (pt.Y < childBounds.Top + childBounds.Height / 2) {
+                        toIndex = i;
+                        break;
+                    }
+                }
+                if (fromIndex == toIndex) return;
+                if (fromIndex < toIndex) toIndex--;
+                parent.Nodes.RemoveAt(fromIndex);
+                parent.Nodes.Insert(toIndex, dragged);
+                treeViewLayers.SelectedNode = dragged;
+                if (parent.Tag is LayerNode layer) {
+                    _externView?.MoveEntityLayerBatchTo(layer.Name, fromIndex, toIndex);
+                }
+            }
+        }
+
+        // --- end drag/drop ----------------------------------------------------
     }
 }

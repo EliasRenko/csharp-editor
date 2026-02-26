@@ -242,8 +242,10 @@ namespace csharp_editor {
         // movement operations for batch groups within an entity layer
         [DllImport(DLL, EntryPoint = "moveEntityLayerBatchUp", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int MoveEntityLayerBatchUp(string layerName, int batchIndex);
+
         [DllImport(DLL, EntryPoint = "moveEntityLayerBatchDown", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int MoveEntityLayerBatchDown(string layerName, int batchIndex);
+
         [DllImport(DLL, EntryPoint = "moveEntityLayerBatchTo", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int MoveEntityLayerBatchTo(string layerName, int batchIndex, int newIndex);
 
@@ -260,25 +262,15 @@ namespace csharp_editor {
         [DllImport(DLL, EntryPoint = "moveLayerDown", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int MoveLayerDown(string layerName);
         
+        // move a layer directly to a specified position
+        [DllImport(DLL, EntryPoint = "moveLayerTo", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int MoveLayerTo(string layerName, int newIndex);
+        
         [DllImport(DLL, EntryPoint = "moveLayerUpByIndex", CallingConvention = CallingConvention.Cdecl)]
         public static extern int MoveLayerUpByIndex(int index);
         
         [DllImport(DLL, EntryPoint = "moveLayerDownByIndex", CallingConvention = CallingConvention.Cdecl)]
         public static extern int MoveLayerDownByIndex(int index);
-        
-        // BMFG
-
-        [DllImport(DLL, EntryPoint = "importFont", CharSet = CharSet.Ansi)]
-        public static extern void ImportFont(string fontPath, float fontSize);
-
-        [DllImport(DLL, EntryPoint = "exportFont", CharSet = CharSet.Ansi)]
-        public static extern void ExportFont(string fontPath);
-
-        [DllImport(DLL, EntryPoint = "loadFont", CharSet = CharSet.Ansi)]
-        public static extern void LoadFont(string outputName);
-
-        [DllImport(DLL, EntryPoint = "rebakeFont")]
-        public static extern void RebakeFont(float fontSize, int atlasWidth, int atlasHeight, int firstChar, int numChars);
 
         #region WinAPI Entry Points
 

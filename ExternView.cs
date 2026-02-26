@@ -89,14 +89,6 @@ namespace csharp_editor {
         public void UpdateFrame(float deltaTime) {
             Externs.UpdateFrame(deltaTime);
         }
-
-        public void ImportFont(string filename, int size) {
-            Externs.ImportFont(filename, size);
-        }
-        
-        // public void OnMouseMove() {
-        //     Externs.OnMouseMotion(x, y);
-        // }
         
         private void OnMouseMotion(object? sender, MouseEventArgs e) {
             Externs.OnMouseMotion(e.X, e.Y);
@@ -124,22 +116,6 @@ namespace csharp_editor {
                 //Externs.SetWindowSize(panel_extern.Width, panel_extern.Height);
             }
         }
-        
-        #region Core
-        
-        public void LoadFont(string filename) {
-            Externs.LoadFont(filename);
-        }
-
-        public void ExportFont(string filename) {
-            Externs.ExportFont(filename);
-        }
-
-        public void RebakeFont(float fontSize, int atlasWidth, int atlasHeight, int firstChar, int numChars) {
-            Externs.RebakeFont(fontSize, atlasWidth, atlasHeight, firstChar, numChars);
-        }
-        
-        #endregion
         
         #region Texture
 
@@ -266,6 +242,10 @@ namespace csharp_editor {
         
         public int MoveLayerDown(string layerName) {
             return Externs.MoveLayerDown(layerName);
+        }
+        
+        public int MoveLayerTo(string layerName, int newIndex) {
+            return Externs.MoveLayerTo(layerName, newIndex);
         }
         
         public int MoveLayerUpByIndex(int index) {
