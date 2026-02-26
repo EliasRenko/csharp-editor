@@ -63,6 +63,7 @@ namespace csharp_editor {
         private static Image? _stateIcon = null; // loaded lazily from Icons/map.png
         
         public event EventHandler<LayerNode>? LayerSelected;
+        public event EventHandler? StateSelected;
         /// <summary>Raised when a batch group node is selected; argument is the tileset name.</summary>
         public event EventHandler<string>? BatchSelected;
         public event EventHandler? LayersChanged;
@@ -641,6 +642,9 @@ namespace csharp_editor {
 
                 // Notify any listeners in C#
                 LayerSelected?.Invoke(this, layer);
+            } else if (_stateNode != null && e.Node == _stateNode) {
+                // state row selected
+                StateSelected?.Invoke(this, EventArgs.Empty);
             } else if (e.Node?.Tag is BatchInfo batch) {
                 // user clicked a batch group under an entity layer
                 BatchSelected?.Invoke(this, batch.TilesetName);

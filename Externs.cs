@@ -53,6 +53,19 @@ namespace csharp_editor {
             public int regionHeight;         // Region height in tiles
         }
         
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        public struct MapInfoStruct {
+            public IntPtr idd;       // id string
+            public IntPtr name;      // name string
+            public int worldx;
+            public int worldy;
+            public int width;
+            public int height;
+            public int tileSize;
+            public int bgColor;      // rgba hex
+            public int gridColor;    // rgba hex
+        }
+        
         // Core functionality
         [DllImport(DLL, EntryPoint = "init")]
         public static extern int Init();
@@ -158,6 +171,12 @@ namespace csharp_editor {
         
         [DllImport(DLL, EntryPoint = "importMap")]
         public static extern int ImportMap(string path);
+        
+        [DllImport(DLL, EntryPoint = "getMapInfo", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int GetMapInfo(out MapInfoStruct outInfo);
+        
+        [DllImport(DLL, EntryPoint = "setMapInfo", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int SetMapInfo(ref MapInfoStruct info);
         
         // Layer Management
         [DllImport(DLL, EntryPoint = "setLayerProperties", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]

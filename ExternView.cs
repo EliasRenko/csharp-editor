@@ -2,6 +2,18 @@
 using static csharp_editor.Externs;
 
 namespace csharp_editor {
+    public struct MapInfoStruct {
+        public string? idd;
+        public string? name;
+        public int worldx;
+        public int worldy;
+        public int width;
+        public int height;
+        public int tileSize;
+        public int bgColor;
+        public int gridColor;
+    }
+
     public partial class ExternView : UserControl {
 
         public CallbackDelegate logCallback = null!; // initialized in Init()
@@ -110,7 +122,7 @@ namespace csharp_editor {
             Externs.OnKeyboardUp(keyCode);
         }
 
-        private void ExternView_Resize(object sender, EventArgs e) {
+        private void ExternView_Resize(object? sender, EventArgs e) {
             if (sdlWindowHandle != IntPtr.Zero && active && panel_extern != null) {
                 Externs.MoveWindow(sdlWindowHandle, 0, 0, panel_extern.Width, panel_extern.Height, true);
                 //Externs.SetWindowSize(panel_extern.Width, panel_extern.Height);
@@ -199,6 +211,48 @@ namespace csharp_editor {
         
         public int GetLayerCount() {
             return Externs.GetLayerCount();
+        }
+
+        public bool GetMapInfo(out MapInfoStruct outInfo) {
+            Externs.MapInfoStruct temp;
+            int result = Externs.GetMapInfo(out temp);
+            if (result != 0) {
+                outInfo = new MapInfoStruct {
+                    idd = Marshal.PtrToStringAnsi(temp.idd),
+                    name = Marshal.PtrToStringAnsi(temp.name),
+                    worldx = temp.worldx,
+                    worldy = temp.worldy,
+                    width = temp.width,
+                    height = temp.height,
+                    tileSize = temp.tileSize,
+                    bgColor = temp.bgColor,
+                    gridColor = temp.gridColor
+                };
+                return true;
+            }
+            outInfo = default;
+            return false;
+        }
+
+        public bool SetMapInfo(MapInfoStruct info) {
+            Externs.MapInfoStruct temp = new Externs.MapInfoStruct {
+                idd = Marshal.StringToHGlobalAnsi(info.idd ?? ""),
+                name = Marshal.StringToHGlobalAnsi(info.name ?? ""),
+                worldx = info.worldx,
+                worldy = info.worldy,
+                width = info.width,
+                height = info.height,
+                tileSize = info.tileSize,
+                bgColor = info.bgColor,
+                gridColor = info.gridColor
+            };
+            try {
+                int result = Externs.SetMapInfo(ref temp);
+                return result != 0;
+            } finally {
+                Marshal.FreeHGlobal(temp.idd);
+                Marshal.FreeHGlobal(temp.name);
+            }
         }
         
         public int GetLayerInfoAt(int index, out Externs.LayerInfoStruct outInfo) {
