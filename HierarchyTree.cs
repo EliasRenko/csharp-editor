@@ -72,6 +72,8 @@ namespace csharp_editor {
         public HierarchyTree() {
             InitializeComponent();
             InitializeTreeView();
+            // create the immutable "State" root up front so it shows even when no layers exist
+            GetStateNode();
         }
 
         public void SetExternView(ExternView externView) {
@@ -153,6 +155,12 @@ namespace csharp_editor {
             }
             parent.Nodes.Insert(insertIndex, treeNode);
             _layers.Insert(insertIndex, layer);
+            // make sure the state container remains expanded so the new child is visible
+            parent.Expand();
+            // optionally select the newly added layer so user sees it immediately
+            treeViewLayers.SelectedNode = treeNode;
+            // request a repaint in case owner-draw hasn't been triggered yet
+            treeViewLayers.Invalidate();
 
             // Notify backend - pass index for insertion
             if (type == LayerType.TileLayer) {

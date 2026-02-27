@@ -443,42 +443,50 @@ namespace csharp_editor
         private void HierarchyTree_StateSelected(object? sender, EventArgs e)
         {
             Log("State row selected");
-            if (view_extern.GetMapInfo(out MapInfoStruct info))
+            try
             {
-                var display = new MapInfoDisplay {
-                    ID = info.idd,
-                    Name = info.name,
-                    WorldX = info.worldx,
-                    WorldY = info.worldy,
-                    Width = info.width,
-                    Height = info.height,
-                    TileSize = info.tileSize,
-                    BackgroundColor = Utils.ConvertFromRGBA(info.bgColor),
-                    GridColor = Utils.ConvertFromRGBA(info.gridColor)
-                };
-                display.PropertyChanged += (s, args) => {
-                    if (s is MapInfoDisplay m) {
-                        // push back to engine
-                        MapInfoStruct native = new MapInfoStruct {
-                            idd = m.ID,
-                            name = m.Name,
-                            worldx = m.WorldX,
-                            worldy = m.WorldY,
-                            width = m.Width,
-                            height = m.Height,
-                            tileSize = m.TileSize,
-                            bgColor = Utils.ConvertToRGBA(m.BackgroundColor),
-                            gridColor = Utils.ConvertToRGBA(m.GridColor)
-                        };
-                        view_extern.SetMapInfo(native);
-                    }
-                };
-                propertyGridPanel1.PropertyGrid.SelectedObject = display;
+                if (view_extern != null && view_extern.GetMapInfo(out MapInfoStruct info))
+                {
+                    var display = new MapInfoDisplay {
+                        ID = info.idd ?? string.Empty,
+                        Name = info.name ?? string.Empty,
+                        WorldX = info.worldx,
+                        WorldY = info.worldy,
+                        Width = info.width,
+                        Height = info.height,
+                        TileSize = info.tileSize,
+                        BackgroundColor = Utils.ConvertFromRGBA(info.bgColor),
+                        GridColor = Utils.ConvertFromRGBA(info.gridColor)
+                    };
+                    display.PropertyChanged += (s, args) => {
+                        if (s is MapInfoDisplay m && view_extern != null) {
+                            // push back to engine
+                            MapInfoStruct native = new MapInfoStruct {
+                                idd = m.ID,
+                                name = m.Name,
+                                worldx = m.WorldX,
+                                worldy = m.WorldY,
+                                width = m.Width,
+                                height = m.Height,
+                                tileSize = m.TileSize,
+                                bgColor = Utils.ConvertToRGBA(m.BackgroundColor),
+                                gridColor = Utils.ConvertToRGBA(m.GridColor)
+                            };
+                            view_extern.SetMapInfo(native);
+                        }
+                    };
+                    propertyGridPanel1.PropertyGrid.SelectedObject = display;
+                }
+                else
+                {
+                    Log("Failed to retrieve map info");
+                    if (propertyGridPanel1?.PropertyGrid != null)
+                        propertyGridPanel1.PropertyGrid.SelectedObject = null;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Log("Failed to retrieve map info");
-                propertyGridPanel1.PropertyGrid.SelectedObject = null;
+                Log("Error displaying map info: " + ex.Message);
             }
         }
 
