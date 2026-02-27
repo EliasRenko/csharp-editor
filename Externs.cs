@@ -53,6 +53,19 @@ namespace csharp_editor {
             public int regionHeight;         // Region height in tiles
         }
         
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        public struct MapProps {
+            public IntPtr idd;       // id string
+            public IntPtr name;      // name string
+            public int worldx;
+            public int worldy;
+            public int width;
+            public int height;
+            public int tileSize;
+            public int bgColor;      // rgba hex
+            public int gridColor;    // rgba hex
+        }
+        
         // Core functionality
         [DllImport(DLL, EntryPoint = "init")]
         public static extern int Init();
@@ -159,6 +172,12 @@ namespace csharp_editor {
         [DllImport(DLL, EntryPoint = "importMap")]
         public static extern int ImportMap(string path);
         
+        [DllImport(DLL, EntryPoint = "getMapProps", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern IntPtr GetMapProps(out MapProps outInfo);
+        
+        [DllImport(DLL, EntryPoint = "setMapProps", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern IntPtr SetMapProps(ref MapProps info);
+        
         // Layer Management
         [DllImport(DLL, EntryPoint = "setLayerProperties", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void SetLayerProperties(string layerName, ref LayerInfoStruct properties);
@@ -170,7 +189,7 @@ namespace csharp_editor {
         public static extern void CreateTilemapLayer(string layerName, string tilesetName, int index);
         
         [DllImport(DLL, EntryPoint = "createEntityLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void CreateEntityLayer(string layerName, string tilesetName);
+        public static extern void CreateEntityLayer(string layerName);
         
         [DllImport(DLL, EntryPoint = "createFolderLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void CreateFolderLayer(string layerName);
@@ -228,6 +247,33 @@ namespace csharp_editor {
         
         [DllImport(DLL, EntryPoint = "placeEntity", CallingConvention = CallingConvention.Cdecl)]
         public static extern int PlaceEntity(int x, int y);
+
+        // Batch group queries for entity layers
+        [DllImport(DLL, EntryPoint = "getEntityLayerBatchCount", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int GetEntityLayerBatchCount(string layerName);
+
+        [DllImport(DLL, EntryPoint = "getEntityLayerBatchCountAt", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetEntityLayerBatchCountAt(int index);
+
+        [DllImport(DLL, EntryPoint = "getEntityLayerBatchTilesetName", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern IntPtr GetEntityLayerBatchTilesetName(string layerName, int batchIndex);
+
+        // movement operations for batch groups within an entity layer
+        [DllImport(DLL, EntryPoint = "moveEntityLayerBatchUp", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int MoveEntityLayerBatchUp(string layerName, int batchIndex);
+
+        [DllImport(DLL, EntryPoint = "moveEntityLayerBatchDown", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int MoveEntityLayerBatchDown(string layerName, int batchIndex);
+
+        [DllImport(DLL, EntryPoint = "moveEntityLayerBatchTo", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int MoveEntityLayerBatchTo(string layerName, int batchIndex, int newIndex);
+
+        [DllImport(DLL, EntryPoint = "moveEntityLayerBatchUpByIndex", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int MoveEntityLayerBatchUpByIndex(int layerIndex, int batchIndex);
+        [DllImport(DLL, EntryPoint = "moveEntityLayerBatchDownByIndex", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int MoveEntityLayerBatchDownByIndex(int layerIndex, int batchIndex);
+        [DllImport(DLL, EntryPoint = "moveEntityLayerBatchToByIndex", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int MoveEntityLayerBatchToByIndex(int layerIndex, int batchIndex, int newIndex);
         
         [DllImport(DLL, EntryPoint = "moveLayerUp", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int MoveLayerUp(string layerName);
@@ -235,25 +281,15 @@ namespace csharp_editor {
         [DllImport(DLL, EntryPoint = "moveLayerDown", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int MoveLayerDown(string layerName);
         
+        // move a layer directly to a specified position
+        [DllImport(DLL, EntryPoint = "moveLayerTo", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int MoveLayerTo(string layerName, int newIndex);
+        
         [DllImport(DLL, EntryPoint = "moveLayerUpByIndex", CallingConvention = CallingConvention.Cdecl)]
         public static extern int MoveLayerUpByIndex(int index);
         
         [DllImport(DLL, EntryPoint = "moveLayerDownByIndex", CallingConvention = CallingConvention.Cdecl)]
         public static extern int MoveLayerDownByIndex(int index);
-        
-        // BMFG
-
-        [DllImport(DLL, EntryPoint = "importFont", CharSet = CharSet.Ansi)]
-        public static extern void ImportFont(string fontPath, float fontSize);
-
-        [DllImport(DLL, EntryPoint = "exportFont", CharSet = CharSet.Ansi)]
-        public static extern void ExportFont(string fontPath);
-
-        [DllImport(DLL, EntryPoint = "loadFont", CharSet = CharSet.Ansi)]
-        public static extern void LoadFont(string outputName);
-
-        [DllImport(DLL, EntryPoint = "rebakeFont")]
-        public static extern void RebakeFont(float fontSize, int atlasWidth, int atlasHeight, int firstChar, int numChars);
 
         #region WinAPI Entry Points
 

@@ -66,5 +66,13 @@ namespace csharp_editor {
             byte a = (byte)(rgba & 0xFF);
             return System.Drawing.Color.FromArgb(a, r, g, b);
         }
+
+        /// <summary>
+        /// Converts a <see cref="System.Drawing.Color"/> into a 0xRRGGBBAA integer.
+        /// </summary>
+        public static int ConvertToRGBA(System.Drawing.Color c)
+        {
+            return (c.R << 24) | (c.G << 16) | (c.B << 8) | c.A;
+        }
     }
 }

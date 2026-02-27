@@ -32,6 +32,8 @@ namespace csharp_editor
             // Initialize HierarchyTree
             hierarchyTree.SetExternView(view_extern);
             hierarchyTree.LayerSelected += HierarchyTree_LayerSelected;
+            hierarchyTree.StateSelected += HierarchyTree_StateSelected;
+            hierarchyTree.BatchSelected += HierarchyTree_BatchSelected;
             hierarchyTree.LayersChanged += HierarchyTree_LayersChanged;
             // subscribe to replace tileset button
             hierarchyTree.ReplaceTilesetClicked += ReplaceTilesetButton_Click;
@@ -206,6 +208,9 @@ namespace csharp_editor
             // Refresh the hierarchy tree to show loaded layers
             hierarchyTree.LoadLayersFromBackend();
 
+            // Reload entity definitions so selector is up-to-date (useful after import)
+            entitySelector.LoadEntities();
+
             Log($"Map loaded from: {path}");
         }
 
@@ -225,7 +230,7 @@ namespace csharp_editor
 
         #region Events
 
-        private void Editor_FormClosing(object sender, FormClosingEventArgs e)
+        private void Editor_FormClosing(object? sender, FormClosingEventArgs e)
         {
             active = false;
             Application.DoEvents(); // Process remaining messages
@@ -233,7 +238,7 @@ namespace csharp_editor
             view_extern.Release();
         }
 
-        private void Editor_KeyDown(object sender, KeyEventArgs e)
+        private void Editor_KeyDown(object? sender, KeyEventArgs e)
         {
             // Toggle console with tilde key (~) or F1
             if (e.KeyCode == Keys.Oemtilde || e.KeyCode == Keys.F1)
@@ -260,7 +265,7 @@ namespace csharp_editor
             view_extern.OnKeyboardDown(KeyMapper.ToSDLScancode(e.KeyCode));
         }
 
-        private void Editor_KeyUp(object sender, KeyEventArgs e)
+        private void Editor_KeyUp(object? sender, KeyEventArgs e)
         {
             // Toggle console with tilde key (~) or F1
             if (e.KeyCode == Keys.Oemtilde || e.KeyCode == Keys.F1)
@@ -275,19 +280,23 @@ namespace csharp_editor
 
         #endregion
 
-        private void view_extern_MouseDown(object sender, MouseEventArgs e)
+        private void view_extern_MouseDown(object? sender, MouseEventArgs e)
         {
             int button = MouseButtonMapper.ToSDLMouseButton(e.Button);
             view_extern.OnMouseButtonDown(e.X, e.Y, button);
         }
 
-        private void view_extern_MouseUp(object sender, MouseEventArgs e)
+        private void view_extern_MouseUp(object? sender, MouseEventArgs e)
         {
             int button = MouseButtonMapper.ToSDLMouseButton(e.Button);
             view_extern.OnMouseButtonUp(e.X, e.Y, button);
+
+            // clicking in the extern view may have placed an entity – if the active layer
+            // is an entity layer, refresh its batch groups so the hierarchy tree stays current.
+            hierarchyTree.RefreshSelectedEntityBatches();
         }
 
-        private void toolStripButton_openFile(object sender, MouseEventArgs e)
+        private void toolStripButton_openFile(object? sender, MouseEventArgs e)
         {
             string path = Utils.OpenFile("");
 
@@ -312,7 +321,7 @@ namespace csharp_editor
             }
         }
 
-        private void toolStripButton_export(object sender, MouseEventArgs e)
+        private void toolStripButton_export(object? sender, MouseEventArgs e)
         {
             string startingPath = AppContext.BaseDirectory;
             string name = "default";
@@ -365,7 +374,7 @@ namespace csharp_editor
             }
         }
 
-        private void HierarchyTree_LayerSelected(object sender, HierarchyTree.LayerNode layer)
+        private void HierarchyTree_LayerSelected(object? sender, HierarchyTree.LayerNode layer)
         {
             Log($"Layer selected: {layer.Name} ({layer.Type})");
 
@@ -420,6 +429,7 @@ namespace csharp_editor
             {
                 tilesetViewer.Visible = false;
                 entitySelector.Visible = true;
+                // show all entities when switching to a new layer
                 entitySelector.LoadEntities();
             }
             else
@@ -430,9 +440,81 @@ namespace csharp_editor
             }
         }
 
-        private void HierarchyTree_LayersChanged(object sender, EventArgs e)
+        private void HierarchyTree_StateSelected(object? sender, EventArgs e)
+        {
+            Log("State row selected");
+            try
+            {
+                if (view_extern != null)
+                {
+                    // call backend and capture possible error message
+                    string? error = view_extern.GetMapProps(out MapInfoStruct info);
+
+                    if (!string.IsNullOrEmpty(error))
+                    {
+                        // backend returned an error string – show to user and abort
+                        MessageBox.Show(error, "Map Info Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        if (propertyGridPanel1?.PropertyGrid != null)
+                            propertyGridPanel1.PropertyGrid.SelectedObject = null;
+                    }
+                    else
+                    {
+                        // success: populate display object
+                        var display = new MapInfoDisplay {
+                            ID = info.idd ?? string.Empty,
+                            Name = info.name ?? string.Empty,
+                            WorldX = info.worldx,
+                            WorldY = info.worldy,
+                            Width = info.width,
+                            Height = info.height,
+                            TileSize = info.tileSize,
+                            BackgroundColor = Utils.ConvertFromRGBA(info.bgColor),
+                            GridColor = Utils.ConvertFromRGBA(info.gridColor)
+                        };
+                        display.PropertyChanged += (s, args) => {
+                            if (s is MapInfoDisplay m && view_extern != null) {
+                                // push back to engine
+                                MapInfoStruct native = new MapInfoStruct {
+                                    idd = m.ID,
+                                    name = m.Name,
+                                    worldx = m.WorldX,
+                                    worldy = m.WorldY,
+                                    width = m.Width,
+                                    height = m.Height,
+                                    tileSize = m.TileSize,
+                                    bgColor = Utils.ConvertToRGBA(m.BackgroundColor),
+                                    gridColor = Utils.ConvertToRGBA(m.GridColor)
+                                };
+                                view_extern.SetMapProps(native);
+                            }
+                        };
+                        propertyGridPanel1.PropertyGrid.SelectedObject = display;
+                    }
+                }
+                else
+                {
+                    Log("Failed to retrieve map info");
+                    if (propertyGridPanel1?.PropertyGrid != null)
+                        propertyGridPanel1.PropertyGrid.SelectedObject = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("Error displaying map info: " + ex.Message);
+            }
+        }
+
+
+        private void HierarchyTree_LayersChanged(object? sender, EventArgs e)
         {
             // TODO: Sync with backend when layers change
+        }
+
+        private void HierarchyTree_BatchSelected(object? sender, string tilesetName)
+        {
+            // user picked a batch group: filter the entity selector
+            Log($"Batch selected for tileset: {tilesetName}");
+            entitySelector.LoadEntities(tilesetName);
         }
 
         private void UpdateTextureViewer(HierarchyTree.LayerNode layer)
@@ -539,7 +621,7 @@ namespace csharp_editor
                 for (int i = 0; i < count; i++)
                 {
                     Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
-                    int result = view_extern.GetTilesetAt(i, out tilesetInfo);
+                    int result = view_extern?.GetTilesetAt(i, out tilesetInfo) ?? 0;
                     if (result != 0)
                     {
                         string tilesetName = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "";

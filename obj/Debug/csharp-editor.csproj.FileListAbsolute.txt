@@ -42,3 +42,13 @@ C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\refint\csharp-editor.
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\csharp-editor.pdb
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\csharp-editor.genruntimeconfig.cache
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\Debug\ref\csharp-editor.dll
+c:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.Editor.resources
+c:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.EntitiesDialog.resources
+c:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.ExternView.resources
+c:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.HierarchyTree.resources
+c:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.Properties.Resources.resources
+c:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.TilesetImportDialog.resources
+c:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.UserControls.Console.resources
+c:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.UserControls.PropertyGridPanel.resources
+c:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.UserControls.TextureViewer.resources
+c:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.UserControls.TilesetViewer.resources

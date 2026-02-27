@@ -27,13 +27,18 @@ namespace csharp_editor.UserControls {
             LoadEntities();
         }
         
-        public void LoadEntities() {
+        /// <summary>
+        /// Loads entities into the list.  If <paramref name="tilesetFilter"/> is
+        /// supplied, only entities whose TilemapName equals that string are shown.
+        /// </summary>
+        public void LoadEntities(string? tilesetFilter = null) {
             listBoxEntities.Items.Clear();
             _selectedEntityName = "";
             
             if (_externView == null) return;
             
             int count = _externView.GetEntityCount();
+            int visibleCount = 0;
             
             for (int i = 0; i < count; i++) {
                 Externs.EntityDataStruct entityData = new Externs.EntityDataStruct();
@@ -41,28 +46,37 @@ namespace csharp_editor.UserControls {
                 
                 string name = Marshal.PtrToStringAnsi(entityData.name) ?? "";
                 string tilesetName = Marshal.PtrToStringAnsi(entityData.tilesetName) ?? "";
-                
-                if (!string.IsNullOrEmpty(name)) {
-                    string displayText = $"{name} ({entityData.width}×{entityData.height}) - {tilesetName}";
-                    listBoxEntities.Items.Add(new EntityListItem {
-                        Name = name,
-                        DisplayText = displayText,
-                        Width = entityData.width,
-                        Height = entityData.height,
-                        TilesetName = tilesetName,
-                        RegionX = entityData.regionX,
-                        RegionY = entityData.regionY,
-                        RegionWidth = entityData.regionWidth,
-                        RegionHeight = entityData.regionHeight
-                    });
-                }
+
+                if (string.IsNullOrEmpty(name))
+                    continue;
+
+                // apply filter if provided
+                if (!string.IsNullOrEmpty(tilesetFilter) && tilesetName != tilesetFilter)
+                    continue;
+
+                string displayText = string.IsNullOrEmpty(tilesetName)
+                    ? $"{name} ({entityData.width}×{entityData.height})"
+                    : $"{name} ({entityData.width}×{entityData.height}) - {tilesetName}";
+
+                listBoxEntities.Items.Add(new EntityListItem {
+                    Name = name,
+                    DisplayText = displayText,
+                    Width = entityData.width,
+                    Height = entityData.height,
+                    TilesetName = tilesetName,
+                    RegionX = entityData.regionX,
+                    RegionY = entityData.regionY,
+                    RegionWidth = entityData.regionWidth,
+                    RegionHeight = entityData.regionHeight
+                });
+                visibleCount++;
             }
             
             if (listBoxEntities.Items.Count > 0) {
                 listBoxEntities.SelectedIndex = 0;
             }
             
-            labelCount.Text = $"Entities: {count}";
+            labelCount.Text = $"Entities: {visibleCount}";
         }
         
         private void ListBoxEntities_SelectedIndexChanged(object? sender, EventArgs e) {
