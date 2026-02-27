@@ -213,10 +213,12 @@ namespace csharp_editor {
             return Externs.GetLayerCount();
         }
 
-        public bool GetMapInfo(out MapInfoStruct outInfo) {
-            Externs.MapInfoStruct temp;
-            int result = Externs.GetMapInfo(out temp);
-            if (result != 0) {
+        public string? GetMapProps(out MapInfoStruct outInfo) {
+            MapProps temp;
+            IntPtr result = Externs.GetMapProps(out temp);
+            
+            if (result == IntPtr.Zero) {
+                
                 outInfo = new MapInfoStruct {
                     idd = Marshal.PtrToStringAnsi(temp.idd),
                     name = Marshal.PtrToStringAnsi(temp.name),
@@ -228,14 +230,16 @@ namespace csharp_editor {
                     bgColor = temp.bgColor,
                     gridColor = temp.gridColor
                 };
-                return true;
+                
+                return null;
             }
+            
             outInfo = default;
-            return false;
+            return Marshal.PtrToStringAnsi(result);
         }
 
-        public bool SetMapInfo(MapInfoStruct info) {
-            Externs.MapInfoStruct temp = new Externs.MapInfoStruct {
+        public string? SetMapProps(MapInfoStruct info) {
+            MapProps temp = new MapProps {
                 idd = Marshal.StringToHGlobalAnsi(info.idd ?? ""),
                 name = Marshal.StringToHGlobalAnsi(info.name ?? ""),
                 worldx = info.worldx,
@@ -246,9 +250,14 @@ namespace csharp_editor {
                 bgColor = info.bgColor,
                 gridColor = info.gridColor
             };
+            
             try {
-                int result = Externs.SetMapInfo(ref temp);
-                return result != 0;
+                IntPtr result = Externs.SetMapProps(ref temp);
+                if (result == IntPtr.Zero) {
+                    return null;
+                }
+                
+                return Marshal.PtrToStringAnsi(result);
             } finally {
                 Marshal.FreeHGlobal(temp.idd);
                 Marshal.FreeHGlobal(temp.name);

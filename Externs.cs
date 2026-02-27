@@ -54,7 +54,7 @@ namespace csharp_editor {
         }
         
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-        public struct MapInfoStruct {
+        public struct MapProps {
             public IntPtr idd;       // id string
             public IntPtr name;      // name string
             public int worldx;
@@ -172,11 +172,11 @@ namespace csharp_editor {
         [DllImport(DLL, EntryPoint = "importMap")]
         public static extern int ImportMap(string path);
         
-        [DllImport(DLL, EntryPoint = "getMapInfo", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int GetMapInfo(out MapInfoStruct outInfo);
+        [DllImport(DLL, EntryPoint = "getMapProps", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern IntPtr GetMapProps(out MapProps outInfo);
         
-        [DllImport(DLL, EntryPoint = "setMapInfo", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int SetMapInfo(ref MapInfoStruct info);
+        [DllImport(DLL, EntryPoint = "setMapProps", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern IntPtr SetMapProps(ref MapProps info);
         
         // Layer Management
         [DllImport(DLL, EntryPoint = "setLayerProperties", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]

@@ -445,37 +445,51 @@ namespace csharp_editor
             Log("State row selected");
             try
             {
-                if (view_extern != null && view_extern.GetMapInfo(out MapInfoStruct info))
+                if (view_extern != null)
                 {
-                    var display = new MapInfoDisplay {
-                        ID = info.idd ?? string.Empty,
-                        Name = info.name ?? string.Empty,
-                        WorldX = info.worldx,
-                        WorldY = info.worldy,
-                        Width = info.width,
-                        Height = info.height,
-                        TileSize = info.tileSize,
-                        BackgroundColor = Utils.ConvertFromRGBA(info.bgColor),
-                        GridColor = Utils.ConvertFromRGBA(info.gridColor)
-                    };
-                    display.PropertyChanged += (s, args) => {
-                        if (s is MapInfoDisplay m && view_extern != null) {
-                            // push back to engine
-                            MapInfoStruct native = new MapInfoStruct {
-                                idd = m.ID,
-                                name = m.Name,
-                                worldx = m.WorldX,
-                                worldy = m.WorldY,
-                                width = m.Width,
-                                height = m.Height,
-                                tileSize = m.TileSize,
-                                bgColor = Utils.ConvertToRGBA(m.BackgroundColor),
-                                gridColor = Utils.ConvertToRGBA(m.GridColor)
-                            };
-                            view_extern.SetMapInfo(native);
-                        }
-                    };
-                    propertyGridPanel1.PropertyGrid.SelectedObject = display;
+                    // call backend and capture possible error message
+                    string? error = view_extern.GetMapProps(out MapInfoStruct info);
+
+                    if (!string.IsNullOrEmpty(error))
+                    {
+                        // backend returned an error string – show to user and abort
+                        MessageBox.Show(error, "Map Info Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        if (propertyGridPanel1?.PropertyGrid != null)
+                            propertyGridPanel1.PropertyGrid.SelectedObject = null;
+                    }
+                    else
+                    {
+                        // success: populate display object
+                        var display = new MapInfoDisplay {
+                            ID = info.idd ?? string.Empty,
+                            Name = info.name ?? string.Empty,
+                            WorldX = info.worldx,
+                            WorldY = info.worldy,
+                            Width = info.width,
+                            Height = info.height,
+                            TileSize = info.tileSize,
+                            BackgroundColor = Utils.ConvertFromRGBA(info.bgColor),
+                            GridColor = Utils.ConvertFromRGBA(info.gridColor)
+                        };
+                        display.PropertyChanged += (s, args) => {
+                            if (s is MapInfoDisplay m && view_extern != null) {
+                                // push back to engine
+                                MapInfoStruct native = new MapInfoStruct {
+                                    idd = m.ID,
+                                    name = m.Name,
+                                    worldx = m.WorldX,
+                                    worldy = m.WorldY,
+                                    width = m.Width,
+                                    height = m.Height,
+                                    tileSize = m.TileSize,
+                                    bgColor = Utils.ConvertToRGBA(m.BackgroundColor),
+                                    gridColor = Utils.ConvertToRGBA(m.GridColor)
+                                };
+                                view_extern.SetMapProps(native);
+                            }
+                        };
+                        propertyGridPanel1.PropertyGrid.SelectedObject = display;
+                    }
                 }
                 else
                 {
