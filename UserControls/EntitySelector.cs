@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using csharp_editor.Dialogs;
 
 namespace csharp_editor.UserControls {
     public partial class EntitySelector : UserControl {

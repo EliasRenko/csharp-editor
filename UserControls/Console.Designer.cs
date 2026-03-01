@@ -26,9 +26,9 @@ namespace csharp_editor.UserControls {
         private void InitializeComponent()
         {
             label_log = new System.Windows.Forms.Label();
-            logView = new csharp_editor.LogView();
-            inputView1 = new csharp_editor.InputView();
-            inputView2 = new csharp_editor.InputView();
+            logView = new LogView();
+            inputView1 = new InputView();
+            inputView2 = new InputView();
             SuspendLayout();
             // 
             // label_log
@@ -85,11 +85,11 @@ namespace csharp_editor.UserControls {
             PerformLayout();
         }
 
-        private csharp_editor.InputView inputView2;
+        private InputView inputView2;
 
-        private csharp_editor.InputView inputView1;
+        private InputView inputView1;
 
-        private csharp_editor.LogView logView;
+        private LogView logView;
 
         #endregion
 

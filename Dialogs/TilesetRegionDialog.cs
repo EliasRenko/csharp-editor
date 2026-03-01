@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using csharp_editor.UserControls;
 
-namespace csharp_editor {
+namespace csharp_editor.Dialogs {
     public partial class TilesetRegionDialog : Form {
         private ExternView _externView;
         private string _tilesetName;

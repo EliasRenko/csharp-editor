@@ -1,6 +1,7 @@
 using System.ComponentModel;
+using csharp_editor.UserControls;
 
-namespace csharp_editor.UserControls {
+namespace csharp_editor.Models {
     public class LayerInfoDisplay : INotifyPropertyChanged {
     private bool _silhouette;
     private System.Drawing.Color _silhouetteColor = System.Drawing.Color.Black;

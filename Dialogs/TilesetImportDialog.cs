@@ -5,7 +5,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace csharp_editor {
+namespace csharp_editor.Dialogs {
     public partial class TilesetImportDialog : Form {
         
         public string SelectedTilesetName { get; private set; } = "";

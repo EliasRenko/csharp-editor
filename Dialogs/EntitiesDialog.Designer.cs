@@ -1,4 +1,4 @@
-namespace csharp_editor {
+namespace csharp_editor.Dialogs {
     partial class EntitiesDialog {
         /// <summary>
         /// Required designer variable.

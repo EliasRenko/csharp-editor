@@ -1,4 +1,4 @@
-namespace csharp_editor {
+namespace csharp_editor.UserControls {
     partial class HierarchyTree {
         /// <summary> 
         /// Required designer variable.

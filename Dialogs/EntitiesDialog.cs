@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using csharp_editor.Dialogs;
 
-namespace csharp_editor {
+namespace csharp_editor.Dialogs {
     public partial class EntitiesDialog : Form {
         
         public class EntityEntry {

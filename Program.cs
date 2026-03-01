@@ -6,6 +6,7 @@ namespace csharp_editor {
 
         [STAThread]
         static void Main() {
+            // Enable high DPI support and visual styles
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

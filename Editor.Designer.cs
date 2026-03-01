@@ -54,7 +54,7 @@ namespace csharp_editor {
             toolStripButton6 = new ToolStripButton();
             toolStripSeparator2 = new ToolStripSeparator();
             toolStripButton_tilesets = new ToolStripButton();
-            toolStripButton_entities = new ToolStripButton();
+            toolStripButton_entitiesDefs = new ToolStripButton();
             toolStripSeparator3 = new ToolStripSeparator();
             toolStripButton7 = new ToolStripButton();
             propertyGridPanel1 = new PropertyGridPanel();
@@ -199,7 +199,7 @@ namespace csharp_editor {
             // toolStrip1
             // 
             toolStrip1.GripStyle = ToolStripGripStyle.Hidden;
-            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripButton1, toolStripButton2, toolStripButton3, toolStripButton4, toolStripSeparator1, toolStripButton5, toolStripButton6, toolStripSeparator2, toolStripButton_tilesets, toolStripButton_entities, toolStripSeparator3, toolStripButton7 });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripButton1, toolStripButton2, toolStripButton3, toolStripButton4, toolStripSeparator1, toolStripButton5, toolStripButton6, toolStripSeparator2, toolStripButton_tilesets, toolStripButton_entitiesDefs, toolStripSeparator3, toolStripButton7 });
             toolStrip1.Location = new Point(0, 24);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(1058, 25);
@@ -281,12 +281,12 @@ namespace csharp_editor {
             // 
             // toolStripButton_entities
             // 
-            toolStripButton_entities.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            toolStripButton_entities.Image = Properties.Resources.folder_lightbulb;
-            toolStripButton_entities.ImageTransparentColor = Color.Magenta;
-            toolStripButton_entities.Name = "toolStripButton_entities";
-            toolStripButton_entities.Size = new Size(23, 22);
-            toolStripButton_entities.Text = "toolStripButton8";
+            toolStripButton_entitiesDefs.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButton_entitiesDefs.Image = Properties.Resources.folder_lightbulb;
+            toolStripButton_entitiesDefs.ImageTransparentColor = Color.Magenta;
+            toolStripButton_entitiesDefs.Name = "toolStripButton_entities";
+            toolStripButton_entitiesDefs.Size = new Size(23, 22);
+            toolStripButton_entitiesDefs.Text = "toolStripButton8";
             // 
             // toolStripSeparator3
             // 
@@ -351,7 +351,7 @@ namespace csharp_editor {
         private StatusStrip statusStrip1;
         private csharp_editor.UserControls.Console console;
         private System.Windows.Forms.Panel panelRight;
-        private csharp_editor.HierarchyTree hierarchyTree;
+        private csharp_editor.UserControls.HierarchyTree hierarchyTree;
         private csharp_editor.UserControls.TilesetViewer tilesetViewer;
         private csharp_editor.UserControls.EntitySelector entitySelector;
         private ToolStrip toolStrip1;
@@ -364,7 +364,7 @@ namespace csharp_editor {
         private ToolStripButton toolStripButton6;
         private ToolStripSeparator toolStripSeparator2;
         private ToolStripButton toolStripButton_tilesets;
-        private ToolStripButton toolStripButton_entities;
+        private ToolStripButton toolStripButton_entitiesDefs;
         private ToolStripMenuItem toolStripMenuItem2;
         private ToolStripMenuItem ToolStripMenuItem_textureViewer;
         private ToolStripSeparator toolStripSeparator3;

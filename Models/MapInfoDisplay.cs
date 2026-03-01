@@ -1,7 +1,8 @@
 using System.ComponentModel;
 using System.Drawing;
+using csharp_editor.UserControls;
 
-namespace csharp_editor.UserControls {
+namespace csharp_editor.Models {
     public class MapInfoDisplay : INotifyPropertyChanged {
         private string? _idd;
         private string? _name;

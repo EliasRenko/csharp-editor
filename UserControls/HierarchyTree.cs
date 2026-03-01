@@ -5,7 +5,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace csharp_editor {
+namespace csharp_editor.UserControls {
     public partial class HierarchyTree : UserControl {
         
         public class LayerNode {

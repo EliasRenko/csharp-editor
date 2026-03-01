@@ -1,34 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Compile Update="Editor.cs">
+    <Compile Update="Dialogs\EntitiesDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="EntitiesDialog.cs">
+    <Compile Update="Dialogs\TilesetImportDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialogs\TilesetRegionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Editor.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="ExternView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="HierarchyTree.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="InputView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="LogView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="TilesetImportDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="TilesetRegionDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Update="UserControls\Console.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="UserControls\EntitySelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\HierarchyTree.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="UserControls\InputView.cs">
