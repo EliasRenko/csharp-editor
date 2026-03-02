@@ -21,6 +21,9 @@ namespace csharp_editor.UserControls {
         // animation for marching-ants selection rectangle
         private System.Windows.Forms.Timer _dashTimer = null!;
         private float _dashOffset = 0f;
+
+        // background checker toggle
+        private bool _checkerEnabled = false;
         public bool HasSelection => _selectedTile.X >= 0 && _selectedTile.Y >= 0;
         
         public int SelectedRegionId {
@@ -87,6 +90,12 @@ namespace csharp_editor.UserControls {
                 pictureBoxTexture.Invalidate();
             };
             _dashTimer.Start();
+
+            // checker toggle button action
+            toolStripButtonChecker.CheckedChanged += (s, e) => {
+                _checkerEnabled = toolStripButtonChecker.Checked;
+                pictureBoxTexture.Invalidate();
+            };
         }
         
         private void InitializeZoomComboBox() {
@@ -329,6 +338,9 @@ namespace csharp_editor.UserControls {
                 int zoomedWidth = (int)(_bitmap.Width * _zoomLevel);
                 int zoomedHeight = (int)(_bitmap.Height * _zoomLevel);
                 
+                if (_checkerEnabled) {
+                    DrawCheckerBackground(e.Graphics, zoomedWidth, zoomedHeight);
+                }
                 e.Graphics.DrawImage(_bitmap, 0, 0, zoomedWidth, zoomedHeight);
             }
             
@@ -368,6 +380,27 @@ namespace csharp_editor.UserControls {
                 (int)(imageRect.Width * _zoomLevel),
                 (int)(imageRect.Height * _zoomLevel)
             );
+        }
+
+        /// <summary>
+        /// Fills the provided area with a simple checkerboard pattern.
+        /// Size of each square scales with zoom level so the pattern stays visible.
+        /// </summary>
+        private void DrawCheckerBackground(Graphics g, int width, int height) {
+            int baseSize = 8; // pixels
+            int size = Math.Max(1, (int)(baseSize * _zoomLevel));
+            Color c1 = Color.LightGray;
+            Color c2 = Color.White;
+
+            using (Brush b1 = new SolidBrush(c1))
+            using (Brush b2 = new SolidBrush(c2)) {
+                for (int y = 0; y < height; y += size) {
+                    for (int x = 0; x < width; x += size) {
+                        bool odd = ((x / size) + (y / size)) % 2 == 1;
+                        g.FillRectangle(odd ? b1 : b2, x, y, size, size);
+                    }
+                }
+            }
         }
 
         private Bitmap CreateBitmapFromTextureData(Externs.TextureDataStruct textureData) {

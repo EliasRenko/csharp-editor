@@ -16,6 +16,7 @@ namespace csharp_editor.UserControls {
             toolStrip = new System.Windows.Forms.ToolStrip();
             toolStripLabelZoom = new System.Windows.Forms.ToolStripLabel();
             toolStripComboBoxZoom = new System.Windows.Forms.ToolStripComboBox();
+            toolStripButtonChecker = new System.Windows.Forms.ToolStripButton();
             panelContainer = new System.Windows.Forms.Panel();
             pictureBoxTexture = new System.Windows.Forms.PictureBox();
             toolStrip.SuspendLayout();
@@ -26,7 +27,7 @@ namespace csharp_editor.UserControls {
             // toolStrip
             // 
             toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripLabelZoom, toolStripComboBoxZoom });
+            toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripButtonChecker, toolStripLabelZoom, toolStripComboBoxZoom });
             toolStrip.Location = new System.Drawing.Point(0, 0);
             toolStrip.Name = "toolStrip";
             toolStrip.Size = new System.Drawing.Size(600, 25);
@@ -44,6 +45,14 @@ namespace csharp_editor.UserControls {
             toolStripComboBoxZoom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             toolStripComboBoxZoom.Name = "toolStripComboBoxZoom";
             toolStripComboBoxZoom.Size = new System.Drawing.Size(75, 25);
+            // 
+            // toolStripButtonChecker
+            // 
+            toolStripButtonChecker.CheckOnClick = true;
+            toolStripButtonChecker.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            toolStripButtonChecker.Name = "toolStripButtonChecker";
+            toolStripButtonChecker.Size = new System.Drawing.Size(56, 22);
+            toolStripButtonChecker.Text = "Checker";
             // 
             // panelContainer
             // 
@@ -86,6 +95,7 @@ namespace csharp_editor.UserControls {
         private System.Windows.Forms.ToolStrip toolStrip;
         private System.Windows.Forms.ToolStripLabel toolStripLabelZoom;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBoxZoom;
+        private System.Windows.Forms.ToolStripButton toolStripButtonChecker;
         private System.Windows.Forms.Panel panelContainer;
         private System.Windows.Forms.PictureBox pictureBoxTexture;
     }
