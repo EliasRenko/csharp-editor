@@ -35,14 +35,14 @@ namespace csharp_editor {
             editToolStripMenuItem = new ToolStripMenuItem();
             viewToolStripMenuItem = new ToolStripMenuItem();
             toolStripMenuItem2 = new ToolStripMenuItem();
-            ToolStripMenuItem_textureViewer = new ToolStripMenuItem();
+            ToolStripMenuItem_textureInfo = new ToolStripMenuItem();
             helpToolStripMenuItem = new ToolStripMenuItem();
             statusStrip1 = new StatusStrip();
             console = new csharp_editor.UserControls.Console();
             toolStripMenuItem1 = new ToolStripMenuItem();
             panelRight = new Panel();
             entitySelector = new EntitySelector();
-            tilesetViewer = new TilesetViewer();
+            textureViewer = new TextureViewer();
             hierarchyTree = new HierarchyTree();
             toolStrip1 = new ToolStrip();
             toolStripButton1 = new ToolStripButton();
@@ -114,16 +114,16 @@ namespace csharp_editor {
             // 
             // toolStripMenuItem2
             // 
-            toolStripMenuItem2.DropDownItems.AddRange(new ToolStripItem[] { ToolStripMenuItem_textureViewer });
+            toolStripMenuItem2.DropDownItems.AddRange(new ToolStripItem[] { ToolStripMenuItem_textureInfo });
             toolStripMenuItem2.Name = "toolStripMenuItem2";
             toolStripMenuItem2.Size = new Size(46, 20);
             toolStripMenuItem2.Text = "Tools";
             // 
-            // ToolStripMenuItem_textureViewer
+            // ToolStripMenuItem_textureInfo
             // 
-            ToolStripMenuItem_textureViewer.Name = "ToolStripMenuItem_textureViewer";
-            ToolStripMenuItem_textureViewer.Size = new Size(149, 22);
-            ToolStripMenuItem_textureViewer.Text = "Texture viewer";
+            ToolStripMenuItem_textureInfo.Name = "ToolStripMenuItem_textureInfo";
+            ToolStripMenuItem_textureInfo.Size = new Size(149, 22);
+            ToolStripMenuItem_textureInfo.Text = "Texture info";
             // 
             // helpToolStripMenuItem
             // 
@@ -159,7 +159,7 @@ namespace csharp_editor {
             // 
             panelRight.BackColor = SystemColors.ControlDark;
             panelRight.Controls.Add(entitySelector);
-            panelRight.Controls.Add(tilesetViewer);
+            panelRight.Controls.Add(textureViewer);
             panelRight.Controls.Add(hierarchyTree);
             panelRight.Dock = DockStyle.Right;
             panelRight.Location = new Point(795, 49);
@@ -176,16 +176,16 @@ namespace csharp_editor {
             entitySelector.TabIndex = 2;
             entitySelector.Visible = false;
             // 
-            // tilesetViewer
+            // textureViewer
             // 
-            tilesetViewer.BackColor = SystemColors.ControlDark;
-            tilesetViewer.Dock = DockStyle.Fill;
-            tilesetViewer.Location = new Point(0, 344);
-            tilesetViewer.Name = "tilesetViewer";
-            tilesetViewer.RegionSelectionMode = false;
-            tilesetViewer.Size = new Size(263, 225);
-            tilesetViewer.SnapToGrid = true;
-            tilesetViewer.TabIndex = 1;
+            textureViewer.BackColor = SystemColors.ControlDark;
+            textureViewer.Dock = DockStyle.Fill;
+            textureViewer.Location = new Point(0, 344);
+            textureViewer.Name = "textureViewer";
+            textureViewer.RegionSelectionMode = false;
+            textureViewer.Size = new Size(263, 225);
+            textureViewer.SnapToGrid = true;
+            textureViewer.TabIndex = 1;
             // 
             // hierarchyTree
             // 
@@ -340,7 +340,7 @@ namespace csharp_editor {
 
         #endregion
 
-        private csharp_editor.ExternView view_extern;
+        private csharp_editor.UserControls.ExternView view_extern;
         private MenuStrip menuStrip1;
         private ToolStripMenuItem fileToolStripMenuItem;
         private ToolStripMenuItem editToolStripMenuItem;
@@ -352,7 +352,7 @@ namespace csharp_editor {
         private csharp_editor.UserControls.Console console;
         private System.Windows.Forms.Panel panelRight;
         private csharp_editor.UserControls.HierarchyTree hierarchyTree;
-        private csharp_editor.UserControls.TilesetViewer tilesetViewer;
+        private csharp_editor.UserControls.TextureViewer textureViewer;
         private csharp_editor.UserControls.EntitySelector entitySelector;
         private ToolStrip toolStrip1;
         private ToolStripButton toolStripButton1;
@@ -366,7 +366,7 @@ namespace csharp_editor {
         private ToolStripButton toolStripButton_tilesets;
         private ToolStripButton toolStripButton_entitiesDefs;
         private ToolStripMenuItem toolStripMenuItem2;
-        private ToolStripMenuItem ToolStripMenuItem_textureViewer;
+        private ToolStripMenuItem ToolStripMenuItem_textureInfo;
         private ToolStripSeparator toolStripSeparator3;
         private ToolStripButton toolStripButton7;
     }

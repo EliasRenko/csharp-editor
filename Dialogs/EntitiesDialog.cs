@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using csharp_editor.Dialogs;
+using csharp_editor.UserControls;
 
 namespace csharp_editor.Dialogs {
     public partial class EntitiesDialog : Form {
@@ -243,29 +239,6 @@ namespace csharp_editor.Dialogs {
             }
         }
 
-        private void buttonUse_Click(object sender, EventArgs e) {
-            if (listBoxEntities.SelectedIndex >= 0) {
-                EntityEntry selectedEntity = _entities[listBoxEntities.SelectedIndex];
-                
-                try {
-                    // TODO: Set current entity in C++ when the API is ready
-                    
-                    SelectedEntityName = selectedEntity.Name;
-                    _onEntitySelected?.Invoke(selectedEntity.Name);
-                    
-                    MessageBox.Show($"Entity '{selectedEntity.Name}' is now selected.",
-                        "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (Exception ex) {
-                    MessageBox.Show($"Error selecting entity: {ex.Message}",
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            } else {
-                MessageBox.Show("Please select an entity from the list.",
-                    "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
         private void buttonClose_Click(object sender, EventArgs e) {
             this.Close();
         }
@@ -274,7 +247,6 @@ namespace csharp_editor.Dialogs {
             // Enable/disable buttons based on selection
             bool hasSelection = listBoxEntities.SelectedIndex >= 0;
             buttonDelete.Enabled = hasSelection;
-            buttonUse.Enabled = hasSelection;
         }
     }
 }

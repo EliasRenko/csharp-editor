@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using static csharp_editor.Externs;
 
-namespace csharp_editor {
+namespace csharp_editor.UserControls {
     public struct MapInfoStruct {
         public string? idd;
         public string? name;

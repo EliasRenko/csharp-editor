@@ -25,13 +25,13 @@ namespace csharp_editor.Dialogs {
             this.Text = $"Select Region - {tilesetName}";
             
             // Enable region selection mode
-            tilesetViewer.RegionSelectionMode = true;
-            tilesetViewer.SnapToGrid = true;
+            textureViewer.RegionSelectionMode = true;
+            textureViewer.SnapToGrid = true;
             
             LoadTilesetTexture();
             
             // Set initial region
-            tilesetViewer.SetInitialRegion(initialTileX, initialTileY, initialTileWidth, initialTileHeight);
+            textureViewer.SetInitialRegion(initialTileX, initialTileY, initialTileWidth, initialTileHeight);
             UpdateRegionLabel();
         }
         
@@ -70,7 +70,7 @@ namespace csharp_editor.Dialogs {
                 string texturePath = Marshal.PtrToStringAnsi(tileset.texturePath) ?? "";
                 _externView.GetTextureData(texturePath, out textureData);
                 
-                tilesetViewer.SetTextureData(textureData, tileset);
+                textureViewer.SetTextureData(textureData, tileset);
                 
                 // Calculate suggested region based on entity size
                 if (_entityWidth > 0 && _entityHeight > 0 && tileset.tileSize > 0) {
@@ -83,7 +83,7 @@ namespace csharp_editor.Dialogs {
         }
         
         private void UpdateRegionLabel() {
-            Rectangle region = tilesetViewer.SelectedRegionInTiles;
+            Rectangle region = textureViewer.SelectedRegionInTiles;
             if (region != Rectangle.Empty) {
                 labelRegion.Text = $"Selected: ({region.X}, {region.Y}) {region.Width}×{region.Height} tiles";
             } else {
@@ -92,7 +92,7 @@ namespace csharp_editor.Dialogs {
         }
         
         private void buttonOK_Click(object sender, EventArgs e) {
-            SelectedRegion = tilesetViewer.SelectedRegionInTiles;
+            SelectedRegion = textureViewer.SelectedRegionInTiles;
             
             if (SelectedRegion == Rectangle.Empty) {
                 MessageBox.Show("Please select a region.", "Validation Error", 

@@ -24,7 +24,7 @@ namespace csharp_editor.Dialogs {
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            this.tilesetViewer = new csharp_editor.UserControls.TilesetViewer();
+            this.textureViewer = new csharp_editor.UserControls.TextureViewer();
             this.panelBottom = new System.Windows.Forms.Panel();
             this.labelSuggestion = new System.Windows.Forms.Label();
             this.labelRegion = new System.Windows.Forms.Label();
@@ -34,13 +34,13 @@ namespace csharp_editor.Dialogs {
             this.panelBottom.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tilesetViewer
+            // textureViewer
             // 
-            this.tilesetViewer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tilesetViewer.Location = new System.Drawing.Point(0, 0);
-            this.tilesetViewer.Name = "tilesetViewer";
-            this.tilesetViewer.Size = new System.Drawing.Size(784, 481);
-            this.tilesetViewer.TabIndex = 0;
+            this.textureViewer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textureViewer.Location = new System.Drawing.Point(0, 0);
+            this.textureViewer.Name = "textureViewer";
+            this.textureViewer.Size = new System.Drawing.Size(784, 481);
+            this.textureViewer.TabIndex = 0;
             // 
             // panelBottom
             // 
@@ -109,7 +109,7 @@ namespace csharp_editor.Dialogs {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(784, 561);
-            this.Controls.Add(this.tilesetViewer);
+            this.Controls.Add(this.textureViewer);
             this.Controls.Add(this.panelBottom);
             this.MinimumSize = new System.Drawing.Size(600, 400);
             this.Name = "TilesetRegionDialog";
@@ -123,7 +123,7 @@ namespace csharp_editor.Dialogs {
 
         #endregion
 
-        private UserControls.TilesetViewer tilesetViewer;
+        private UserControls.TextureViewer textureViewer;
         private System.Windows.Forms.Panel panelBottom;
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Button buttonCancel;

@@ -34,8 +34,8 @@ namespace csharp_editor {
             hierarchyTree.LayersChanged += HierarchyTree_LayersChanged;
             hierarchyTree.ReplaceTilesetClicked += ReplaceTilesetButton_Click;
 
-            // Initialize TilesetViewer
-            tilesetViewer.SelectionChanged += TilesetViewer_SelectionChanged;
+            // Initialize TextureViewer
+            textureViewer.SelectionChanged += TextureViewer_SelectionChanged;
 
             // Initialize EntitySelector
             entitySelector.SetExternView(view_extern);
@@ -52,7 +52,7 @@ namespace csharp_editor {
 
             // Debug 
 
-            ToolStripMenuItem_textureViewer.MouseDown += ButtonTextureViewOnMouseDown;
+            ToolStripMenuItem_textureInfo.MouseDown += ButtonTextureViewOnMouseDown;
             toolStripButton_tilesets.MouseDown += ShowTilesetDefDialog;
             toolStripButton_entitiesDefs.MouseDown += ShowEntitiesDefDialog;
         }
@@ -70,7 +70,7 @@ namespace csharp_editor {
                 view_extern.ReplaceLayerTileset(selectedLayer.Name, selectedTileset);
 
                 layer.TilesetName = selectedTileset; // Update local layer info
-                UpdateTextureViewer(selectedLayer);
+                UpdateTextureInfo(selectedLayer);
             }
         }
 
@@ -268,21 +268,21 @@ namespace csharp_editor {
                 propertyGridPanel1.PropertyGrid.SelectedObject = layerInfoDisplay;
             }
 
-            // Switch between TilesetViewer and EntitySelector based on layer type
+            // Switch between TextureViewer and EntitySelector based on layer type
             if (layer.Type == LayerType.TileLayer) {
-                tilesetViewer.Visible = true;
+                textureViewer.Visible = true;
                 entitySelector.Visible = false;
-                UpdateTextureViewer(layer);
+                UpdateTextureInfo(layer);
             }
             else if (layer.Type == LayerType.EntityLayer) {
-                tilesetViewer.Visible = false;
+                textureViewer.Visible = false;
                 entitySelector.Visible = true;
                 // show all entities when switching to a new layer
                 entitySelector.LoadEntities();
             }
             else {
                 // Default or unknown layer type
-                tilesetViewer.Visible = false;
+                textureViewer.Visible = false;
                 entitySelector.Visible = false;
             }
         }
@@ -355,11 +355,11 @@ namespace csharp_editor {
             entitySelector.LoadEntities(tilesetName);
         }
 
-        private void UpdateTextureViewer(HierarchyTree.LayerNode layer) {
+        private void UpdateTextureInfo(HierarchyTree.LayerNode layer) {
             // Only update if it's a tile layer with a tileset
             if (layer.Type != LayerType.TileLayer || string.IsNullOrEmpty(layer.TilesetName)) {
-                // Clear the tileset viewer if no valid tileset
-                tilesetViewer.Clear();
+                // Clear the texture viewer if no valid tileset
+                textureViewer.Clear();
                 propertyGridPanel1.PropertyGrid.SelectedObject = null;
                 return;
             }
@@ -370,8 +370,8 @@ namespace csharp_editor {
             int result = view_extern.GetTileset(layer.TilesetName, out tilesetInfo);
 
             if (result == 0) {
-                Log($"Failed to load tileset '{layer.TilesetName}' for tileset viewer");
-                tilesetViewer.Clear();
+                Log($"Failed to load tileset '{layer.TilesetName}' for texture viewer");
+                textureViewer.Clear();
                 return;
             }
 
@@ -380,7 +380,7 @@ namespace csharp_editor {
 
             if (string.IsNullOrEmpty(texturePath)) {
                 Log("Invalid texture path in tileset");
-                tilesetViewer.Clear();
+                textureViewer.Clear();
                 return;
             }
 
@@ -389,16 +389,16 @@ namespace csharp_editor {
             view_extern.GetTextureData(texturePath, out textureData);
 
             // Update tileset viewer
-            tilesetViewer.SetTextureData(textureData, tilesetInfo);
+            textureViewer.SetTextureData(textureData, tilesetInfo);
 
             // Get and select the active tile from backend
             int activeTile = view_extern.GetActiveTile();
-            tilesetViewer.SetSelectedTile(activeTile);
+            textureViewer.SetSelectedTile(activeTile);
 
-            Log($"Tileset viewer updated with tileset: {layer.TilesetName}");
+            Log($"Texture viewer updated with tileset: {layer.TilesetName}");
         }
 
-        private void TilesetViewer_SelectionChanged(object? sender, int regionId) {
+        private void TextureViewer_SelectionChanged(object? sender, int regionId) {
             // Update the selected tile in the backend
             view_extern.SetActiveTile(regionId);
 
@@ -461,16 +461,16 @@ namespace csharp_editor {
             Externs.TextureDataStruct textureData;
             view_extern.GetTextureData(texturePath, out textureData);
 
-            // Create and show TextureViewer dialog
+            // Create and show TextureInfo dialog
             using (Form dialog = new Form()) {
                 string tilesetName = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "Unknown";
-                dialog.Text = $"Texture Viewer - {selectedLayer.Name} ({tilesetName})";
+                dialog.Text = $"Texture Info - {selectedLayer.Name} ({tilesetName})";
                 dialog.Size = new Size(620, 560);
                 dialog.StartPosition = FormStartPosition.CenterParent;
                 dialog.FormBorderStyle = FormBorderStyle.Sizable;
                 dialog.MinimumSize = new Size(400, 300);
 
-                UserControls.TextureViewer viewer = new UserControls.TextureViewer();
+                UserControls.TextureInfo viewer = new UserControls.TextureInfo();
                 viewer.Dock = DockStyle.Fill;
                 viewer.SetTextureData(textureData, tilesetInfo);
 

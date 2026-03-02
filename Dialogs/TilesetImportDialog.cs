@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
+using csharp_editor.UserControls;
 
 namespace csharp_editor.Dialogs {
     public partial class TilesetImportDialog : Form {
