@@ -27,7 +27,7 @@ namespace csharp_editor.UserControls {
             // toolStrip
             // 
             toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripButtonChecker, toolStripLabelZoom, toolStripComboBoxZoom });
+            toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripLabelZoom, toolStripComboBoxZoom, toolStripButtonChecker });
             toolStrip.Location = new System.Drawing.Point(0, 0);
             toolStrip.Name = "toolStrip";
             toolStrip.Size = new System.Drawing.Size(600, 25);
@@ -49,10 +49,11 @@ namespace csharp_editor.UserControls {
             // toolStripButtonChecker
             // 
             toolStripButtonChecker.CheckOnClick = true;
-            toolStripButtonChecker.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            toolStripButtonChecker.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             toolStripButtonChecker.Name = "toolStripButtonChecker";
-            toolStripButtonChecker.Size = new System.Drawing.Size(56, 22);
-            toolStripButtonChecker.Text = "Checker";
+            toolStripButtonChecker.Size = new System.Drawing.Size(23, 22);
+            toolStripButtonChecker.Text = "";
+            toolStripButtonChecker.Image = Properties.Resources.checkerboard;
             // 
             // panelContainer
             // 

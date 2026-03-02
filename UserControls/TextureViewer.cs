@@ -96,6 +96,7 @@ namespace csharp_editor.UserControls {
                 _checkerEnabled = toolStripButtonChecker.Checked;
                 pictureBoxTexture.Invalidate();
             };
+
         }
         
         private void InitializeZoomComboBox() {
@@ -386,6 +387,7 @@ namespace csharp_editor.UserControls {
         /// Fills the provided area with a simple checkerboard pattern.
         /// Size of each square scales with zoom level so the pattern stays visible.
         /// </summary>
+
         private void DrawCheckerBackground(Graphics g, int width, int height) {
             int baseSize = 8; // pixels
             int size = Math.Max(1, (int)(baseSize * _zoomLevel));
