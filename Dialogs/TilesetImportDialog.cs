@@ -30,6 +30,8 @@ namespace csharp_editor.Dialogs {
         private void LoadExistingTilesets() {
             listBoxTilesets.Items.Clear();
             _tilesets.Clear();
+            labelTilesetMeta.Text = "";
+            labelTilesetPath.Text = "";
             
             // Get count of tilesets from C++
             int count = _externView.GetTilesetCount();
@@ -60,9 +62,7 @@ namespace csharp_editor.Dialogs {
         }
 
         private void listBoxTilesets_SelectedIndexChanged(object sender, EventArgs e) {
-            if (listBoxTilesets.SelectedIndex >= 0) {
-                TilesetEntry entry = _tilesets[listBoxTilesets.SelectedIndex];
-
+            if (listBoxTilesets.SelectedItem is TilesetEntry entry) {
                 Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
                 int result = _externView.GetTileset(entry.Name, out tilesetInfo);
 
@@ -70,11 +70,23 @@ namespace csharp_editor.Dialogs {
                     Externs.TextureDataStruct textureData = new Externs.TextureDataStruct();
                     _externView.GetTextureData(entry.ImagePath, out textureData);
                     textureViewer.SetTextureData(textureData, tilesetInfo);
+
+                    int totalTiles = tilesetInfo.tilesPerRow * tilesetInfo.tilesPerCol;
+                    labelTilesetMeta.Text =
+                        $"Tile size: {tilesetInfo.tileSize} px   ·   " +
+                        $"Texture: {textureData.Width} × {textureData.Height} px   ·   " +
+                        $"Grid: {tilesetInfo.tilesPerRow} × {tilesetInfo.tilesPerCol}   ·   " +
+                        $"Total tiles: {totalTiles}";
+                    labelTilesetPath.Text = $"Path: {entry.ImagePath}";
                 } else {
                     textureViewer.Clear();
+                    labelTilesetMeta.Text = "";
+                    labelTilesetPath.Text = "";
                 }
             } else {
                 textureViewer.Clear();
+                labelTilesetMeta.Text = "";
+                labelTilesetPath.Text = "";
             }
         }
 
@@ -86,17 +98,103 @@ namespace csharp_editor.Dialogs {
             }
         }
 
+        private void textBoxFilter_TextChanged(object sender, EventArgs e) {
+            string filter = textBoxFilter.Text.Trim();
+            listBoxTilesets.BeginUpdate();
+            listBoxTilesets.Items.Clear();
+            foreach (var t in _tilesets) {
+                if (string.IsNullOrEmpty(filter) ||
+                    t.Name.Contains(filter, StringComparison.OrdinalIgnoreCase))
+                    listBoxTilesets.Items.Add(t);
+            }
+            listBoxTilesets.EndUpdate();
+        }
+
+        // ── Inline rename ────────────────────────────────────────────────────────
+        private TextBox? _renameBox;
+
+        private void listBoxTilesets_DoubleClick(object sender, EventArgs e) {
+            int idx = listBoxTilesets.SelectedIndex;
+            if (idx < 0 || listBoxTilesets.SelectedItem is not TilesetEntry) return;
+            TilesetEntry entry = (TilesetEntry)listBoxTilesets.SelectedItem;
+
+            Rectangle itemRect = listBoxTilesets.GetItemRectangle(idx);
+            // Translate to form coordinates
+            Point loc = listBoxTilesets.PointToScreen(itemRect.Location);
+            loc = PointToClient(loc);
+
+            _renameBox = new TextBox {
+                Text     = entry.Name,
+                Location = loc,
+                Size     = new Size(itemRect.Width, itemRect.Height + 2),
+                Font     = listBoxTilesets.Font,
+                BorderStyle = BorderStyle.FixedSingle,
+            };
+            _renameBox.SelectAll();
+            _renameBox.KeyDown    += RenameBox_KeyDown;
+            _renameBox.LostFocus  += RenameBox_LostFocus;
+            Controls.Add(_renameBox);
+            _renameBox.BringToFront();
+            _renameBox.Focus();
+        }
+
+        private void CommitRename() {
+            if (_renameBox == null) return;
+
+            int idx = listBoxTilesets.SelectedIndex;
+            string newName = _renameBox.Text.Trim();
+
+            DestroyRenameBox();
+
+            if (idx < 0 || string.IsNullOrEmpty(newName)) return;
+            if (listBoxTilesets.Items[idx] is not TilesetEntry old) return;
+            if (newName == old.Name) return;
+
+            // Check for duplicate name
+            if (_tilesets.Any(t => t.Name == newName)) {
+                MessageBox.Show($"A tileset named '{newName}' already exists.",
+                    "Rename Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // C++ has no rename API — recreate under the new name then update local entry
+            string? err = _externView.CreateTileset(old.ImagePath, newName, old.TileSize);
+            if (err != null) {
+                MessageBox.Show($"Rename failed: {err}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            old.Name = newName;
+            listBoxTilesets.Items[idx] = old;
+            listBoxTilesets.SelectedIndex = idx;
+        }
+
+        private void DestroyRenameBox() {
+            if (_renameBox == null) return;
+            Controls.Remove(_renameBox);
+            _renameBox.Dispose();
+            _renameBox = null;
+        }
+
+        private void RenameBox_KeyDown(object? sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Enter)  { e.SuppressKeyPress = true; CommitRename(); }
+            if (e.KeyCode == Keys.Escape) { DestroyRenameBox(); }
+        }
+
+        private void RenameBox_LostFocus(object? sender, EventArgs e) {
+            CommitRename();
+        }
+
         private void buttonRemove_Click(object sender, EventArgs e) {
-            if (listBoxTilesets.SelectedIndex >= 0) {
-                int index = listBoxTilesets.SelectedIndex;
-                _tilesets.RemoveAt(index);
-                listBoxTilesets.Items.RemoveAt(index);
+            if (listBoxTilesets.SelectedItem is TilesetEntry entry) {
+                _tilesets.Remove(entry);
+                listBoxTilesets.Items.Remove(entry);
             }
         }
 
         private void buttonUse_Click(object sender, EventArgs e) {
-            if (listBoxTilesets.SelectedIndex >= 0) {
-                TilesetEntry selectedTileset = _tilesets[listBoxTilesets.SelectedIndex];
+            if (listBoxTilesets.SelectedItem is TilesetEntry selectedTileset) {
                 
                 try {
                     bool result = _externView.SetActiveTileset(selectedTileset.Name);

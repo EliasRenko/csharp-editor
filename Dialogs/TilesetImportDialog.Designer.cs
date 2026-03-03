@@ -27,8 +27,11 @@ namespace csharp_editor.Dialogs {
             groupBoxExisting = new System.Windows.Forms.GroupBox();
             buttonUse = new System.Windows.Forms.Button();
             buttonRemove = new System.Windows.Forms.Button();
+            textBoxFilter = new System.Windows.Forms.TextBox();
             listBoxTilesets = new System.Windows.Forms.ListBox();
             textureViewer = new csharp_editor.UserControls.TextureViewer();
+            labelTilesetMeta = new System.Windows.Forms.Label();
+            labelTilesetPath = new System.Windows.Forms.Label();
             buttonNew = new System.Windows.Forms.Button();
             buttonClose = new System.Windows.Forms.Button();
             groupBoxExisting.SuspendLayout();
@@ -39,6 +42,7 @@ namespace csharp_editor.Dialogs {
             groupBoxExisting.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Bottom))));
             groupBoxExisting.Controls.Add(buttonUse);
             groupBoxExisting.Controls.Add(buttonRemove);
+            groupBoxExisting.Controls.Add(textBoxFilter);
             groupBoxExisting.Controls.Add(listBoxTilesets);
             groupBoxExisting.Location = new System.Drawing.Point(12, 12);
             groupBoxExisting.Name = "groupBoxExisting";
@@ -69,24 +73,55 @@ namespace csharp_editor.Dialogs {
             buttonRemove.UseVisualStyleBackColor = true;
             buttonRemove.Click += buttonRemove_Click;
             // 
+            // textBoxFilter
+            // 
+            textBoxFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
+            textBoxFilter.Location = new System.Drawing.Point(10, 22);
+            textBoxFilter.Name = "textBoxFilter";
+            textBoxFilter.PlaceholderText = "🔍  Filter by name...";
+            textBoxFilter.Size = new System.Drawing.Size(280, 23);
+            textBoxFilter.TabIndex = 3;
+            textBoxFilter.TextChanged += textBoxFilter_TextChanged;
+            // 
             // listBoxTilesets
             // 
             listBoxTilesets.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             listBoxTilesets.FormattingEnabled = true;
             listBoxTilesets.ItemHeight = 15;
-            listBoxTilesets.Location = new System.Drawing.Point(10, 25);
+            listBoxTilesets.Location = new System.Drawing.Point(10, 50);
             listBoxTilesets.Name = "listBoxTilesets";
-            listBoxTilesets.Size = new System.Drawing.Size(280, 379);
+            listBoxTilesets.Size = new System.Drawing.Size(280, 354);
             listBoxTilesets.TabIndex = 0;
             listBoxTilesets.SelectedIndexChanged += listBoxTilesets_SelectedIndexChanged;
+            listBoxTilesets.DoubleClick += listBoxTilesets_DoubleClick;
             // 
             // textureViewer
             // 
             textureViewer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             textureViewer.Location = new System.Drawing.Point(320, 12);
             textureViewer.Name = "textureViewer";
-            textureViewer.Size = new System.Drawing.Size(572, 450);
+            textureViewer.Size = new System.Drawing.Size(572, 410);
             textureViewer.TabIndex = 3;
+            // 
+            // labelTilesetMeta
+            // 
+            labelTilesetMeta.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
+            labelTilesetMeta.Location = new System.Drawing.Point(320, 426);
+            labelTilesetMeta.Name = "labelTilesetMeta";
+            labelTilesetMeta.Size = new System.Drawing.Size(572, 18);
+            labelTilesetMeta.TabIndex = 4;
+            labelTilesetMeta.Text = "";
+            // 
+            // labelTilesetPath
+            // 
+            labelTilesetPath.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
+            labelTilesetPath.AutoEllipsis = true;
+            labelTilesetPath.ForeColor = System.Drawing.SystemColors.GrayText;
+            labelTilesetPath.Location = new System.Drawing.Point(320, 445);
+            labelTilesetPath.Name = "labelTilesetPath";
+            labelTilesetPath.Size = new System.Drawing.Size(572, 18);
+            labelTilesetPath.TabIndex = 5;
+            labelTilesetPath.Text = "";
             // 
             // buttonNew
             // 
@@ -115,6 +150,8 @@ namespace csharp_editor.Dialogs {
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(904, 510);
+            Controls.Add(labelTilesetPath);
+            Controls.Add(labelTilesetMeta);
             Controls.Add(textureViewer);
             Controls.Add(buttonNew);
             Controls.Add(buttonClose);
@@ -129,10 +166,13 @@ namespace csharp_editor.Dialogs {
         #endregion
 
         private System.Windows.Forms.GroupBox groupBoxExisting;
+        private System.Windows.Forms.TextBox textBoxFilter;
         private System.Windows.Forms.ListBox listBoxTilesets;
         private System.Windows.Forms.Button buttonRemove;
         private System.Windows.Forms.Button buttonUse;
         private csharp_editor.UserControls.TextureViewer textureViewer;
+        private System.Windows.Forms.Label labelTilesetMeta;
+        private System.Windows.Forms.Label labelTilesetPath;
         private System.Windows.Forms.Button buttonNew;
         private System.Windows.Forms.Button buttonClose;
     }
