@@ -17,6 +17,7 @@ namespace csharp_editor.UserControls {
             toolStripLabelZoom = new System.Windows.Forms.ToolStripLabel();
             toolStripComboBoxZoom = new System.Windows.Forms.ToolStripComboBox();
             toolStripButtonChecker = new System.Windows.Forms.ToolStripButton();
+            toolStripButtonAntiAlias = new System.Windows.Forms.ToolStripButton();
             panelContainer = new System.Windows.Forms.Panel();
             pictureBoxTexture = new System.Windows.Forms.PictureBox();
             toolStrip.SuspendLayout();
@@ -27,7 +28,7 @@ namespace csharp_editor.UserControls {
             // toolStrip
             // 
             toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripLabelZoom, toolStripComboBoxZoom, toolStripButtonChecker });
+            toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripLabelZoom, toolStripComboBoxZoom, toolStripButtonChecker, toolStripButtonAntiAlias });
             toolStrip.Location = new System.Drawing.Point(0, 0);
             toolStrip.Name = "toolStrip";
             toolStrip.Size = new System.Drawing.Size(600, 25);
@@ -54,6 +55,16 @@ namespace csharp_editor.UserControls {
             toolStripButtonChecker.Size = new System.Drawing.Size(23, 22);
             toolStripButtonChecker.Text = "";
             toolStripButtonChecker.Image = Properties.Resources.checkerboard;
+            // 
+            // toolStripButtonAntiAlias
+            // 
+            toolStripButtonAntiAlias.CheckOnClick = true;
+            toolStripButtonAntiAlias.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            toolStripButtonAntiAlias.Name = "toolStripButtonAntiAlias";
+            toolStripButtonAntiAlias.Size = new System.Drawing.Size(23, 22);
+            toolStripButtonAntiAlias.Text = "";
+            toolStripButtonAntiAlias.ToolTipText = "Toggle anti-aliasing";
+            toolStripButtonAntiAlias.Image = Properties.Resources.style;
             // 
             // panelContainer
             // 
@@ -97,6 +108,7 @@ namespace csharp_editor.UserControls {
         private System.Windows.Forms.ToolStripLabel toolStripLabelZoom;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBoxZoom;
         private System.Windows.Forms.ToolStripButton toolStripButtonChecker;
+        private System.Windows.Forms.ToolStripButton toolStripButtonAntiAlias;
         private System.Windows.Forms.Panel panelContainer;
         private System.Windows.Forms.PictureBox pictureBoxTexture;
     }

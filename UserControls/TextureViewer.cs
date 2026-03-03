@@ -24,6 +24,9 @@ namespace csharp_editor.UserControls {
 
         // background checker toggle
         private bool _checkerEnabled = false;
+
+        // anti-alias toggle
+        private bool _antiAliasEnabled = false;
         public bool HasSelection => _selectedTile.X >= 0 && _selectedTile.Y >= 0;
         
         public int SelectedRegionId {
@@ -94,6 +97,12 @@ namespace csharp_editor.UserControls {
             // checker toggle button action
             toolStripButtonChecker.CheckedChanged += (s, e) => {
                 _checkerEnabled = toolStripButtonChecker.Checked;
+                pictureBoxTexture.Invalidate();
+            };
+
+            // anti-alias toggle button action
+            toolStripButtonAntiAlias.CheckedChanged += (s, e) => {
+                _antiAliasEnabled = toolStripButtonAntiAlias.Checked;
                 pictureBoxTexture.Invalidate();
             };
 
@@ -333,8 +342,14 @@ namespace csharp_editor.UserControls {
         private void PictureBoxTexture_Paint(object? sender, PaintEventArgs e) {
             // Draw the zoomed bitmap
             if (_bitmap != null) {
-                e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-                e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+                if (_antiAliasEnabled) {
+                    e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                    e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                } else {
+                    e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                    e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+                }
                 
                 int zoomedWidth = (int)(_bitmap.Width * _zoomLevel);
                 int zoomedHeight = (int)(_bitmap.Height * _zoomLevel);
