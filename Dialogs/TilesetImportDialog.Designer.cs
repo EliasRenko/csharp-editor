@@ -22,221 +22,202 @@ namespace csharp_editor.Dialogs {
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
-            this.groupBoxExisting = new System.Windows.Forms.GroupBox();
-            this.buttonRemove = new System.Windows.Forms.Button();
-            this.buttonUse = new System.Windows.Forms.Button();
-            this.listBoxTilesets = new System.Windows.Forms.ListBox();
-            this.groupBoxNew = new System.Windows.Forms.GroupBox();
-            this.buttonBrowse = new System.Windows.Forms.Button();
-            this.buttonAdd = new System.Windows.Forms.Button();
-            this.numericUpDownTileSize = new System.Windows.Forms.NumericUpDown();
-            this.textBoxImagePath = new System.Windows.Forms.TextBox();
-            this.textBoxName = new System.Windows.Forms.TextBox();
-            this.labelTileSize = new System.Windows.Forms.Label();
-            this.labelImagePath = new System.Windows.Forms.Label();
-            this.labelName = new System.Windows.Forms.Label();
-            this.buttonClose = new System.Windows.Forms.Button();
-            this.groupBoxExisting.SuspendLayout();
-            this.groupBoxNew.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTileSize)).BeginInit();
-            this.SuspendLayout();
+        private void InitializeComponent()
+        {
+            groupBoxExisting = new System.Windows.Forms.GroupBox();
+            buttonUse = new System.Windows.Forms.Button();
+            buttonRemove = new System.Windows.Forms.Button();
+            listBoxTilesets = new System.Windows.Forms.ListBox();
+            groupBoxNew = new System.Windows.Forms.GroupBox();
+            buttonBrowse = new System.Windows.Forms.Button();
+            buttonAdd = new System.Windows.Forms.Button();
+            numericUpDownTileSize = new System.Windows.Forms.NumericUpDown();
+            textBoxImagePath = new System.Windows.Forms.TextBox();
+            textBoxName = new System.Windows.Forms.TextBox();
+            labelTileSize = new System.Windows.Forms.Label();
+            labelImagePath = new System.Windows.Forms.Label();
+            labelName = new System.Windows.Forms.Label();
+            buttonClose = new System.Windows.Forms.Button();
+            groupBoxExisting.SuspendLayout();
+            groupBoxNew.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericUpDownTileSize).BeginInit();
+            SuspendLayout();
             // 
             // groupBoxExisting
             // 
-            this.groupBoxExisting.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxExisting.Controls.Add(this.buttonUse);
-            this.groupBoxExisting.Controls.Add(this.buttonRemove);
-            this.groupBoxExisting.Controls.Add(this.listBoxTilesets);
-            this.groupBoxExisting.Location = new System.Drawing.Point(12, 12);
-            this.groupBoxExisting.Name = "groupBoxExisting";
-            this.groupBoxExisting.Size = new System.Drawing.Size(560, 180);
-            this.groupBoxExisting.TabIndex = 0;
-            this.groupBoxExisting.TabStop = false;
-            this.groupBoxExisting.Text = "Imported Tilesets";
-            // 
-            // buttonRemove
-            // 
-            this.buttonRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonRemove.Location = new System.Drawing.Point(375, 145);
-            this.buttonRemove.Name = "buttonRemove";
-            this.buttonRemove.Size = new System.Drawing.Size(85, 25);
-            this.buttonRemove.TabIndex = 1;
-            this.buttonRemove.Text = "Remove";
-            this.buttonRemove.UseVisualStyleBackColor = true;
-            this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
+            groupBoxExisting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
+            groupBoxExisting.Controls.Add(buttonUse);
+            groupBoxExisting.Controls.Add(buttonRemove);
+            groupBoxExisting.Controls.Add(listBoxTilesets);
+            groupBoxExisting.Location = new System.Drawing.Point(12, 12);
+            groupBoxExisting.Name = "groupBoxExisting";
+            groupBoxExisting.Size = new System.Drawing.Size(560, 180);
+            groupBoxExisting.TabIndex = 0;
+            groupBoxExisting.TabStop = false;
+            groupBoxExisting.Text = "Imported Tilesets";
             // 
             // buttonUse
             // 
-            this.buttonUse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonUse.Location = new System.Drawing.Point(465, 145);
-            this.buttonUse.Name = "buttonUse";
-            this.buttonUse.Size = new System.Drawing.Size(85, 25);
-            this.buttonUse.TabIndex = 2;
-            this.buttonUse.Text = "Use";
-            this.buttonUse.UseVisualStyleBackColor = true;
-            this.buttonUse.Click += new System.EventHandler(this.buttonUse_Click);
+            buttonUse.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right));
+            buttonUse.Location = new System.Drawing.Point(465, 145);
+            buttonUse.Name = "buttonUse";
+            buttonUse.Size = new System.Drawing.Size(85, 25);
+            buttonUse.TabIndex = 2;
+            buttonUse.Text = "Use";
+            buttonUse.UseVisualStyleBackColor = true;
+            buttonUse.Click += buttonUse_Click;
+            // 
+            // buttonRemove
+            // 
+            buttonRemove.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right));
+            buttonRemove.Location = new System.Drawing.Point(375, 145);
+            buttonRemove.Name = "buttonRemove";
+            buttonRemove.Size = new System.Drawing.Size(85, 25);
+            buttonRemove.TabIndex = 1;
+            buttonRemove.Text = "Remove";
+            buttonRemove.UseVisualStyleBackColor = true;
+            buttonRemove.Click += buttonRemove_Click;
             // 
             // listBoxTilesets
             // 
-            this.listBoxTilesets.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-
-            this.listBoxTilesets.FormattingEnabled = true;
-            this.listBoxTilesets.ItemHeight = 15;
-            this.listBoxTilesets.Location = new System.Drawing.Point(10, 25);
-            this.listBoxTilesets.Name = "listBoxTilesets";
-            this.listBoxTilesets.Size = new System.Drawing.Size(540, 109);
-            this.listBoxTilesets.TabIndex = 0;
+            listBoxTilesets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
+            listBoxTilesets.FormattingEnabled = true;
+            listBoxTilesets.ItemHeight = 15;
+            listBoxTilesets.Location = new System.Drawing.Point(10, 25);
+            listBoxTilesets.Name = "listBoxTilesets";
+            listBoxTilesets.Size = new System.Drawing.Size(540, 109);
+            listBoxTilesets.TabIndex = 0;
             // 
             // groupBoxNew
             // 
-            this.groupBoxNew.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxNew.Controls.Add(this.buttonBrowse);
-            this.groupBoxNew.Controls.Add(this.buttonAdd);
-            this.groupBoxNew.Controls.Add(this.numericUpDownTileSize);
-            this.groupBoxNew.Controls.Add(this.textBoxImagePath);
-            this.groupBoxNew.Controls.Add(this.textBoxName);
-            this.groupBoxNew.Controls.Add(this.labelTileSize);
-            this.groupBoxNew.Controls.Add(this.labelImagePath);
-            this.groupBoxNew.Controls.Add(this.labelName);
-            this.groupBoxNew.ForeColor = System.Drawing.Color.White;
-            this.groupBoxNew.Location = new System.Drawing.Point(12, 198);
-            this.groupBoxNew.Name = "groupBoxNew";
-            this.groupBoxNew.Size = new System.Drawing.Size(560, 160);
-            this.groupBoxNew.TabIndex = 1;
-            this.groupBoxNew.TabStop = false;
-            this.groupBoxNew.Text = "Add New Tileset";
+            groupBoxNew.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
+            groupBoxNew.Controls.Add(buttonBrowse);
+            groupBoxNew.Controls.Add(buttonAdd);
+            groupBoxNew.Controls.Add(numericUpDownTileSize);
+            groupBoxNew.Controls.Add(textBoxImagePath);
+            groupBoxNew.Controls.Add(textBoxName);
+            groupBoxNew.Controls.Add(labelTileSize);
+            groupBoxNew.Controls.Add(labelImagePath);
+            groupBoxNew.Controls.Add(labelName);
+            groupBoxNew.ForeColor = System.Drawing.Color.White;
+            groupBoxNew.Location = new System.Drawing.Point(12, 198);
+            groupBoxNew.Name = "groupBoxNew";
+            groupBoxNew.Size = new System.Drawing.Size(560, 160);
+            groupBoxNew.TabIndex = 1;
+            groupBoxNew.TabStop = false;
+            groupBoxNew.Text = "Add New Tileset";
             // 
             // buttonBrowse
             // 
-            this.buttonBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonBrowse.ForeColor = System.Drawing.Color.Black;
-            this.buttonBrowse.Location = new System.Drawing.Point(465, 55);
-            this.buttonBrowse.Name = "buttonBrowse";
-            this.buttonBrowse.Size = new System.Drawing.Size(85, 23);
-            this.buttonBrowse.TabIndex = 4;
-            this.buttonBrowse.Text = "Browse...";
-            this.buttonBrowse.UseVisualStyleBackColor = true;
-            this.buttonBrowse.Click += new System.EventHandler(this.buttonBrowse_Click);
+            buttonBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right));
+            buttonBrowse.ForeColor = System.Drawing.Color.Black;
+            buttonBrowse.Location = new System.Drawing.Point(465, 55);
+            buttonBrowse.Name = "buttonBrowse";
+            buttonBrowse.Size = new System.Drawing.Size(85, 23);
+            buttonBrowse.TabIndex = 4;
+            buttonBrowse.Text = "Browse...";
+            buttonBrowse.UseVisualStyleBackColor = true;
+            buttonBrowse.Click += buttonBrowse_Click;
             // 
             // buttonAdd
             // 
-            this.buttonAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonAdd.ForeColor = System.Drawing.Color.Black;
-            this.buttonAdd.Location = new System.Drawing.Point(465, 125);
-            this.buttonAdd.Name = "buttonAdd";
-            this.buttonAdd.Size = new System.Drawing.Size(85, 25);
-            this.buttonAdd.TabIndex = 6;
-            this.buttonAdd.Text = "Add";
-            this.buttonAdd.UseVisualStyleBackColor = true;
-            this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
+            buttonAdd.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right));
+            buttonAdd.ForeColor = System.Drawing.Color.Black;
+            buttonAdd.Location = new System.Drawing.Point(465, 125);
+            buttonAdd.Name = "buttonAdd";
+            buttonAdd.Size = new System.Drawing.Size(85, 25);
+            buttonAdd.TabIndex = 6;
+            buttonAdd.Text = "Add";
+            buttonAdd.UseVisualStyleBackColor = true;
+            buttonAdd.Click += buttonAdd_Click;
             // 
             // numericUpDownTileSize
             // 
-            this.numericUpDownTileSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.numericUpDownTileSize.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
-            this.numericUpDownTileSize.ForeColor = System.Drawing.Color.White;
-            this.numericUpDownTileSize.Location = new System.Drawing.Point(90, 85);
-            this.numericUpDownTileSize.Maximum = new decimal(new int[] {
-            512,
-            0,
-            0,
-            0});
-            this.numericUpDownTileSize.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numericUpDownTileSize.Name = "numericUpDownTileSize";
-            this.numericUpDownTileSize.Size = new System.Drawing.Size(369, 23);
-            this.numericUpDownTileSize.TabIndex = 5;
-            this.numericUpDownTileSize.Value = new decimal(new int[] {
-            16,
-            0,
-            0,
-            0});
+            numericUpDownTileSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
+            numericUpDownTileSize.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            numericUpDownTileSize.ForeColor = System.Drawing.Color.White;
+            numericUpDownTileSize.Location = new System.Drawing.Point(90, 85);
+            numericUpDownTileSize.Maximum = new decimal(new int[] { 512, 0, 0, 0 });
+            numericUpDownTileSize.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numericUpDownTileSize.Name = "numericUpDownTileSize";
+            numericUpDownTileSize.Size = new System.Drawing.Size(369, 23);
+            numericUpDownTileSize.TabIndex = 5;
+            numericUpDownTileSize.Value = new decimal(new int[] { 16, 0, 0, 0 });
             // 
             // textBoxImagePath
             // 
-            this.textBoxImagePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-
-            this.textBoxImagePath.Location = new System.Drawing.Point(90, 55);
-            this.textBoxImagePath.Name = "textBoxImagePath";
-            this.textBoxImagePath.Size = new System.Drawing.Size(369, 23);
-            this.textBoxImagePath.TabIndex = 3;
+            textBoxImagePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
+            textBoxImagePath.Location = new System.Drawing.Point(90, 55);
+            textBoxImagePath.Name = "textBoxImagePath";
+            textBoxImagePath.Size = new System.Drawing.Size(369, 23);
+            textBoxImagePath.TabIndex = 3;
             // 
             // textBoxName
             // 
-            this.textBoxName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-
-            this.textBoxName.Location = new System.Drawing.Point(90, 25);
-            this.textBoxName.Name = "textBoxName";
-            this.textBoxName.Size = new System.Drawing.Size(460, 23);
-            this.textBoxName.TabIndex = 1;
+            textBoxName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
+            textBoxName.Location = new System.Drawing.Point(90, 25);
+            textBoxName.Name = "textBoxName";
+            textBoxName.Size = new System.Drawing.Size(460, 23);
+            textBoxName.TabIndex = 1;
             // 
             // labelTileSize
             // 
-            this.labelTileSize.AutoSize = true;
-            this.labelTileSize.Location = new System.Drawing.Point(10, 87);
-            this.labelTileSize.Name = "labelTileSize";
-            this.labelTileSize.Size = new System.Drawing.Size(54, 15);
-            this.labelTileSize.TabIndex = 2;
-            this.labelTileSize.Text = "Tile Size:";
+            labelTileSize.AutoSize = true;
+            labelTileSize.BackColor = System.Drawing.SystemColors.Control;
+            labelTileSize.ForeColor = System.Drawing.Color.Black;
+            labelTileSize.Location = new System.Drawing.Point(10, 87);
+            labelTileSize.Name = "labelTileSize";
+            labelTileSize.Size = new System.Drawing.Size(51, 15);
+            labelTileSize.TabIndex = 2;
+            labelTileSize.Text = "Tile Size:";
             // 
             // labelImagePath
             // 
-            this.labelImagePath.AutoSize = true;
-            this.labelImagePath.Location = new System.Drawing.Point(10, 58);
-            this.labelImagePath.Name = "labelImagePath";
-            this.labelImagePath.Size = new System.Drawing.Size(73, 15);
-            this.labelImagePath.TabIndex = 1;
-            this.labelImagePath.Text = "Image Path:";
+            labelImagePath.AutoSize = true;
+            labelImagePath.ForeColor = System.Drawing.Color.Black;
+            labelImagePath.Location = new System.Drawing.Point(10, 58);
+            labelImagePath.Name = "labelImagePath";
+            labelImagePath.Size = new System.Drawing.Size(70, 15);
+            labelImagePath.TabIndex = 1;
+            labelImagePath.Text = "Image Path:";
             // 
             // labelName
             // 
-            this.labelName.AutoSize = true;
-            this.labelName.Location = new System.Drawing.Point(10, 28);
-            this.labelName.Name = "labelName";
-            this.labelName.Size = new System.Drawing.Size(42, 15);
-            this.labelName.TabIndex = 0;
-            this.labelName.Text = "Name:";
+            labelName.AutoSize = true;
+            labelName.ForeColor = System.Drawing.Color.Black;
+            labelName.Location = new System.Drawing.Point(10, 28);
+            labelName.Name = "labelName";
+            labelName.Size = new System.Drawing.Size(42, 15);
+            labelName.TabIndex = 0;
+            labelName.Text = "Name:";
             // 
             // buttonClose
             // 
-            this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonClose.Location = new System.Drawing.Point(477, 368);
-            this.buttonClose.Name = "buttonClose";
-            this.buttonClose.Size = new System.Drawing.Size(95, 30);
-            this.buttonClose.TabIndex = 2;
-            this.buttonClose.Text = "Close";
-            this.buttonClose.UseVisualStyleBackColor = true;
-            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right));
+            buttonClose.Location = new System.Drawing.Point(477, 368);
+            buttonClose.Name = "buttonClose";
+            buttonClose.Size = new System.Drawing.Size(95, 30);
+            buttonClose.TabIndex = 2;
+            buttonClose.Text = "Close";
+            buttonClose.UseVisualStyleBackColor = true;
+            buttonClose.Click += buttonClose_Click;
             // 
             // TilesetImportDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-
-            this.ClientSize = new System.Drawing.Size(584, 410);
-            this.Controls.Add(this.buttonClose);
-            this.Controls.Add(this.groupBoxNew);
-            this.Controls.Add(this.groupBoxExisting);
-            this.MinimumSize = new System.Drawing.Size(600, 400);
-            this.Name = "TilesetImportDialog";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Tileset Import";
-            this.groupBoxExisting.ResumeLayout(false);
-            this.groupBoxNew.ResumeLayout(false);
-            this.groupBoxNew.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTileSize)).EndInit();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(584, 410);
+            Controls.Add(buttonClose);
+            Controls.Add(groupBoxNew);
+            Controls.Add(groupBoxExisting);
+            MinimumSize = new System.Drawing.Size(600, 400);
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            Text = "Tileset Import";
+            groupBoxExisting.ResumeLayout(false);
+            groupBoxNew.ResumeLayout(false);
+            groupBoxNew.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericUpDownTileSize).EndInit();
+            ResumeLayout(false);
         }
 
         #endregion
