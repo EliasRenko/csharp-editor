@@ -59,77 +59,11 @@ namespace csharp_editor.Dialogs {
             }
         }
 
-        private void buttonBrowse_Click(object sender, EventArgs e) {
-            using (OpenFileDialog dialog = new OpenFileDialog()) {
-                dialog.Filter = "Image Files (*.png;*.tga;*.jpg;*.bmp)|*.png;*.tga;*.jpg;*.bmp|All Files (*.*)|*.*";
-                dialog.FilterIndex = 1;
-                dialog.Title = "Select Tileset Image";
-                
-                if (dialog.ShowDialog() == DialogResult.OK) {
-                    textBoxImagePath.Text = dialog.FileName;
+        private void buttonNew_Click(object sender, EventArgs e) {
+            using (var createDialog = new TilesetCreateDialog(_externView)) {
+                if (createDialog.ShowDialog(this) == DialogResult.OK) {
+                    LoadExistingTilesets();
                 }
-            }
-        }
-
-        private void buttonAdd_Click(object sender, EventArgs e) {
-            // Validate input
-            if (string.IsNullOrWhiteSpace(textBoxName.Text)) {
-                MessageBox.Show("Please enter a tileset name.", "Validation Error", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(textBoxImagePath.Text)) {
-                MessageBox.Show("Please select an image file.", "Validation Error", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (!File.Exists(textBoxImagePath.Text)) {
-                MessageBox.Show("The specified image file does not exist.", "Validation Error", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            int tileSize = (int)numericUpDownTileSize.Value;
-            if (tileSize <= 0) {
-                MessageBox.Show("Tile size must be greater than 0.", "Validation Error", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            // Create tileset entry
-            TilesetEntry newTileset = new TilesetEntry {
-                Name = textBoxName.Text.Trim(),
-                ImagePath = textBoxImagePath.Text.Trim(),
-                TileSize = tileSize
-            };
-
-            // Send to C++
-            try {
-                var error = _externView.CreateTileset(newTileset.ImagePath, newTileset.Name, newTileset.TileSize);
-                if (error != null) {
-                    MessageBox.Show(error, "Tileset Creation Error", 
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-                
-                
-                // Add to list
-                _tilesets.Add(newTileset);
-                listBoxTilesets.Items.Add(newTileset);
-                
-                // Clear input fields
-                textBoxName.Clear();
-                textBoxImagePath.Clear();
-                numericUpDownTileSize.Value = 16;
-                
-                MessageBox.Show($"Tileset '{newTileset.Name}' has been imported successfully.", 
-                    "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex) {
-                MessageBox.Show($"Error importing tileset: {ex.Message}", "Error", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
