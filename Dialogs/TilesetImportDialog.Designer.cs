@@ -28,6 +28,7 @@ namespace csharp_editor.Dialogs {
             buttonUse = new System.Windows.Forms.Button();
             buttonRemove = new System.Windows.Forms.Button();
             listBoxTilesets = new System.Windows.Forms.ListBox();
+            textureViewer = new csharp_editor.UserControls.TextureViewer();
             buttonNew = new System.Windows.Forms.Button();
             buttonClose = new System.Windows.Forms.Button();
             groupBoxExisting.SuspendLayout();
@@ -35,13 +36,13 @@ namespace csharp_editor.Dialogs {
             // 
             // groupBoxExisting
             // 
-            groupBoxExisting.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right) | System.Windows.Forms.AnchorStyles.Bottom));
+            groupBoxExisting.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Bottom))));
             groupBoxExisting.Controls.Add(buttonUse);
             groupBoxExisting.Controls.Add(buttonRemove);
             groupBoxExisting.Controls.Add(listBoxTilesets);
             groupBoxExisting.Location = new System.Drawing.Point(12, 12);
             groupBoxExisting.Name = "groupBoxExisting";
-            groupBoxExisting.Size = new System.Drawing.Size(560, 185);
+            groupBoxExisting.Size = new System.Drawing.Size(300, 450);
             groupBoxExisting.TabIndex = 0;
             groupBoxExisting.TabStop = false;
             groupBoxExisting.Text = "Imported Tilesets";
@@ -49,7 +50,7 @@ namespace csharp_editor.Dialogs {
             // buttonUse
             // 
             buttonUse.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right));
-            buttonUse.Location = new System.Drawing.Point(465, 150);
+            buttonUse.Location = new System.Drawing.Point(205, 415);
             buttonUse.Name = "buttonUse";
             buttonUse.Size = new System.Drawing.Size(85, 25);
             buttonUse.TabIndex = 2;
@@ -60,7 +61,7 @@ namespace csharp_editor.Dialogs {
             // buttonRemove
             // 
             buttonRemove.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right));
-            buttonRemove.Location = new System.Drawing.Point(375, 150);
+            buttonRemove.Location = new System.Drawing.Point(115, 415);
             buttonRemove.Name = "buttonRemove";
             buttonRemove.Size = new System.Drawing.Size(85, 25);
             buttonRemove.TabIndex = 1;
@@ -75,13 +76,22 @@ namespace csharp_editor.Dialogs {
             listBoxTilesets.ItemHeight = 15;
             listBoxTilesets.Location = new System.Drawing.Point(10, 25);
             listBoxTilesets.Name = "listBoxTilesets";
-            listBoxTilesets.Size = new System.Drawing.Size(540, 114);
+            listBoxTilesets.Size = new System.Drawing.Size(280, 379);
             listBoxTilesets.TabIndex = 0;
+            listBoxTilesets.SelectedIndexChanged += listBoxTilesets_SelectedIndexChanged;
+            // 
+            // textureViewer
+            // 
+            textureViewer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            textureViewer.Location = new System.Drawing.Point(320, 12);
+            textureViewer.Name = "textureViewer";
+            textureViewer.Size = new System.Drawing.Size(572, 450);
+            textureViewer.TabIndex = 3;
             // 
             // buttonNew
             // 
             buttonNew.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left));
-            buttonNew.Location = new System.Drawing.Point(12, 207);
+            buttonNew.Location = new System.Drawing.Point(12, 470);
             buttonNew.Name = "buttonNew";
             buttonNew.Size = new System.Drawing.Size(85, 28);
             buttonNew.TabIndex = 1;
@@ -92,7 +102,7 @@ namespace csharp_editor.Dialogs {
             // buttonClose
             // 
             buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right));
-            buttonClose.Location = new System.Drawing.Point(477, 207);
+            buttonClose.Location = new System.Drawing.Point(797, 470);
             buttonClose.Name = "buttonClose";
             buttonClose.Size = new System.Drawing.Size(95, 28);
             buttonClose.TabIndex = 2;
@@ -104,11 +114,12 @@ namespace csharp_editor.Dialogs {
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(584, 247);
+            ClientSize = new System.Drawing.Size(904, 510);
+            Controls.Add(textureViewer);
             Controls.Add(buttonNew);
             Controls.Add(buttonClose);
             Controls.Add(groupBoxExisting);
-            MinimumSize = new System.Drawing.Size(500, 280);
+            MinimumSize = new System.Drawing.Size(700, 450);
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             Text = "Tilesets";
             groupBoxExisting.ResumeLayout(false);
@@ -121,6 +132,7 @@ namespace csharp_editor.Dialogs {
         private System.Windows.Forms.ListBox listBoxTilesets;
         private System.Windows.Forms.Button buttonRemove;
         private System.Windows.Forms.Button buttonUse;
+        private csharp_editor.UserControls.TextureViewer textureViewer;
         private System.Windows.Forms.Button buttonNew;
         private System.Windows.Forms.Button buttonClose;
     }

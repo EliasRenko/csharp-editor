@@ -59,6 +59,25 @@ namespace csharp_editor.Dialogs {
             }
         }
 
+        private void listBoxTilesets_SelectedIndexChanged(object sender, EventArgs e) {
+            if (listBoxTilesets.SelectedIndex >= 0) {
+                TilesetEntry entry = _tilesets[listBoxTilesets.SelectedIndex];
+
+                Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
+                int result = _externView.GetTileset(entry.Name, out tilesetInfo);
+
+                if (result != 0 && !string.IsNullOrEmpty(entry.ImagePath)) {
+                    Externs.TextureDataStruct textureData = new Externs.TextureDataStruct();
+                    _externView.GetTextureData(entry.ImagePath, out textureData);
+                    textureViewer.SetTextureData(textureData, tilesetInfo);
+                } else {
+                    textureViewer.Clear();
+                }
+            } else {
+                textureViewer.Clear();
+            }
+        }
+
         private void buttonNew_Click(object sender, EventArgs e) {
             using (var createDialog = new TilesetCreateDialog(_externView)) {
                 if (createDialog.ShowDialog(this) == DialogResult.OK) {
