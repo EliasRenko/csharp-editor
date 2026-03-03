@@ -51,3 +51,4 @@ C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.ExternView.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.TextureInfo.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.Dialogs.TilesetCreateDialog.resources
+C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.Dialogs.EntityCreateDialog.resources

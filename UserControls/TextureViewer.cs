@@ -27,6 +27,10 @@ namespace csharp_editor.UserControls {
 
         // anti-alias toggle
         private bool _antiAliasEnabled = false;
+
+        // region-only preview (set by SetRegionPreview, cleared by Clear/UpdateDisplay)
+        private Rectangle _previewRegion = Rectangle.Empty;
+
         public bool HasSelection => _selectedTile.X >= 0 && _selectedTile.Y >= 0;
         
         public int SelectedRegionId {
@@ -122,7 +126,15 @@ namespace csharp_editor.UserControls {
             string zoomText = toolStripComboBoxZoom.SelectedItem.ToString() ?? "100%";
             if (int.TryParse(zoomText.TrimEnd('%'), out int zoomPercent)) {
                 _zoomLevel = zoomPercent / 100f;
-                UpdateDisplay();
+
+                if (_bitmap != null && _previewRegion != Rectangle.Empty) {
+                    // Preview mode: just resize to the full bitmap at new zoom, then repaint
+                    pictureBoxTexture.Width  = (int)(_bitmap.Width  * _zoomLevel);
+                    pictureBoxTexture.Height = (int)(_bitmap.Height * _zoomLevel);
+                    pictureBoxTexture.Invalidate();
+                } else {
+                    UpdateDisplay();
+                }
             }
         }
         
@@ -199,6 +211,7 @@ namespace csharp_editor.UserControls {
         public void Clear() {
             _bitmap?.Dispose();
             _bitmap = null;
+            _previewRegion = Rectangle.Empty;
             _selectedTile = new Point(-1, -1);
             _selectionRect = Rectangle.Empty;
             _regionStart = new Point(-1, -1);
@@ -217,7 +230,46 @@ namespace csharp_editor.UserControls {
             }
         }
 
+        /// <summary>
+        /// Loads the full texture and stores the entity region so the paint handler
+        /// can dim everything outside it, leaving only the region at full brightness.
+        /// Coordinates are in PIXELS (as stored by the C++ engine).
+        /// </summary>
+        public void SetRegionPreview(Externs.TextureDataStruct textureData, Externs.TilesetInfoStruct tilesetInfo, int pixelX, int pixelY, int pixelW, int pixelH) {
+            _textureData = textureData;
+            _tilesetInfo = tilesetInfo;
+            _regionSelectionMode = false;
+            _previewRegion = Rectangle.Empty;
+
+            if (textureData.Data == IntPtr.Zero) return;
+
+            pixelW = Math.Max(tilesetInfo.tileSize > 0 ? tilesetInfo.tileSize : 1, pixelW);
+            pixelH = Math.Max(tilesetInfo.tileSize > 0 ? tilesetInfo.tileSize : 1, pixelH);
+
+            try {
+                _bitmap?.Dispose();
+                _bitmap = CreateBitmapFromTextureData(textureData);
+
+                int clampedX = Math.Max(0, Math.Min(pixelX, _bitmap.Width  - 1));
+                int clampedY = Math.Max(0, Math.Min(pixelY, _bitmap.Height - 1));
+                int clampedW = Math.Min(pixelW, _bitmap.Width  - clampedX);
+                int clampedH = Math.Min(pixelH, _bitmap.Height - clampedY);
+
+                if (clampedW > 0 && clampedH > 0)
+                    _previewRegion = new Rectangle(clampedX, clampedY, clampedW, clampedH);
+
+                pictureBoxTexture.Width  = (int)(_bitmap.Width  * _zoomLevel);
+                pictureBoxTexture.Height = (int)(_bitmap.Height * _zoomLevel);
+                pictureBoxTexture.Invalidate();
+            }
+            catch (Exception ex) {
+                MessageBox.Show($"Region preview error: {ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void UpdateDisplay() {
+            _previewRegion = Rectangle.Empty;
             // Create bitmap from texture data
             if (_textureData.Data != IntPtr.Zero && _textureData.Width > 0 && _textureData.Height > 0) {
                 try {
@@ -350,14 +402,25 @@ namespace csharp_editor.UserControls {
                     e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
                     e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
                 }
-                
-                int zoomedWidth = (int)(_bitmap.Width * _zoomLevel);
+
+                int zoomedWidth  = (int)(_bitmap.Width  * _zoomLevel);
                 int zoomedHeight = (int)(_bitmap.Height * _zoomLevel);
-                
-                if (_checkerEnabled) {
-                    DrawCheckerBackground(e.Graphics, zoomedWidth, zoomedHeight);
-                }
+                if (_checkerEnabled) DrawCheckerBackground(e.Graphics, zoomedWidth, zoomedHeight);
                 e.Graphics.DrawImage(_bitmap, 0, 0, zoomedWidth, zoomedHeight);
+
+                // Dim everything outside the preview region
+                if (_previewRegion != Rectangle.Empty) {
+                    int rx = (int)(_previewRegion.X      * _zoomLevel);
+                    int ry = (int)(_previewRegion.Y      * _zoomLevel);
+                    int rw = (int)(_previewRegion.Width  * _zoomLevel);
+                    int rh = (int)(_previewRegion.Height * _zoomLevel);
+                    using (SolidBrush dim = new SolidBrush(Color.FromArgb(160, 0, 0, 0))) {
+                        if (ry > 0)                          e.Graphics.FillRectangle(dim, 0,      0,       zoomedWidth,           ry);           // top
+                        if (ry + rh < zoomedHeight)          e.Graphics.FillRectangle(dim, 0,      ry + rh, zoomedWidth,           zoomedHeight - (ry + rh)); // bottom
+                        if (rx > 0)                          e.Graphics.FillRectangle(dim, 0,      ry,      rx,                    rh);           // left
+                        if (rx + rw < zoomedWidth)           e.Graphics.FillRectangle(dim, rx + rw, ry,     zoomedWidth - (rx + rw), rh);         // right
+                    }
+                }
             }
             
             // Draw region selection (in region mode)
