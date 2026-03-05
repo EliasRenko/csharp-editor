@@ -12,6 +12,9 @@ namespace csharp_editor.Dialogs {
             public string Default { get; set; } = "";
         }
 
+        public string[] Tags => textBoxTags.Text
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
         private readonly ExternView _externView;
         private Rectangle _currentRegion  = new Rectangle(0, 0, 1, 1);
         private int       _currentTileSize = 32;
