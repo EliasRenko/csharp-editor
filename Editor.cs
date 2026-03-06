@@ -55,6 +55,29 @@ namespace csharp_editor {
             ToolStripMenuItem_textureInfo.MouseDown += ButtonTextureViewOnMouseDown;
             toolStripButton_tilesets.MouseDown += ShowTilesetDefDialog;
             toolStripButton_entitiesDefs.MouseDown += ShowEntitiesDefDialog;
+
+            // Tools
+
+            toolStripButton_tileDraw.MouseDown += SelectTileDraw;
+            toolStripButton_tileErase.MouseDown += SelectTileErase;
+            toolStripButton_entityAdd.MouseDown += SelectEntityAdd;
+            toolStripButton_entitySelect.MouseDown += SelectEntitySelect;
+        }
+
+        private void SelectTileDraw(object? sender, MouseEventArgs e) {
+            view_extern.SetToolType(ToolType.TileDraw);
+        }
+
+        private void SelectTileErase(object? sender, MouseEventArgs e) {
+            view_extern.SetToolType(ToolType.TileErase);
+        }
+
+        private void SelectEntityAdd(object? sender, MouseEventArgs e) {
+            view_extern.SetToolType(ToolType.EntityAdd);
+        }
+
+        private void SelectEntitySelect(object? sender, MouseEventArgs e) {
+            view_extern.SetToolType(ToolType.EntitySelect);
         }
 
         private void ReplaceTilesetButton_Click(object? sender, EventArgs e) {

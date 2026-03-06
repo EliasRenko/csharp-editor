@@ -1,13 +1,11 @@
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.Dialogs.EntitiesDialog.resources
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.Dialogs.TilesetImportDialog.resources
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.Editor.resources
-C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.ExternView.resources
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.Properties.Resources.resources
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.Console.resources
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.HierarchyTree.resources
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.PropertyGridPanel.resources
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.TextureViewer.resources
-C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.TilesetViewer.resources
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp-editor.csproj.GenerateResource.cache
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp-editor.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp-editor.AssemblyInfoInputs.cache
@@ -53,3 +51,8 @@ C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\refint
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp-editor.pdb
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp-editor.genruntimeconfig.cache
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\ref\csharp-editor.dll
+C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.Dialogs.EntityCreateDialog.resources
+C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.Dialogs.PropertyDefinitionDialog.resources
+C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.Dialogs.TilesetCreateDialog.resources
+C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.ExternView.resources
+C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.TextureInfo.resources

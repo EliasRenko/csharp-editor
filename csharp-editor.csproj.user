@@ -4,6 +4,15 @@
     <Compile Update="Dialogs\EntitiesDialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Dialogs\EntityCreateDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialogs\PropertyDefinitionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialogs\TilesetCreateDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Dialogs\TilesetImportDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -17,6 +26,9 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="UserControls\EntitySelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\ExternView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="UserControls\HierarchyTree.cs">

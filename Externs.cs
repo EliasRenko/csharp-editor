@@ -162,8 +162,14 @@ namespace csharp_editor {
         public static extern void SetActiveTile(int tileRegionId);
         
         [DllImport(DLL, EntryPoint = "getActiveTile")]
-        public static extern int GetActiveTile();       
+        public static extern int GetActiveTile();
+
+        [DllImport(DLL, EntryPoint = "setToolType")]
+        public static extern void SetToolType(int toolType);
         
+        [DllImport(DLL, EntryPoint = "getToolType")]
+        public static extern int GetToolType();
+
         #endregion
         
         [DllImport(DLL, EntryPoint = "exportMap")]

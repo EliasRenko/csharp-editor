@@ -26,6 +26,11 @@ namespace csharp_editor.Dialogs {
         private ExternView _externView;
         private Action<string>? _onEntitySelected;
 
+        // cache the last loaded texture data to avoid expensive reloads
+        private string _lastTexturePath = string.Empty;
+        private Externs.TextureDataStruct _lastTextureData;
+        private bool _hasCachedTexture = false;
+
         public EntitiesDialog(ExternView externView, Action<string>? onEntitySelected = null) {
             InitializeComponent();
             _externView = externView;
@@ -115,8 +120,17 @@ namespace csharp_editor.Dialogs {
                 return;
             }
 
-            Externs.TextureDataStruct textureData = new Externs.TextureDataStruct();
-            _externView.GetTextureData(texturePath, out textureData);
+            // if the newly requested texture is the same as cached, reuse it
+            Externs.TextureDataStruct textureData;
+            if (_hasCachedTexture && texturePath == _lastTexturePath) {
+                textureData = _lastTextureData;
+            } else {
+                _externView.GetTextureData(texturePath, out textureData);
+                // update cache
+                _lastTexturePath = texturePath;
+                _lastTextureData = textureData;
+                _hasCachedTexture = true;
+            }
 
             // Region values from C++ are stored in pixels
             textureViewer.SetRegionPreview(textureData, tilesetInfo,

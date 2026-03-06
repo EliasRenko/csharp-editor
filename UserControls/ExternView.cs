@@ -167,7 +167,15 @@ namespace csharp_editor.UserControls {
         public void SetActiveTile(int tileRegionId) {
             Externs.SetActiveTile(tileRegionId);
         }
-        
+
+        public void SetToolType(ToolType toolType) {
+            Externs.SetToolType(toolType);
+        }
+
+        public ToolType GetToolType() {
+            return Externs.GetToolType();
+        }
+
         public void ImportMap(string path) {
             Externs.ImportMap(path);
         }
