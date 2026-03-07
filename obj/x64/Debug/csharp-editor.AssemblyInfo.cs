@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("csharp-editor")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2521263efcf6eda5652109015fbf3f140e826c53")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c6a2204dce9851570e49848b12e8abe89a75911e")]
 [assembly: System.Reflection.AssemblyProductAttribute("csharp-editor")]
 [assembly: System.Reflection.AssemblyTitleAttribute("csharp-editor")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

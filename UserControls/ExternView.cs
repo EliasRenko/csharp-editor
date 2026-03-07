@@ -9,7 +9,8 @@ namespace csharp_editor.UserControls {
         public int worldy;
         public int width;
         public int height;
-        public int tileSize;
+        public int tileSizeX;
+        public int tileSizeY;
         public int bgColor;
         public int gridColor;
     }
@@ -18,6 +19,12 @@ namespace csharp_editor.UserControls {
 
         public CallbackDelegate logCallback = null!; // initialized in Init()
         public bool active = false;
+
+        // Fired on the UI thread whenever the C++ engine reports a selection change
+        public event EventHandler? EntitySelectionChanged;
+
+        // Keep a strong reference so the delegate isn't GC'd while the C++ side holds a pointer
+        private Externs.EntitySelectionChangedCallback? _entitySelectionChangedCallback;
 
         private IntPtr sdlWindowHandle = IntPtr.Zero;
 
@@ -41,6 +48,13 @@ namespace csharp_editor.UserControls {
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            // Register entity selection callback
+            _entitySelectionChangedCallback = () => {
+                // Marshal back to the UI thread
+                BeginInvoke(() => EntitySelectionChanged?.Invoke(this, EventArgs.Empty));
+            };
+            Externs.SetEntitySelectionChangedCallback(_entitySelectionChangedCallback);
 
             // Get the SDL window handle
             sdlWindowHandle = Externs.GetWindowHandle();
@@ -234,7 +248,8 @@ namespace csharp_editor.UserControls {
                     worldy = temp.worldy,
                     width = temp.width,
                     height = temp.height,
-                    tileSize = temp.tileSize,
+                    tileSizeX = temp.tileSizeX,
+                    tileSizeY = temp.tileSizeY,
                     bgColor = temp.bgColor,
                     gridColor = temp.gridColor
                 };
@@ -254,7 +269,8 @@ namespace csharp_editor.UserControls {
                 worldy = info.worldy,
                 width = info.width,
                 height = info.height,
-                tileSize = info.tileSize,
+                tileSizeX = info.tileSizeX,
+                tileSizeY = info.tileSizeY,
                 bgColor = info.bgColor,
                 gridColor = info.gridColor
             };
@@ -362,6 +378,14 @@ namespace csharp_editor.UserControls {
         
         public int PlaceEntity(int x, int y) {
             return Externs.PlaceEntity(x, y);
+        }
+
+        public int GetEntitySelectionCount() {
+            return Externs.GetEntitySelectionCount();
+        }
+
+        public int GetEntitySelectionInfo(int index, out Externs.EntityStruct outData) {
+            return Externs.GetEntitySelectionInfo(index, out outData);
         }
 
         // --- batch group helpers ------------------------------------------------

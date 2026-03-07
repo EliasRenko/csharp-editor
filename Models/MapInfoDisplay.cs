@@ -11,6 +11,9 @@ namespace csharp_editor.Models {
         private int _width;
         private int _height;
         private int _tileSize;
+
+        private int _tileSizeX;
+        private int _tileSizeY;
         private Color _backgroundColor = Color.Black;
         private Color _gridColor = Color.Gray;
 
@@ -80,13 +83,24 @@ namespace csharp_editor.Models {
             }
         }
 
-        [Category("Map"), Description("Tile size in pixels"), ReadOnly(true)]
-        public int TileSize {
-            get => _tileSize;
+        [Category("Map"), Description("TileX size in pixels"), ReadOnly(false)]
+        public int TileSizeX {
+            get => _tileSizeX;
             set {
-                if (_tileSize != value) {
-                    _tileSize = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TileSize)));
+                if (_tileSizeX != value) {
+                    _tileSizeX = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TileSizeX)));
+                }
+            }
+        }
+
+        [Category("Map"), Description("TileY size in pixels"), ReadOnly(false)]
+        public int TileSizeY {
+            get => _tileSizeY;
+            set {
+                if (_tileSizeY != value) {
+                    _tileSizeY = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TileSizeY)));
                 }
             }
         }

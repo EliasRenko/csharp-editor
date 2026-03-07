@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 namespace csharp_editor.UserControls {
-    public partial class Console : UserControl {
+    public partial class DebugConsole : UserControl {
 
-        public Console() {
+        public DebugConsole() {
             InitializeComponent();
 
             //button_copy.Click += Button_copy_Click;

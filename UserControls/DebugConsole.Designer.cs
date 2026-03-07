@@ -1,6 +1,6 @@
 ﻿using csharp_editor.UserControls;
 namespace csharp_editor.UserControls {
-    partial class Console {
+    partial class DebugConsole {
         /// <summary> 
         /// Required designer variable.
         /// </summary>

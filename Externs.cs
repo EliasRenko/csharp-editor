@@ -9,6 +9,9 @@ namespace csharp_editor {
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void CallbackDelegate([MarshalAs(UnmanagedType.LPStr)] string message);
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void EntitySelectionChangedCallback();
+
         // Structs
         
         [StructLayout(LayoutKind.Sequential)]
@@ -54,6 +57,15 @@ namespace csharp_editor {
         }
         
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        public struct EntityStruct {
+            public IntPtr defName;           // Entity definition name (use Marshal.PtrToStringAnsi to read)
+            public int width;                // Width in pixels
+            public int height;               // Height in pixels
+            public int x;                    // World X position
+            public int y;                    // World Y position
+        }
+        
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
         public struct MapProps {
             public IntPtr idd;       // id string
             public IntPtr name;      // name string
@@ -61,7 +73,8 @@ namespace csharp_editor {
             public int worldy;
             public int width;
             public int height;
-            public int tileSize;
+            public int tileSizeX;
+            public int tileSizeY;
             public int bgColor;      // rgba hex
             public int gridColor;    // rgba hex
         }
@@ -253,6 +266,15 @@ namespace csharp_editor {
         
         [DllImport(DLL, EntryPoint = "placeEntity", CallingConvention = CallingConvention.Cdecl)]
         public static extern int PlaceEntity(int x, int y);
+
+        [DllImport(DLL, EntryPoint = "setEntitySelectionChangedCallback", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SetEntitySelectionChangedCallback(EntitySelectionChangedCallback callback);
+
+        [DllImport(DLL, EntryPoint = "getEntitySelectionCount", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetEntitySelectionCount();
+
+        [DllImport(DLL, EntryPoint = "getEntitySelectionInfo", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetEntitySelectionInfo(int index, out EntityStruct outData);
 
         // Batch group queries for entity layers
         [DllImport(DLL, EntryPoint = "getEntityLayerBatchCount", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]

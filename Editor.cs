@@ -49,6 +49,7 @@ namespace csharp_editor {
             // ExternView Events
             view_extern.MouseDown += view_extern_MouseDown;
             view_extern.MouseUp += view_extern_MouseUp;
+            view_extern.EntitySelectionChanged += ExternView_EntitySelectionChanged;
 
             // Debug 
 
@@ -207,6 +208,49 @@ namespace csharp_editor {
             hierarchyTree.RefreshSelectedEntityBatches();
         }
 
+        private void ExternView_EntitySelectionChanged(object? sender, EventArgs e) {
+            int count = view_extern.GetEntitySelectionCount();
+
+            if (count <= 0) {
+                propertyGridPanel1.PropertyGrid.SelectedObject = null;
+                return;
+            }
+
+            // Single selection – show details directly
+            if (count == 1) {
+                Externs.EntityStruct data = new Externs.EntityStruct();
+                if (view_extern.GetEntitySelectionInfo(0, out data) != 0) {
+                    var display = new EntityInstanceDisplay {
+                        DefName = Marshal.PtrToStringAnsi(data.defName) ?? "",
+                        X       = data.x,
+                        Y       = data.y,
+                        Width   = data.width,
+                        Height  = data.height
+                    };
+                    propertyGridPanel1.PropertyGrid.SelectedObject = display;
+                    Log($"Entity selected: {display.DefName} at ({display.X}, {display.Y})");
+                }
+                return;
+            }
+
+            // Multi-selection – show an array so all entries are visible
+            var items = new List<EntityInstanceDisplay>(count);
+            for (int i = 0; i < count; i++) {
+                Externs.EntityStruct data = new Externs.EntityStruct();
+                if (view_extern.GetEntitySelectionInfo(i, out data) != 0) {
+                    items.Add(new EntityInstanceDisplay {
+                        DefName = Marshal.PtrToStringAnsi(data.defName) ?? "",
+                        X       = data.x,
+                        Y       = data.y,
+                        Width   = data.width,
+                        Height  = data.height
+                    });
+                }
+            }
+            propertyGridPanel1.PropertyGrid.SelectedObjects = items.Cast<object>().ToArray();
+            Log($"{items.Count} entities selected");
+        }
+
         private void toolStripButton_openFile(object? sender, MouseEventArgs e) {
             string path = Utils.OpenFile("");
 
@@ -332,7 +376,8 @@ namespace csharp_editor {
                             WorldY = info.worldy,
                             Width = info.width,
                             Height = info.height,
-                            TileSize = info.tileSize,
+                            TileSizeX = info.tileSizeX,
+                            TileSizeY = info.tileSizeY,
                             BackgroundColor = Utils.ConvertFromRGBA(info.bgColor),
                             GridColor = Utils.ConvertFromRGBA(info.gridColor)
                         };
@@ -346,7 +391,8 @@ namespace csharp_editor {
                                     worldy = m.WorldY,
                                     width = m.Width,
                                     height = m.Height,
-                                    tileSize = m.TileSize,
+                                    tileSizeX = m.TileSizeX,
+                                    tileSizeY = m.TileSizeY,
                                     bgColor = Utils.ConvertToRGBA(m.BackgroundColor),
                                     gridColor = Utils.ConvertToRGBA(m.GridColor)
                                 };
