@@ -345,8 +345,13 @@ namespace csharp_editor.UserControls {
         
         // Entity Management
         
-        public string? CreateEntity(string entityName, int width, int height, string tilesetName) {
-            IntPtr result = Externs.CreateEntity(entityName, width, height, tilesetName);
+        public string? CreateEntity(string entityName, ref Externs.EntityDataStruct data) {
+            IntPtr result = Externs.CreateEntity(entityName, ref data);
+            return result == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(result);
+        }
+
+        public string? EditEntity(string entityName, ref Externs.EntityDataStruct data) {
+            IntPtr result = Externs.EditEntity(entityName, ref data);
             return result == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(result);
         }
         
@@ -362,10 +367,6 @@ namespace csharp_editor.UserControls {
         
         public int GetEntityCount() {
             return Externs.GetEntityCount();
-        }
-        
-        public void SetEntityRegion(string entityName, int x, int y, int width, int height) {
-            Externs.SetEntityRegion(entityName, x, y, width, height);
         }
         
         public int RemoveEntity(string entityName) {

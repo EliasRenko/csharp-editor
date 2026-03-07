@@ -19,6 +19,7 @@ namespace csharp_editor.Dialogs {
         private Rectangle _currentRegion  = new Rectangle(0, 0, 1, 1);
         private int       _currentTileSize = 32;
         private string    _selectedPivot   = "BottomCenter";
+        private bool      _isEditMode      = false;
 
         public EntityCreateDialog(ExternView externView) {
             InitializeComponent();
@@ -162,20 +163,25 @@ namespace csharp_editor.Dialogs {
             int height = (int)numericUpDownHeight.Value;
 
             try {
-                var error = _externView.CreateEntity(
-                    textBoxName.Text.Trim(), width, height,
-                    comboBoxTilemap.SelectedItem.ToString() ?? "");
+                var data = new Externs.EntityDataStruct {
+                    width       = width,
+                    height      = height,
+                    tilesetName = Marshal.StringToHGlobalAnsi(comboBoxTilemap.SelectedItem.ToString() ?? ""),
+                    regionX     = _currentRegion.X,
+                    regionY     = _currentRegion.Y,
+                    regionWidth  = _currentRegion.Width,
+                    regionHeight = _currentRegion.Height,
+                    pivotX      = PivotToFloats(_selectedPivot).X,
+                    pivotY      = PivotToFloats(_selectedPivot).Y
+                };
+
+                string? error = _isEditMode
+                    ? _externView.EditEntity(textBoxName.Text.Trim(), ref data)
+                    : _externView.CreateEntity(textBoxName.Text.Trim(), ref data);
                 if (error != null) {
-                    MessageBox.Show(error, "Entity Creation Error",
+                    MessageBox.Show(error, _isEditMode ? "Entity Edit Error" : "Entity Creation Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning); return;
                 }
-
-                _externView.SetEntityRegion(
-                    textBoxName.Text.Trim(),
-                    _currentRegion.X * _currentTileSize,
-                    _currentRegion.Y * _currentTileSize,
-                    _currentRegion.Width  * _currentTileSize,
-                    _currentRegion.Height * _currentTileSize);
 
                 DialogResult = DialogResult.OK;
                 Close();
@@ -186,9 +192,57 @@ namespace csharp_editor.Dialogs {
             }
         }
 
+        private static PointF PivotToFloats(string pivot) => pivot switch {
+            "TopLeft"      => new PointF(0.0f, 0.0f),
+            "TopCenter"    => new PointF(0.5f, 0.0f),
+            "TopRight"     => new PointF(1.0f, 0.0f),
+            "MiddleLeft"   => new PointF(0.0f, 0.5f),
+            "MiddleCenter" => new PointF(0.5f, 0.5f),
+            "MiddleRight"  => new PointF(1.0f, 0.5f),
+            "BottomLeft"   => new PointF(0.0f, 1.0f),
+            "BottomCenter" => new PointF(0.5f, 1.0f),
+            "BottomRight"  => new PointF(1.0f, 1.0f),
+            _              => new PointF(0.5f, 1.0f)
+        };
+
+        private static string FloatsToPivot(float x, float y) {
+            if (x <= 0.25f)       return y <= 0.25f ? "TopLeft"    : y <= 0.75f ? "MiddleLeft"   : "BottomLeft";
+            if (x <= 0.75f)       return y <= 0.25f ? "TopCenter"  : y <= 0.75f ? "MiddleCenter" : "BottomCenter";
+            /* x > 0.75 */        return y <= 0.25f ? "TopRight"   : y <= 0.75f ? "MiddleRight"  : "BottomRight";
+        }
+
         private void buttonCancel_Click(object sender, EventArgs e) {
             DialogResult = DialogResult.Cancel;
             Close();
+        }
+
+        /// <summary>
+        /// Pre-populate the dialog with data from an existing entity for editing.
+        /// </summary>
+        public void Populate(EntitiesDialog.EntityEntry entry) {
+            textBoxName.Text = entry.Name;
+            textBoxName.ReadOnly = true;
+
+            numericUpDownWidth.Value  = Math.Clamp(entry.Width,  (int)numericUpDownWidth.Minimum,  (int)numericUpDownWidth.Maximum);
+            numericUpDownHeight.Value = Math.Clamp(entry.Height, (int)numericUpDownHeight.Minimum, (int)numericUpDownHeight.Maximum);
+
+            for (int i = 0; i < comboBoxTilemap.Items.Count; i++) {
+                if ((comboBoxTilemap.Items[i]?.ToString() ?? "") == entry.TilemapName) {
+                    comboBoxTilemap.SelectedIndex = i;
+                    break;
+                }
+            }
+
+            _currentRegion = new Rectangle(entry.TileX, entry.TileY, entry.TileWidth, entry.TileHeight);
+            UpdateCurrentTileSize();
+            UpdateRegionLabel();
+
+            _selectedPivot = FloatsToPivot(entry.PivotX, entry.PivotY);
+            HighlightPivotButton(_selectedPivot);
+
+            _isEditMode       = true;
+            this.Text         = "Edit Entity";
+            buttonCreate.Text = "Save";
         }
     }
 }

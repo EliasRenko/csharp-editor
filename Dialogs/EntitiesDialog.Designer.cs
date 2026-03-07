@@ -15,6 +15,7 @@
         {
             groupBoxExisting = new System.Windows.Forms.GroupBox();
             buttonDelete = new System.Windows.Forms.Button();
+            buttonEdit = new System.Windows.Forms.Button();
             listBoxEntities = new System.Windows.Forms.ListBox();
             textureViewer = new csharp_editor.UserControls.TextureViewer();
             labelRegionInfo = new System.Windows.Forms.Label();
@@ -27,6 +28,7 @@
             // 
             groupBoxExisting.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left))));
             groupBoxExisting.Controls.Add(buttonDelete);
+            groupBoxExisting.Controls.Add(buttonEdit);
             groupBoxExisting.Controls.Add(listBoxEntities);
             groupBoxExisting.Location = new System.Drawing.Point(12, 12);
             groupBoxExisting.Name = "groupBoxExisting";
@@ -34,6 +36,18 @@
             groupBoxExisting.TabIndex = 0;
             groupBoxExisting.TabStop = false;
             groupBoxExisting.Text = "Entities";
+            // 
+            // buttonEdit
+            // 
+            buttonEdit.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right));
+            buttonEdit.Enabled = false;
+            buttonEdit.Location = new System.Drawing.Point(112, 415);
+            buttonEdit.Name = "buttonEdit";
+            buttonEdit.Size = new System.Drawing.Size(85, 25);
+            buttonEdit.TabIndex = 2;
+            buttonEdit.Text = "Edit...";
+            buttonEdit.UseVisualStyleBackColor = true;
+            buttonEdit.Click += buttonEdit_Click;
             // 
             // buttonDelete
             // 
@@ -119,6 +133,7 @@
 
         private System.Windows.Forms.GroupBox groupBoxExisting;
         private System.Windows.Forms.Button buttonDelete;
+        private System.Windows.Forms.Button buttonEdit;
         private System.Windows.Forms.ListBox listBoxEntities;
         private csharp_editor.UserControls.TextureViewer textureViewer;
         private System.Windows.Forms.Label labelRegionInfo;

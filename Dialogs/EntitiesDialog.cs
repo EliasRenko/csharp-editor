@@ -13,6 +13,8 @@ namespace csharp_editor.Dialogs {
             public int TileY { get; set; } = 0;
             public int TileWidth { get; set; } = 1;
             public int TileHeight { get; set; } = 1;
+            public float PivotX { get; set; } = 0.5f;
+            public float PivotY { get; set; } = 1.0f;
 
             public override string ToString() {
                 string tilemapPart = string.IsNullOrEmpty(TilemapName) ? "" : $" [{TilemapName}]";
@@ -60,7 +62,9 @@ namespace csharp_editor.Dialogs {
                         TileX = entityData.regionX,
                         TileY = entityData.regionY,
                         TileWidth = entityData.regionWidth,
-                        TileHeight = entityData.regionHeight
+                        TileHeight = entityData.regionHeight,
+                        PivotX = entityData.pivotX,
+                        PivotY = entityData.pivotY
                     };
                     _entities.Add(entry);
                     listBoxEntities.Items.Add(entry);
@@ -71,6 +75,7 @@ namespace csharp_editor.Dialogs {
         private void listBoxEntities_SelectedIndexChanged(object sender, EventArgs e) {
             bool hasSelection = listBoxEntities.SelectedIndex >= 0;
             buttonDelete.Enabled = hasSelection;
+            buttonEdit.Enabled = hasSelection;
 
             if (!hasSelection) {
                 textureViewer.Clear();
@@ -140,6 +145,17 @@ namespace csharp_editor.Dialogs {
         private void buttonNew_Click(object sender, EventArgs e) {
             using (var createDialog = new EntityCreateDialog(_externView)) {
                 if (createDialog.ShowDialog(this) == DialogResult.OK) {
+                    LoadExistingEntities();
+                }
+            }
+        }
+
+        private void buttonEdit_Click(object sender, EventArgs e) {
+            if (listBoxEntities.SelectedIndex < 0) return;
+            EntityEntry entry = _entities[listBoxEntities.SelectedIndex];
+            using (var editDialog = new EntityCreateDialog(_externView)) {
+                editDialog.Populate(entry);
+                if (editDialog.ShowDialog(this) == DialogResult.OK) {
                     LoadExistingEntities();
                 }
             }

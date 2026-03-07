@@ -54,6 +54,8 @@ namespace csharp_editor {
             public int regionY;              // Region Y in tiles
             public int regionWidth;          // Region width in tiles
             public int regionHeight;         // Region height in tiles
+            public float pivotX;
+            public float pivotY;
         }
         
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
@@ -63,6 +65,8 @@ namespace csharp_editor {
             public int height;               // Height in pixels
             public int x;                    // World X position
             public int y;                    // World Y position
+            public float pivotX;                // Pivot X (0.0 - 1.0)
+            public float pivotY;                // Pivot Y (0.0 - 1.0 
         }
         
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
@@ -251,12 +255,10 @@ namespace csharp_editor {
         public static extern int GetEntityCount();
         
         [DllImport(DLL, EntryPoint = "createEntityDef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr CreateEntity(string entityName, int width, int height, string tilesetName);
+        public static extern IntPtr CreateEntity(string entityName, ref EntityDataStruct data);
         
-        [DllImport(DLL, EntryPoint = "setEntityDefRegion", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void SetEntityRegion(string entityName, int x, int y, int width, int height);
-        
-        
+        [DllImport(DLL, EntryPoint = "editEntityDef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern IntPtr EditEntity(string entityName, ref EntityDataStruct data);
         
         [DllImport(DLL, EntryPoint = "removeEntity", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int RemoveEntity(string entityName);
