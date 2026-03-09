@@ -373,6 +373,12 @@ namespace csharp_editor.UserControls {
             return Externs.RemoveEntity(entityName);
         }
         
+        /// <summary>Deletes an entity definition. Returns null on success, or an error message on failure.</summary>
+        public string? DeleteEntityDef(string entityName) {
+            IntPtr result = Externs.DeleteEntityDef(entityName);
+            return result == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(result);
+        }
+        
         public int SetActiveEntity(string entityName) {
             return Externs.SetActiveEntity(entityName);
         }

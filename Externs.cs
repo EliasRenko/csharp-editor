@@ -263,6 +263,9 @@ namespace csharp_editor {
         [DllImport(DLL, EntryPoint = "removeEntity", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int RemoveEntity(string entityName);
         
+        [DllImport(DLL, EntryPoint = "deleteEntityDef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern IntPtr DeleteEntityDef(string entityName);
+        
         [DllImport(DLL, EntryPoint = "setActiveEntityDef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int SetActiveEntity(string entityName);
         

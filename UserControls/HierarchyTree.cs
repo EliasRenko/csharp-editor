@@ -347,6 +347,18 @@ namespace csharp_editor.UserControls {
         }
 
         /// <summary>
+        /// Refreshes batch groups for every entity layer. Call this after deleting an entity
+        /// definition so that batches that became empty are removed from the tree.
+        /// </summary>
+        public void RefreshAllEntityBatches() {
+            foreach (var layer in _layers) {
+                if (layer.Type == LayerType.EntityLayer) {
+                    UpdateEntityLayerBatches(layer);
+                }
+            }
+        }
+
+        /// <summary>
         /// If the currently selected node represents a batch group, returns its tileset name.
         /// Otherwise returns null.
         /// </summary>

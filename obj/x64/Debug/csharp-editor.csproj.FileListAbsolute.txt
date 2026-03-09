@@ -33,7 +33,6 @@ C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.Dialogs.TilesetImportDialog.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.Editor.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.Properties.Resources.resources
-C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.Console.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.ExternView.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.HierarchyTree.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.PropertyGridPanel.resources
@@ -56,3 +55,4 @@ C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.Dia
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.ExternView.resources
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.TextureInfo.resources
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.DebugConsole.resources
+C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.DebugConsole.resources

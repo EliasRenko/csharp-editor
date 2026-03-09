@@ -99,10 +99,15 @@ namespace csharp_editor {
         }
 
         private void ShowEntitiesDefDialog(object? sender, MouseEventArgs e) {
-            using (EntitiesDialog dialog = new EntitiesDialog(view_extern, (entityName) => {
-                _currentEntityName = entityName;
-                Log($"Current entity set to: {_currentEntityName}");
-            })) {
+            using (EntitiesDialog dialog = new EntitiesDialog(
+                view_extern,
+                onEntitySelected: (entityName) => {
+                    _currentEntityName = entityName;
+                    Log($"Current entity set to: {_currentEntityName}");
+                },
+                onEntityDefDeleted: () => {
+                    hierarchyTree.RefreshAllEntityBatches();
+                })) {
                 dialog.ShowDialog(this);
             }
         }

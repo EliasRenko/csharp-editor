@@ -27,16 +27,18 @@ namespace csharp_editor.Dialogs {
         private List<EntityEntry> _entities = new List<EntityEntry>();
         private ExternView _externView;
         private Action<string>? _onEntitySelected;
+        private Action? _onEntityDefDeleted;
 
         // cache the last loaded texture data to avoid expensive reloads
         private string _lastTexturePath = string.Empty;
         private Externs.TextureDataStruct _lastTextureData;
         private bool _hasCachedTexture = false;
 
-        public EntitiesDialog(ExternView externView, Action<string>? onEntitySelected = null) {
+        public EntitiesDialog(ExternView externView, Action<string>? onEntitySelected = null, Action? onEntityDefDeleted = null) {
             InitializeComponent();
             _externView = externView;
             _onEntitySelected = onEntitySelected;
+            _onEntityDefDeleted = onEntityDefDeleted;
             LoadExistingEntities();
         }
 
@@ -177,12 +179,13 @@ namespace csharp_editor.Dialogs {
 
             int index = listBoxEntities.SelectedIndex;
             try {
-                int removeResult = _externView.RemoveEntity(entity.Name);
-                if (removeResult != 0) {
+                string? error = _externView.DeleteEntityDef(entity.Name);
+                if (error == null) {
                     _entities.RemoveAt(index);
                     listBoxEntities.Items.RemoveAt(index);
+                    _onEntityDefDeleted?.Invoke();
                 } else {
-                    MessageBox.Show($"Failed to delete entity '{entity.Name}'.",
+                    MessageBox.Show($"Failed to delete entity '{entity.Name}': {error}",
                         "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
