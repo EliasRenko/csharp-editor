@@ -172,6 +172,9 @@ namespace csharp_editor {
         [DllImport(DLL, EntryPoint = "createTileset", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern IntPtr CreateTileset(string texturePath, string name, int tileSize);
         
+        [DllImport(DLL, EntryPoint = "deleteTileset", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern IntPtr DeleteTileset(string name);
+        
         [DllImport(DLL, EntryPoint = "setActiveTileset", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern bool SetActiveTileset(string tilesetName);
         

@@ -19,11 +19,13 @@ namespace csharp_editor.Dialogs {
         private List<TilesetEntry> _tilesets = new List<TilesetEntry>();
         private ExternView _externView;
         private Action<string>? _onTilesetSelected;
+        private Action? _onTilesetDeleted;
 
-        public TilesetImportDialog(ExternView externView, Action<string>? onTilesetSelected = null) {
+        public TilesetImportDialog(ExternView externView, Action<string>? onTilesetSelected = null, Action? onTilesetDeleted = null) {
             InitializeComponent();
             _externView = externView;
             _onTilesetSelected = onTilesetSelected;
+            _onTilesetDeleted = onTilesetDeleted;
             LoadExistingTilesets();
         }
 
@@ -187,10 +189,31 @@ namespace csharp_editor.Dialogs {
         }
 
         private void buttonRemove_Click(object sender, EventArgs e) {
-            if (listBoxTilesets.SelectedItem is TilesetEntry entry) {
-                _tilesets.Remove(entry);
-                listBoxTilesets.Items.Remove(entry);
+            if (listBoxTilesets.SelectedItem is not TilesetEntry entry) {
+                MessageBox.Show("Please select a tileset to delete.",
+                    "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
+
+            DialogResult confirm = MessageBox.Show(
+                $"Are you sure you want to delete tileset '{entry.Name}'?\nAll layers using this tileset will also be removed.",
+                "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+            if (confirm != DialogResult.Yes) return;
+
+            string? error = _externView.DeleteTileset(entry.Name);
+            if (error != null) {
+                MessageBox.Show($"Failed to delete tileset '{entry.Name}': {error}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            _tilesets.Remove(entry);
+            listBoxTilesets.Items.Remove(entry);
+            textureViewer.Clear();
+            labelTilesetMeta.Text = "";
+            labelTilesetPath.Text = "";
+            _onTilesetDeleted?.Invoke();
         }
 
         private void buttonUse_Click(object sender, EventArgs e) {

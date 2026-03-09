@@ -69,7 +69,7 @@ namespace csharp_editor.Dialogs {
             buttonRemove.Name = "buttonRemove";
             buttonRemove.Size = new System.Drawing.Size(85, 25);
             buttonRemove.TabIndex = 1;
-            buttonRemove.Text = "Remove";
+            buttonRemove.Text = "Delete";
             buttonRemove.UseVisualStyleBackColor = true;
             buttonRemove.Click += buttonRemove_Click;
             // 

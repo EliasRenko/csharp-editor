@@ -211,8 +211,9 @@ namespace csharp_editor {
             view_extern.OnMouseButtonUp(e.X, e.Y, button);
 
             // clicking in the extern view may have placed an entity – if the active layer
-            // is an entity layer, refresh its batch groups so the hierarchy tree stays current.
+            // is an entity layer, refresh its batch groups and instance list so everything stays current.
             hierarchyTree.RefreshSelectedEntityBatches();
+            entitySelector.LoadInstances();
         }
 
         private void ExternView_EntitySelectionChanged(object? sender, EventArgs e) {
@@ -563,10 +564,16 @@ namespace csharp_editor {
         }
 
         private void ShowTilesetDefDialog(object? sender, MouseEventArgs e) {
-             using (TilesetImportDialog dialog = new TilesetImportDialog(view_extern, (tilesetName) => {
-                _currentTilesetName = tilesetName;
-                Log($"Current tileset set to: {_currentTilesetName}");
-            })) {
+             using (TilesetImportDialog dialog = new TilesetImportDialog(
+                view_extern,
+                onTilesetSelected: (tilesetName) => {
+                    _currentTilesetName = tilesetName;
+                    Log($"Current tileset set to: {_currentTilesetName}");
+                },
+                onTilesetDeleted: () => {
+                    hierarchyTree.LoadLayersFromBackend();
+                    Log("Tileset deleted — layers refreshed.");
+                })) {
                 dialog.ShowDialog(this);
             }
         }

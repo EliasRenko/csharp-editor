@@ -174,6 +174,12 @@ namespace csharp_editor.UserControls {
             return Marshal.PtrToStringAnsi(result);
         }
 
+        /// <summary>Deletes a tileset. Returns null on success, or an error message on failure.</summary>
+        public string? DeleteTileset(string name) {
+            IntPtr result = Externs.DeleteTileset(name);
+            return result == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(result);
+        }
+
         public int GetActiveTile() {
             return Externs.GetActiveTile();
         }
