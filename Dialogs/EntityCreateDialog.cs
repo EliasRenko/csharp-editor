@@ -167,10 +167,10 @@ namespace csharp_editor.Dialogs {
                     width       = width,
                     height      = height,
                     tilesetName = Marshal.StringToHGlobalAnsi(comboBoxTilemap.SelectedItem.ToString() ?? ""),
-                    regionX     = _currentRegion.X,
-                    regionY     = _currentRegion.Y,
-                    regionWidth  = _currentRegion.Width,
-                    regionHeight = _currentRegion.Height,
+                    regionX     = _currentRegion.X * _currentTileSize,
+                    regionY     = _currentRegion.Y * _currentTileSize,
+                    regionWidth  = _currentRegion.Width  * _currentTileSize,
+                    regionHeight = _currentRegion.Height * _currentTileSize,
                     pivotX      = PivotToFloats(_selectedPivot).X,
                     pivotY      = PivotToFloats(_selectedPivot).Y
                 };
@@ -233,8 +233,15 @@ namespace csharp_editor.Dialogs {
                 }
             }
 
-            _currentRegion = new Rectangle(entry.TileX, entry.TileY, entry.TileWidth, entry.TileHeight);
+            // entry.TileX/Y/Width/Height come from C++ as pixel coords; convert to tile indices
             UpdateCurrentTileSize();
+            int ts = _currentTileSize > 0 ? _currentTileSize : 1;
+            _currentRegion = new Rectangle(
+                entry.TileX     / ts,
+                entry.TileY     / ts,
+                Math.Max(1, entry.TileWidth  / ts),
+                Math.Max(1, entry.TileHeight / ts)
+            );
             UpdateRegionLabel();
 
             _selectedPivot = FloatsToPivot(entry.PivotX, entry.PivotY);

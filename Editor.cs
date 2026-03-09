@@ -107,9 +107,11 @@ namespace csharp_editor {
                 },
                 onEntityDefDeleted: () => {
                     hierarchyTree.RefreshAllEntityBatches();
+                    entitySelector.LoadInstances();
                 })) {
                 dialog.ShowDialog(this);
             }
+            entitySelector.LoadEntities();
         }
 
         public void UpdateFrame(float deltaTime) {
@@ -349,8 +351,7 @@ namespace csharp_editor {
             else if (layer.Type == LayerType.EntityLayer) {
                 textureViewer.Visible = false;
                 entitySelector.Visible = true;
-                // show all entities when switching to a new layer
-                entitySelector.LoadEntities();
+                entitySelector.SetLayer(layer.Name);
             }
             else {
                 // Default or unknown layer type
@@ -423,10 +424,9 @@ namespace csharp_editor {
             // TODO: Sync with backend when layers change
         }
 
-        private void HierarchyTree_BatchSelected(object? sender, string tilesetName) {
-            // user picked a batch group: filter the entity selector
-            Log($"Batch selected for tileset: {tilesetName}");
-            entitySelector.LoadEntities(tilesetName);
+        private void HierarchyTree_BatchSelected(object? sender, (string TilesetName, int BatchIndex) args) {
+            Log($"Batch selected for tileset: {args.TilesetName} (index {args.BatchIndex})");
+            entitySelector.SetBatchFilter(args.TilesetName, args.BatchIndex);
         }
 
         private void UpdateTextureInfo(HierarchyTree.LayerNode layer) {

@@ -27,6 +27,7 @@ namespace csharp_editor.UserControls {
         /// </summary>
         private class BatchInfo {
             public string TilesetName { get; set; } = "";
+            public int Index { get; set; }
             public int EntityCount { get; set; }
 
             public override string ToString() {
@@ -64,8 +65,8 @@ namespace csharp_editor.UserControls {
         
         public event EventHandler<LayerNode>? LayerSelected;
         public event EventHandler? StateSelected;
-        /// <summary>Raised when a batch group node is selected; argument is the tileset name.</summary>
-        public event EventHandler<string>? BatchSelected;
+        /// <summary>Raised when a batch group node is selected; argument is (tilesetName, batchIndex).</summary>
+        public event EventHandler<(string TilesetName, int BatchIndex)>? BatchSelected;
         public event EventHandler? LayersChanged;
         public event EventHandler? ReplaceTilesetClicked;
 
@@ -122,6 +123,7 @@ namespace csharp_editor.UserControls {
                 TreeNode batchNode = new TreeNode(display + $" ({entityCount})");
                 batchNode.Tag = new BatchInfo {
                     TilesetName = tilesetName ?? "",
+                    Index = i,
                     EntityCount = entityCount
                 };
                 // make batches visually distinct
@@ -667,7 +669,7 @@ namespace csharp_editor.UserControls {
                 StateSelected?.Invoke(this, EventArgs.Empty);
             } else if (e.Node?.Tag is BatchInfo batch) {
                 // user clicked a batch group under an entity layer
-                BatchSelected?.Invoke(this, batch.TilesetName);
+                BatchSelected?.Invoke(this, (batch.TilesetName, batch.Index));
             }
         }
 

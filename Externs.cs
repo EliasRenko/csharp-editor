@@ -281,6 +281,13 @@ namespace csharp_editor {
         [DllImport(DLL, EntryPoint = "getEntitySelectionInfo", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetEntitySelectionInfo(int index, out EntityStruct outData);
 
+        // Enumerate placed entity instances in a layer (batchIndex = -1 for all batches)
+        [DllImport(DLL, EntryPoint = "getEntityLayerInstanceCount", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int GetEntityLayerInstanceCount(string layerName, int batchIndex);
+
+        [DllImport(DLL, EntryPoint = "getEntityLayerInstanceAt", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int GetEntityLayerInstanceAt(string layerName, int batchIndex, int instanceIndex, out EntityStruct outData);
+
         // Batch group queries for entity layers
         [DllImport(DLL, EntryPoint = "getEntityLayerBatchCount", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int GetEntityLayerBatchCount(string layerName);

@@ -395,6 +395,14 @@ namespace csharp_editor.UserControls {
             return Externs.GetEntitySelectionInfo(index, out outData);
         }
 
+        public int GetEntityLayerInstanceCount(string layerName, int batchIndex = -1) {
+            return Externs.GetEntityLayerInstanceCount(layerName, batchIndex);
+        }
+
+        public int GetEntityLayerInstanceAt(string layerName, int batchIndex, int instanceIndex, out Externs.EntityStruct outData) {
+            return Externs.GetEntityLayerInstanceAt(layerName, batchIndex, instanceIndex, out outData);
+        }
+
         // --- batch group helpers ------------------------------------------------
         public int GetEntityLayerBatchCount(string layerName) {
             return Externs.GetEntityLayerBatchCount(layerName);

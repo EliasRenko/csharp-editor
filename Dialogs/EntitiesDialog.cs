@@ -139,7 +139,7 @@ namespace csharp_editor.Dialogs {
                 _hasCachedTexture = true;
             }
 
-            // Region values from C++ are stored in pixels
+            // Region values from C++ are pixel coords, pass them directly
             textureViewer.SetRegionPreview(textureData, tilesetInfo,
                 entry.TileX, entry.TileY, entry.TileWidth, entry.TileHeight);
         }
