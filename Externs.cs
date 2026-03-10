@@ -116,6 +116,12 @@ namespace csharp_editor {
 
         [DllImport(DLL, EntryPoint = "loadState")]
         public static extern void LoadState(int id);
+
+        [DllImport(DLL, EntryPoint = "setActiveState")]
+        public static extern int SetActiveState(int index);
+
+        [DllImport(DLL, EntryPoint = "releaseState")]
+        public static extern int ReleaseState(int index);
         
         // Window
         #region Window

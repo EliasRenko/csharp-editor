@@ -64,17 +64,21 @@ namespace csharp_editor {
             toolStripSeparator4 = new ToolStripSeparator();
             toolStripButton_entityAdd = new ToolStripButton();
             toolStripButton_entitySelect = new ToolStripButton();
+            tabControl1 = new TabControl();
+            panelMain = new Panel();
             menuStrip1.SuspendLayout();
             panelRight.SuspendLayout();
             toolStrip1.SuspendLayout();
             toolStrip2.SuspendLayout();
+            tabControl1.SuspendLayout();
+            panelMain.SuspendLayout();
             SuspendLayout();
             // 
             // view_extern
             // 
             view_extern.BackColor = SystemColors.ControlDark;
             view_extern.Dock = DockStyle.Fill;
-            view_extern.Location = new Point(265, 49);
+            view_extern.Location = new Point(265, 25);
             view_extern.Name = "view_extern";
             view_extern.Size = new Size(530, 569);
             view_extern.TabIndex = 0;
@@ -169,7 +173,7 @@ namespace csharp_editor {
             panelRight.Controls.Add(textureViewer);
             panelRight.Controls.Add(hierarchyTree);
             panelRight.Dock = DockStyle.Right;
-            panelRight.Location = new Point(795, 49);
+            panelRight.Location = new Point(795, 0);
             panelRight.Name = "panelRight";
             panelRight.Size = new Size(263, 569);
             panelRight.TabIndex = 7;
@@ -312,18 +316,19 @@ namespace csharp_editor {
             // propertyGridPanel1
             // 
             propertyGridPanel1.Dock = DockStyle.Left;
-            propertyGridPanel1.Location = new Point(0, 49);
+            propertyGridPanel1.Location = new Point(0, 25);
             propertyGridPanel1.Name = "propertyGridPanel1";
             propertyGridPanel1.Size = new Size(265, 569);
             propertyGridPanel1.TabIndex = 9;
             // 
             // toolStrip2
             // 
+            toolStrip2.Dock = DockStyle.Top;
             toolStrip2.GripStyle = ToolStripGripStyle.Hidden;
             toolStrip2.Items.AddRange(new ToolStripItem[] { toolStripButton_tileDraw, toolStripButton_tileErase, toolStripSeparator4, toolStripButton_entityAdd, toolStripButton_entitySelect });
-            toolStrip2.Location = new Point(265, 49);
+            toolStrip2.Location = new Point(0, 0);
             toolStrip2.Name = "toolStrip2";
-            toolStrip2.Size = new Size(530, 25);
+            toolStrip2.Size = new Size(1058, 25);
             toolStrip2.TabIndex = 10;
             toolStrip2.Text = "toolStrip2";
             // 
@@ -368,15 +373,36 @@ namespace csharp_editor {
             toolStripButton_entitySelect.Size = new Size(23, 22);
             toolStripButton_entitySelect.Text = "toolStripButton6";
             // 
+            // panelMain
+            // 
+            panelMain.Controls.Add(view_extern);
+            panelMain.Controls.Add(propertyGridPanel1);
+            panelMain.Controls.Add(panelRight);
+            panelMain.Controls.Add(toolStrip2);
+            panelMain.Dock = DockStyle.Fill;
+            panelMain.Location = new Point(0, 77);
+            panelMain.Name = "panelMain";
+            panelMain.Size = new Size(1058, 591);
+            panelMain.TabIndex = 11;
+            panelMain.Visible = false;
+            // 
+            // tabControl1
+            // 
+            tabControl1.Dock = DockStyle.Top;
+            tabControl1.Location = new Point(0, 49);
+            tabControl1.DrawMode = TabDrawMode.OwnerDrawFixed;
+            tabControl1.ItemSize = new Size(130, 22);
+            tabControl1.Name = "tabControl1";
+            tabControl1.Size = new Size(1058, 28);
+            tabControl1.TabIndex = 12;
+            // 
             // Editor
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1058, 768);
-            Controls.Add(toolStrip2);
-            Controls.Add(view_extern);
-            Controls.Add(propertyGridPanel1);
-            Controls.Add(panelRight);
+            Controls.Add(panelMain);
+            Controls.Add(tabControl1);
             Controls.Add(toolStrip1);
             Controls.Add(console);
             Controls.Add(statusStrip1);
@@ -391,6 +417,9 @@ namespace csharp_editor {
             toolStrip1.PerformLayout();
             toolStrip2.ResumeLayout(false);
             toolStrip2.PerformLayout();
+            panelMain.ResumeLayout(false);
+            panelMain.PerformLayout();
+            tabControl1.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -408,6 +437,8 @@ namespace csharp_editor {
 
         #endregion
 
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.Panel panelMain;
         private csharp_editor.UserControls.ExternView view_extern;
         private MenuStrip menuStrip1;
         private ToolStripMenuItem fileToolStripMenuItem;

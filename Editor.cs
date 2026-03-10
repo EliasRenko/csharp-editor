@@ -9,6 +9,7 @@ namespace csharp_editor {
         public bool active = false;
         private string _currentTilesetName = "";
         private string _currentEntityName = "";
+        private bool _suppressStateSwitch = false;
 
         public Editor() {
             InitializeComponent();
@@ -56,6 +57,11 @@ namespace csharp_editor {
             ToolStripMenuItem_textureInfo.MouseDown += ButtonTextureViewOnMouseDown;
             toolStripButton_tilesets.MouseDown += ShowTilesetDefDialog;
             toolStripButton_entitiesDefs.MouseDown += ShowEntitiesDefDialog;
+
+            // Tab / state switching
+            tabControl1.SelectedIndexChanged += TabControl1_SelectedIndexChanged;
+            tabControl1.DrawItem += TabControl1_DrawItem;
+            tabControl1.MouseClick += TabControl1_MouseClick;
 
             // Tools
 
@@ -133,7 +139,18 @@ namespace csharp_editor {
         #region Core
 
         private void LoadMap(string path) {
-            view_extern.ImportMap(path);
+            _suppressStateSwitch = true;
+            int stateId = view_extern.ImportMap(path);
+
+            // Create a tab for this state
+            string tabLabel = Path.GetFileNameWithoutExtension(path);
+            TabPage tab = new TabPage(tabLabel) { Tag = stateId };
+            tabControl1.TabPages.Add(tab);
+            tabControl1.SelectedTab = tab;
+            _suppressStateSwitch = false;
+
+            // Show the editor panel if it was hidden
+            panelMain.Visible = true;
 
             // Refresh the hierarchy tree to show loaded layers
             hierarchyTree.LoadLayersFromBackend();
@@ -141,7 +158,63 @@ namespace csharp_editor {
             // Reload entity definitions so selector is up-to-date (useful after import)
             entitySelector.LoadEntities();
 
-            Log($"Map loaded from: {path}");
+            Log($"Map loaded: {tabLabel} (state {stateId})");
+        }
+
+        private void TabControl1_SelectedIndexChanged(object? sender, EventArgs e) {
+            if (_suppressStateSwitch) return;
+            if (tabControl1.SelectedTab?.Tag is int stateId) {
+                view_extern.SetActiveState(stateId);
+                hierarchyTree.LoadLayersFromBackend();
+                entitySelector.LoadEntities();
+                entitySelector.LoadInstances();
+                Log($"Switched to state {stateId}");
+            }
+        }
+
+        private Rectangle GetTabCloseRect(Rectangle tabRect) {
+            const int size = 14;
+            return new Rectangle(tabRect.Right - size - 4, tabRect.Top + (tabRect.Height - size) / 2, size, size);
+        }
+
+        private void TabControl1_DrawItem(object? sender, DrawItemEventArgs e) {
+            TabPage tab = tabControl1.TabPages[e.Index];
+            Rectangle tabRect = tabControl1.GetTabRect(e.Index);
+            bool isSelected = tabControl1.SelectedIndex == e.Index;
+
+            // Background
+            using Brush bgBrush = new SolidBrush(isSelected ? SystemColors.Window : SystemColors.Control);
+            e.Graphics.FillRectangle(bgBrush, tabRect);
+
+            // Tab text (leave room for ×)
+            Rectangle closeRect = GetTabCloseRect(tabRect);
+            Rectangle textRect = new Rectangle(tabRect.Left + 6, tabRect.Top, tabRect.Width - closeRect.Width - 12, tabRect.Height);
+            TextRenderer.DrawText(e.Graphics, tab.Text, tabControl1.Font, textRect,
+                SystemColors.ControlText, TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
+
+            // × button
+            using Font closeFont = new Font(tabControl1.Font.FontFamily, 7.5f, FontStyle.Bold);
+            TextRenderer.DrawText(e.Graphics, "×", closeFont, closeRect,
+                SystemColors.ControlDark, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+        }
+
+        private void TabControl1_MouseClick(object? sender, MouseEventArgs e) {
+            for (int i = 0; i < tabControl1.TabPages.Count; i++) {
+                if (GetTabCloseRect(tabControl1.GetTabRect(i)).Contains(e.Location)) {
+                    CloseStateTab(i);
+                    return;
+                }
+            }
+        }
+
+        private void CloseStateTab(int index) {
+            if (tabControl1.TabPages[index].Tag is int stateId) {
+                view_extern.ReleaseState(stateId);
+            }
+            tabControl1.TabPages.RemoveAt(index);
+            if (tabControl1.TabPages.Count == 0) {
+                panelMain.Visible = false;
+            }
         }
 
         #endregion

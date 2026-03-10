@@ -196,8 +196,20 @@ namespace csharp_editor.UserControls {
             return Externs.GetToolType();
         }
 
-        public void ImportMap(string path) {
-            Externs.ImportMap(path);
+        public int ImportMap(string path) {
+            return Externs.ImportMap(path);
+        }
+
+        public void LoadState(int id) {
+            Externs.LoadState(id);
+        }
+
+        public int SetActiveState(int stateId) {
+            return Externs.SetActiveState(stateId);
+        }
+
+        public int ReleaseState(int stateId) {
+            return Externs.ReleaseState(stateId);
         }
         
         public void ExportMap(string path) {
