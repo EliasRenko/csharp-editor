@@ -4,7 +4,9 @@ using System.Runtime.InteropServices;
 namespace csharp_editor.UserControls {
     public partial class TextureViewer : UserControl {
         private Externs.TextureDataStruct _textureData;
-        private Externs.TilesetInfoStruct _tilesetInfo;
+        private int _tileSize;
+        private int _tilesPerRow;
+        private int _tilesPerCol;
         private Bitmap? _bitmap;
         public Point _selectedTile = new Point(-1, -1);
         private Rectangle _selectionRect = Rectangle.Empty;
@@ -36,7 +38,7 @@ namespace csharp_editor.UserControls {
         public int SelectedRegionId {
             get {
                 if (!HasSelection) return -1;
-                return _selectedTile.Y * _tilesetInfo.tilesPerRow + _selectedTile.X;
+                return _selectedTile.Y * _tilesPerRow + _selectedTile.X;
             }
         }
         
@@ -154,9 +156,11 @@ namespace csharp_editor.UserControls {
             }
         }
 
-        public void SetTextureData(Externs.TextureDataStruct textureData, Externs.TilesetInfoStruct tilesetInfo) {
+        public void SetTextureData(Externs.TextureDataStruct textureData, int tileSize = 0) {
             _textureData = textureData;
-            _tilesetInfo = tilesetInfo;
+            _tileSize = tileSize;
+            _tilesPerRow = tileSize > 0 ? textureData.Width / tileSize : 0;
+            _tilesPerCol = tileSize > 0 ? textureData.Height / tileSize : 0;
             UpdateDisplay();
         }
         
@@ -165,18 +169,18 @@ namespace csharp_editor.UserControls {
             if (_regionSelectionMode) return;
             
             // Calculate tile position from region ID
-            if (_tilesetInfo.tilesPerRow > 0 && regionId >= 0) {
-                int tileX = regionId % _tilesetInfo.tilesPerRow;
-                int tileY = regionId / _tilesetInfo.tilesPerRow;
+            if (_tilesPerRow > 0 && regionId >= 0) {
+                int tileX = regionId % _tilesPerRow;
+                int tileY = regionId / _tilesPerRow;
                 
                 _selectedTile = new Point(tileX, tileY);
                 
                 // Calculate selection rectangle
                 _selectionRect = new Rectangle(
-                    tileX * _tilesetInfo.tileSize,
-                    tileY * _tilesetInfo.tileSize,
-                    _tilesetInfo.tileSize,
-                    _tilesetInfo.tileSize
+                    tileX * _tileSize,
+                    tileY * _tileSize,
+                    _tileSize,
+                    _tileSize
                 );
                 
                 pictureBoxTexture.Invalidate();
@@ -192,8 +196,8 @@ namespace csharp_editor.UserControls {
 
         private void CenterOnSelectedTile() {
             if (pictureBoxTexture.Parent is ScrollableControl scrollPanel && _selectedTile.X >= 0 && _selectedTile.Y >= 0) {
-                int tilePixelX = _selectedTile.X * _tilesetInfo.tileSize;
-                int tilePixelY = _selectedTile.Y * _tilesetInfo.tileSize;
+                int tilePixelX = _selectedTile.X * _tileSize;
+                int tilePixelY = _selectedTile.Y * _tileSize;
 
                 int zoomedTileX = (int)(tilePixelX * _zoomLevel);
                 int zoomedTileY = (int)(tilePixelY * _zoomLevel);
@@ -201,8 +205,8 @@ namespace csharp_editor.UserControls {
                 int viewportWidth = scrollPanel.ClientSize.Width;
                 int viewportHeight = scrollPanel.ClientSize.Height;
 
-                int scrollX = Math.Max(0, zoomedTileX - viewportWidth / 2 + (int)(_tilesetInfo.tileSize * _zoomLevel) / 2);
-                int scrollY = Math.Max(0, zoomedTileY - viewportHeight / 2 + (int)(_tilesetInfo.tileSize * _zoomLevel) / 2);
+                int scrollX = Math.Max(0, zoomedTileX - viewportWidth / 2 + (int)(_tileSize * _zoomLevel) / 2);
+                int scrollY = Math.Max(0, zoomedTileY - viewportHeight / 2 + (int)(_tileSize * _zoomLevel) / 2);
 
                 scrollPanel.AutoScrollPosition = new Point(scrollX, scrollY);
             }
@@ -222,7 +226,7 @@ namespace csharp_editor.UserControls {
         }
         
         public void SetInitialRegion(int tileX, int tileY, int tileWidth, int tileHeight) {
-            if (_regionSelectionMode && _tilesetInfo.tileSize > 0) {
+            if (_regionSelectionMode && _tileSize > 0) {
                 _regionStart = new Point(tileX, tileY);
                 _regionEnd = new Point(tileX + tileWidth - 1, tileY + tileHeight - 1);
                 UpdateRegionRectangle();
@@ -235,16 +239,18 @@ namespace csharp_editor.UserControls {
         /// can dim everything outside it, leaving only the region at full brightness.
         /// Coordinates are in PIXELS (as stored by the C++ engine).
         /// </summary>
-        public void SetRegionPreview(Externs.TextureDataStruct textureData, Externs.TilesetInfoStruct tilesetInfo, int pixelX, int pixelY, int pixelW, int pixelH) {
+        public void SetRegionPreview(Externs.TextureDataStruct textureData, int tileSize, int pixelX, int pixelY, int pixelW, int pixelH) {
             _textureData = textureData;
-            _tilesetInfo = tilesetInfo;
+            _tileSize = tileSize;
+            _tilesPerRow = tileSize > 0 ? textureData.Width / tileSize : 0;
+            _tilesPerCol = tileSize > 0 ? textureData.Height / tileSize : 0;
             _regionSelectionMode = false;
             _previewRegion = Rectangle.Empty;
 
             if (textureData.Data == IntPtr.Zero) return;
 
-            pixelW = Math.Max(tilesetInfo.tileSize > 0 ? tilesetInfo.tileSize : 1, pixelW);
-            pixelH = Math.Max(tilesetInfo.tileSize > 0 ? tilesetInfo.tileSize : 1, pixelH);
+            pixelW = Math.Max(tileSize > 0 ? tileSize : 1, pixelW);
+            pixelH = Math.Max(tileSize > 0 ? tileSize : 1, pixelH);
 
             try {
                 _bitmap?.Dispose();
@@ -292,19 +298,19 @@ namespace csharp_editor.UserControls {
         }
 
         private void PictureBoxTexture_MouseDown(object? sender, MouseEventArgs e) {
-            if (_bitmap == null || _tilesetInfo.tileSize <= 0) return;
+            if (_bitmap == null || _tileSize <= 0) return;
 
             // Convert mouse coordinates to image coordinates
             Point imagePoint = GetImageCoordinates(e.Location);
             if (imagePoint.X < 0 || imagePoint.Y < 0) return;
 
             // Calculate tile position
-            int tileX = imagePoint.X / _tilesetInfo.tileSize;
-            int tileY = imagePoint.Y / _tilesetInfo.tileSize;
+            int tileX = imagePoint.X / _tileSize;
+            int tileY = imagePoint.Y / _tileSize;
 
             // Validate tile position
-            if (tileX >= 0 && tileX < _tilesetInfo.tilesPerRow && 
-                tileY >= 0 && tileY < _tilesetInfo.tilesPerCol) {
+            if (tileX >= 0 && tileX < _tilesPerRow && 
+                tileY >= 0 && tileY < _tilesPerCol) {
                 
                 if (_regionSelectionMode) {
                     // Start region selection
@@ -319,10 +325,10 @@ namespace csharp_editor.UserControls {
                     
                     // Calculate selection rectangle in image coordinates
                     _selectionRect = new Rectangle(
-                        tileX * _tilesetInfo.tileSize,
-                        tileY * _tilesetInfo.tileSize,
-                        _tilesetInfo.tileSize,
-                        _tilesetInfo.tileSize
+                        tileX * _tileSize,
+                        tileY * _tileSize,
+                        _tileSize,
+                        _tileSize
                     );
                     
                     pictureBoxTexture.Invalidate();
@@ -334,19 +340,19 @@ namespace csharp_editor.UserControls {
         }
         
         private void PictureBoxTexture_MouseMove(object? sender, MouseEventArgs e) {
-            if (!_regionSelectionMode || !_isDragging || _bitmap == null || _tilesetInfo.tileSize <= 0) return;
+            if (!_regionSelectionMode || !_isDragging || _bitmap == null || _tileSize <= 0) return;
 
             // Convert mouse coordinates to image coordinates
             Point imagePoint = GetImageCoordinates(e.Location);
             if (imagePoint.X < 0 || imagePoint.Y < 0) return;
 
             // Calculate tile position
-            int tileX = imagePoint.X / _tilesetInfo.tileSize;
-            int tileY = imagePoint.Y / _tilesetInfo.tileSize;
+            int tileX = imagePoint.X / _tileSize;
+            int tileY = imagePoint.Y / _tileSize;
 
             // Clamp to valid range
-            tileX = Math.Max(0, Math.Min(tileX, _tilesetInfo.tilesPerRow - 1));
-            tileY = Math.Max(0, Math.Min(tileY, _tilesetInfo.tilesPerCol - 1));
+            tileX = Math.Max(0, Math.Min(tileX, _tilesPerRow - 1));
+            tileY = Math.Max(0, Math.Min(tileY, _tilesPerCol - 1));
 
             if (_regionEnd.X != tileX || _regionEnd.Y != tileY) {
                 _regionEnd = new Point(tileX, tileY);
@@ -368,10 +374,10 @@ namespace csharp_editor.UserControls {
                 return;
             }
             
-            int x1 = Math.Min(_regionStart.X, _regionEnd.X) * _tilesetInfo.tileSize;
-            int y1 = Math.Min(_regionStart.Y, _regionEnd.Y) * _tilesetInfo.tileSize;
-            int x2 = (Math.Max(_regionStart.X, _regionEnd.X) + 1) * _tilesetInfo.tileSize;
-            int y2 = (Math.Max(_regionStart.Y, _regionEnd.Y) + 1) * _tilesetInfo.tileSize;
+            int x1 = Math.Min(_regionStart.X, _regionEnd.X) * _tileSize;
+            int y1 = Math.Min(_regionStart.Y, _regionEnd.Y) * _tileSize;
+            int x2 = (Math.Max(_regionStart.X, _regionEnd.X) + 1) * _tileSize;
+            int y2 = (Math.Max(_regionStart.Y, _regionEnd.Y) + 1) * _tileSize;
             
             _selectedRegion = new Rectangle(x1, y1, x2 - x1, y2 - y1);
         }

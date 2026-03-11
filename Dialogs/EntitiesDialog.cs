@@ -140,7 +140,7 @@ namespace csharp_editor.Dialogs {
             }
 
             // Region values from C++ are pixel coords, pass them directly
-            textureViewer.SetRegionPreview(textureData, tilesetInfo,
+            textureViewer.SetRegionPreview(textureData, 0,
                 entry.TileX, entry.TileY, entry.TileWidth, entry.TileHeight);
         }
 

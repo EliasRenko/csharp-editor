@@ -10,17 +10,20 @@ namespace csharp_editor.Dialogs {
         private string _tilesetName;
         private int _entityWidth;
         private int _entityHeight;
+        private int _tileSize;
         
         public Rectangle SelectedRegion { get; private set; }
         
         public TilesetRegionDialog(ExternView externView, string tilesetName, int entityWidth, int entityHeight, 
-                                   int initialTileX = 0, int initialTileY = 0, int initialTileWidth = 1, int initialTileHeight = 1) {
+                                   int initialTileX = 0, int initialTileY = 0, int initialTileWidth = 1, int initialTileHeight = 1,
+                                   int tileSize = 32) {
             InitializeComponent();
             
             _externView = externView;
             _tilesetName = tilesetName;
             _entityWidth = entityWidth;
             _entityHeight = entityHeight;
+            _tileSize = tileSize;
             
             this.Text = $"Select Region - {tilesetName}";
             
@@ -70,12 +73,12 @@ namespace csharp_editor.Dialogs {
                 string texturePath = Marshal.PtrToStringAnsi(tileset.texturePath) ?? "";
                 _externView.GetTextureData(texturePath, out textureData);
                 
-                textureViewer.SetTextureData(textureData, tileset);
+                textureViewer.SetTextureData(textureData, _tileSize);
                 
                 // Calculate suggested region based on entity size
-                if (_entityWidth > 0 && _entityHeight > 0 && tileset.tileSize > 0) {
-                    int suggestedTileWidth = (_entityWidth + tileset.tileSize - 1) / tileset.tileSize;
-                    int suggestedTileHeight = (_entityHeight + tileset.tileSize - 1) / tileset.tileSize;
+                if (_entityWidth > 0 && _entityHeight > 0 && _tileSize > 0) {
+                    int suggestedTileWidth = (_entityWidth + _tileSize - 1) / _tileSize;
+                    int suggestedTileHeight = (_entityHeight + _tileSize - 1) / _tileSize;
                     
                     labelSuggestion.Text = $"Suggested region for {_entityWidth}×{_entityHeight}px entity: {suggestedTileWidth}×{suggestedTileHeight} tiles";
                 }

@@ -52,19 +52,7 @@ namespace csharp_editor.Dialogs {
         }
 
         private void UpdateCurrentTileSize() {
-            if (comboBoxTilemap.SelectedItem == null) return;
-            string selected = comboBoxTilemap.SelectedItem.ToString() ?? "";
-            int count = _externView.GetTilesetCount();
-            for (int i = 0; i < count; i++) {
-                Externs.TilesetInfoStruct info = new Externs.TilesetInfoStruct();
-                if (_externView.GetTilesetAt(i, out info) != 0) {
-                    string name = Marshal.PtrToStringAnsi(info.name) ?? "";
-                    if (name == selected) {
-                        _currentTileSize = info.tileSize > 0 ? info.tileSize : 32;
-                        return;
-                    }
-                }
-            }
+            // Tile size is no longer stored on TilesetInfoStruct; _currentTileSize keeps its default (32).
         }
 
         private void ComboBoxTilemap_SelectedIndexChanged(object? sender, EventArgs e) {

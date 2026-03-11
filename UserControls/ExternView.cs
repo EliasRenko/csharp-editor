@@ -166,8 +166,8 @@ namespace csharp_editor.UserControls {
             return Externs.SetActiveTileset(tilesetName);
         }
 
-        public string? CreateTileset(string texturePath, string name, int tileSize) {
-            IntPtr result = Externs.CreateTileset(texturePath, name, tileSize);
+        public string? CreateTileset(string texturePath, string name) {
+            IntPtr result = Externs.CreateTileset(texturePath, name);
             if (result == IntPtr.Zero) {
                 return null;
             }
@@ -224,8 +224,8 @@ namespace csharp_editor.UserControls {
         
         #region Layer Management
         
-        public void CreateTilemapLayer(string layerName, string tilesetName, int index) {
-            Externs.CreateTilemapLayer(layerName, tilesetName, index);
+        public void CreateTilemapLayer(string layerName, string tilesetName, int tileSize, int index) {
+            Externs.CreateTilemapLayer(layerName, tilesetName, tileSize, index);
         }
         
         // layerName is used by backend; tileset selection is no longer part of the API.

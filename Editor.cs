@@ -556,7 +556,7 @@ namespace csharp_editor {
             view_extern.GetTextureData(texturePath, out textureData);
 
             // Update tileset viewer
-            textureViewer.SetTextureData(textureData, tilesetInfo);
+            textureViewer.SetTextureData(textureData, layer.TileSize);
 
             // Get and select the active tile from backend
             int activeTile = view_extern.GetActiveTile();
@@ -639,7 +639,7 @@ namespace csharp_editor {
 
                 UserControls.TextureInfo viewer = new UserControls.TextureInfo();
                 viewer.Dock = DockStyle.Fill;
-                viewer.SetTextureData(textureData, tilesetInfo);
+                viewer.SetTextureData(textureData, selectedLayer.TileSize);
 
                 dialog.Controls.Add(viewer);
                 dialog.ShowDialog(this);

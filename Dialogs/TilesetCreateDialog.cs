@@ -41,10 +41,8 @@ namespace csharp_editor.Dialogs {
                 return;
             }
 
-            int tileSize = (int)numericUpDownTileSize.Value;
-
             try {
-                var error = _externView.CreateTileset(textBoxImagePath.Text.Trim(), textBoxName.Text.Trim(), tileSize);
+                var error = _externView.CreateTileset(textBoxImagePath.Text.Trim(), textBoxName.Text.Trim());
                 if (error != null) {
                     MessageBox.Show(error, "Tileset Creation Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);

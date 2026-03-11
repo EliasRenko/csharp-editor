@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using csharp_editor.Dialogs;
 
 namespace csharp_editor.UserControls {
     public partial class HierarchyTree : UserControl {
@@ -14,6 +15,7 @@ namespace csharp_editor.UserControls {
             public bool Visible { get; set; } = true;
             public bool Locked { get; set; } = false;
             public string TilesetName { get; set; } = ""; // For TileLayer only
+            public int TileSize { get; set; } = 0;        // For TileLayer only
             public TreeNode TreeNodeRef { get; set; } = null!; // assigned when node created
             
             public override string ToString() {
@@ -133,12 +135,13 @@ namespace csharp_editor.UserControls {
             }
         }
 
-        public void AddLayer(string name, LayerType type, string tilesetName = "") {
+        public void AddLayer(string name, LayerType type, string tilesetName = "", int tileSize = 0) {
             LayerNode layer = new LayerNode {
                 Name = name,
                 Type = type,
                 Visible = true,
-                TilesetName = tilesetName
+                TilesetName = tilesetName,
+                TileSize = tileSize
             };
 
             TreeNode treeNode = new TreeNode(layer.ToString());
@@ -166,11 +169,14 @@ namespace csharp_editor.UserControls {
 
             // Notify backend - pass index for insertion
             if (type == LayerType.TileLayer) {
-                _externView?.CreateTilemapLayer(name, tilesetName, insertIndex);
+                _externView?.CreateTilemapLayer(name, tilesetName, tileSize, insertIndex);
             } else if (type == LayerType.EntityLayer) {
                 // API no longer requires a tileset for entity layers
                 _externView?.CreateEntityLayer(name);
             }
+
+            // Select the new layer as active in the backend
+            _externView?.SetActiveLayer(name);
 
             LayersChanged?.Invoke(this, EventArgs.Empty);
             UpdateButtonStates();
@@ -429,6 +435,7 @@ namespace csharp_editor.UserControls {
                             Type = (LayerType)layerInfo.type,
                             Visible = layerInfo.visible != 0,
                             TilesetName = tilesetName,
+                            TileSize = layerInfo.tileSize,
                         };
 
                         TreeNode treeNode = new TreeNode(layer.ToString());
@@ -494,81 +501,9 @@ namespace csharp_editor.UserControls {
         }
 
         private void buttonAddTileLayer_Click(object sender, EventArgs e) {
-            using (var dialog = new Form()) {
-                dialog.Text = "Add Tile Layer";
-                dialog.Size = new Size(350, 210);
-                dialog.StartPosition = FormStartPosition.CenterParent;
-                dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
-                dialog.MaximizeBox = false;
-                dialog.MinimizeBox = false;
-
-                Label labelName = new Label {
-                    Text = "Name:",
-                    Location = new Point(10, 20),
-                    Size = new Size(60, 20)
-                };
-
-                TextBox textBoxName = new TextBox {
-                    Location = new Point(80, 18),
-                    Size = new Size(240, 23)
-                };
-
-                Label labelTileset = new Label {
-                    Text = "Tileset:",
-                    Location = new Point(10, 55),
-                    Size = new Size(60, 20)
-                };
-
-                ComboBox comboBoxTileset = new ComboBox {
-                    Location = new Point(80, 53),
-                    Size = new Size(240, 23),
-                    DropDownStyle = ComboBoxStyle.DropDownList
-                };
-                
-                // Load available tilesets
-                int count = _externView?.GetTilesetCount() ?? 0;
-                for (int i = 0; i < count; i++) {
-                    Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
-                    int result = _externView?.GetTilesetAt(i, out tilesetInfo) ?? 0;
-                    
-                    if (result != 0) {
-                        string tilesetName = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "";
-                        if (!string.IsNullOrEmpty(tilesetName)) {
-                            comboBoxTileset.Items.Add(tilesetName);
-                        }
-                    }
-                }
-                if (comboBoxTileset.Items.Count > 0) {
-                    comboBoxTileset.SelectedIndex = 0;
-                }
-
-                Button buttonOk = new Button {
-                    Text = "Add",
-                    DialogResult = DialogResult.OK,
-                    Location = new Point(165, 130),
-                    Size = new Size(75, 30)
-                };
-
-                Button buttonCancel = new Button {
-                    Text = "Cancel",
-                    DialogResult = DialogResult.Cancel,
-                    Location = new Point(245, 130),
-                    Size = new Size(75, 30)
-                };
-
-                dialog.Controls.AddRange(new Control[] { 
-                    labelName, textBoxName, labelTileset, comboBoxTileset, buttonOk, buttonCancel 
-                });
-                dialog.AcceptButton = buttonOk;
-                dialog.CancelButton = buttonCancel;
-
-                if (dialog.ShowDialog(this) == DialogResult.OK && 
-                    !string.IsNullOrWhiteSpace(textBoxName.Text) &&
-                    comboBoxTileset.SelectedItem != null) {
-                    AddLayer(textBoxName.Text.Trim(), LayerType.TileLayer, comboBoxTileset.SelectedItem?.ToString() ?? "");
-                } else if (dialog.DialogResult == DialogResult.OK) {
-                    MessageBox.Show("Please enter a name and select a tileset.", "Validation Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            using (var dialog = new AddTileLayerDialog(_externView!)) {
+                if (dialog.ShowDialog(this) == DialogResult.OK) {
+                    AddLayer(dialog.LayerName, LayerType.TileLayer, dialog.SelectedTileset, dialog.TileSize);
                 }
             }
         }
