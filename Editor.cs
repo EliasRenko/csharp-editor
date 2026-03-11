@@ -519,6 +519,8 @@ namespace csharp_editor {
 
         private void HierarchyTree_BatchSelected(object? sender, (string TilesetName, int BatchIndex) args) {
             Log($"Batch selected for tileset: {args.TilesetName} (index {args.BatchIndex})");
+            textureViewer.Visible = false;
+            entitySelector.Visible = true;
             entitySelector.SetBatchFilter(args.TilesetName, args.BatchIndex);
         }
 
