@@ -7,7 +7,7 @@ namespace csharp_editor {
         public const string DLL = "Editor-debug.dll";
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void CallbackDelegate([MarshalAs(UnmanagedType.LPStr)] string message);
+        public delegate void CallbackDelegate([MarshalAs(UnmanagedType.LPStr)] string priority, [MarshalAs(UnmanagedType.LPStr)] string category, [MarshalAs(UnmanagedType.LPStr)] string message);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void EntitySelectionChangedCallback();
@@ -122,6 +122,9 @@ namespace csharp_editor {
 
         [DllImport(DLL, EntryPoint = "releaseState")]
         public static extern int ReleaseState(int index);
+
+        [DllImport(DLL, EntryPoint = "newEditorState")]
+        public static extern int NewEditorState();
         
         // Window
         #region Window

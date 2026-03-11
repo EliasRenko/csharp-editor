@@ -211,6 +211,10 @@ namespace csharp_editor.UserControls {
         public int ReleaseState(int stateId) {
             return Externs.ReleaseState(stateId);
         }
+
+        public int NewEditorState() {
+            return Externs.NewEditorState();
+        }
         
         public void ExportMap(string path) {
             Externs.ExportMap(path);

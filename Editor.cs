@@ -2,14 +2,18 @@ using System.Runtime.InteropServices;
 using csharp_editor.UserControls;
 using csharp_editor.Models;
 using csharp_editor.Dialogs;
+using csharp_editor.Helpers;
 
 namespace csharp_editor {
     public partial class Editor : Form {
 
         public bool active = false;
+        
         private string _currentTilesetName = "";
         private string _currentEntityName = "";
         private bool _suppressStateSwitch = false;
+        
+        private ExternError lastError;
 
         public Editor() {
             InitializeComponent();
@@ -17,8 +21,9 @@ namespace csharp_editor {
             active = true;
             KeyPreview = true;
 
-            Externs.CallbackDelegate callback = (value) => {
-                Log(value);
+            Externs.CallbackDelegate callback = (priority, category, message) => {
+                lastError.SetError(priority, category, message);
+                Log(priority + " - " + category + " - " + message);
             };
 
             view_extern.Init(callback);
@@ -26,6 +31,7 @@ namespace csharp_editor {
             // Toolstrip Events
             toolStripMenuItem_open.MouseUp += toolStripButton_openFile;
             toolStripMenuItem_export.MouseUp += toolStripButton_export;
+            toolStripButton_newMap.MouseDown += ToolStripButton_newMap_Click;
 
             // Initialize HierarchyTree
             hierarchyTree.SetExternView(view_extern);
@@ -159,6 +165,19 @@ namespace csharp_editor {
             entitySelector.LoadEntities();
 
             Log($"Map loaded: {tabLabel} (state {stateId})");
+        }
+
+        private void ToolStripButton_newMap_Click(object? sender, MouseEventArgs e) {
+            int stateId = view_extern.NewEditorState();
+            TabPage tab = new TabPage($"New Map {stateId}") { Tag = stateId };
+            _suppressStateSwitch = true;
+            tabControl1.TabPages.Add(tab);
+            tabControl1.SelectedTab = tab;
+            _suppressStateSwitch = false;
+            panelMain.Visible = true;
+            hierarchyTree.LoadLayersFromBackend();
+            entitySelector.LoadEntities();
+            Log($"New state created (id {stateId})");
         }
 
         private void TabControl1_SelectedIndexChanged(object? sender, EventArgs e) {
