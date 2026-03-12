@@ -35,7 +35,6 @@ namespace csharp_editor.UserControls {
             toolStripButton_moveUp = new System.Windows.Forms.ToolStripButton();
             toolStripButton_moveDown = new System.Windows.Forms.ToolStripButton();
             toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            toolStripButton_toggleVisibility = new System.Windows.Forms.ToolStripButton();
             toolStripButton_replaceTileset = new System.Windows.Forms.ToolStripButton();
             labelTitle = new System.Windows.Forms.Label();
             toolStrip_layers.SuspendLayout();
@@ -56,7 +55,7 @@ namespace csharp_editor.UserControls {
             // 
             toolStrip_layers.Dock = System.Windows.Forms.DockStyle.Bottom;
             toolStrip_layers.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            toolStrip_layers.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripButton_addLayer, toolStripButton_remove, toolStripButton_editLayer, toolStripSeparator2, toolStripButton_moveUp, toolStripButton_moveDown, toolStripSeparator3, toolStripButton_toggleVisibility, toolStripButton_replaceTileset });
+            toolStrip_layers.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripButton_addLayer, toolStripButton_remove, toolStripButton_editLayer, toolStripSeparator2, toolStripButton_moveUp, toolStripButton_moveDown, toolStripSeparator3, toolStripButton_replaceTileset });
             toolStrip_layers.Location = new System.Drawing.Point(0, 475);
             toolStrip_layers.Name = "toolStrip_layers";
             toolStrip_layers.Size = new System.Drawing.Size(250, 25);
@@ -65,24 +64,23 @@ namespace csharp_editor.UserControls {
             // toolStripButton_addLayer
             // 
             toolStripButton_addLayer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            toolStripButton_addLayer.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripMenuItem_addTileLayer, toolStripMenuItem_addEntityLayer });
             toolStripButton_addLayer.Image = global::csharp_editor.Properties.Resources.layer_add;
             toolStripButton_addLayer.Name = "toolStripButton_addLayer";
-            toolStripButton_addLayer.Size = new System.Drawing.Size(32, 22);
+            toolStripButton_addLayer.Size = new System.Drawing.Size(29, 22);
             toolStripButton_addLayer.ToolTipText = "Add Layer";
-            toolStripButton_addLayer.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-                toolStripMenuItem_addTileLayer,
-                toolStripMenuItem_addEntityLayer
-            });
             // 
             // toolStripMenuItem_addTileLayer
             // 
             toolStripMenuItem_addTileLayer.Name = "toolStripMenuItem_addTileLayer";
+            toolStripMenuItem_addTileLayer.Size = new System.Drawing.Size(160, 22);
             toolStripMenuItem_addTileLayer.Text = "Add Tile Layer";
             toolStripMenuItem_addTileLayer.Click += toolStripButton_addTileLayer_Click;
             // 
             // toolStripMenuItem_addEntityLayer
             // 
             toolStripMenuItem_addEntityLayer.Name = "toolStripMenuItem_addEntityLayer";
+            toolStripMenuItem_addEntityLayer.Size = new System.Drawing.Size(160, 22);
             toolStripMenuItem_addEntityLayer.Text = "Add Entity Layer";
             toolStripMenuItem_addEntityLayer.Click += toolStripButton_addEntityLayer_Click;
             // 
@@ -98,6 +96,7 @@ namespace csharp_editor.UserControls {
             // toolStripButton_editLayer
             // 
             toolStripButton_editLayer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            toolStripButton_editLayer.Image = global::csharp_editor.Properties.Resources.layer_edit;
             toolStripButton_editLayer.Name = "toolStripButton_editLayer";
             toolStripButton_editLayer.Size = new System.Drawing.Size(23, 22);
             toolStripButton_editLayer.ToolTipText = "Edit Layer";
@@ -130,14 +129,6 @@ namespace csharp_editor.UserControls {
             // 
             toolStripSeparator3.Name = "toolStripSeparator3";
             toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripButton_toggleVisibility
-            // 
-            toolStripButton_toggleVisibility.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            toolStripButton_toggleVisibility.Name = "toolStripButton_toggleVisibility";
-            toolStripButton_toggleVisibility.Size = new System.Drawing.Size(23, 22);
-            toolStripButton_toggleVisibility.ToolTipText = "Toggle Visibility";
-            toolStripButton_toggleVisibility.Click += toolStripButton_toggleVisibility_Click;
             // 
             // toolStripButton_replaceTileset
             // 
@@ -187,7 +178,6 @@ namespace csharp_editor.UserControls {
         private System.Windows.Forms.ToolStripButton toolStripButton_moveUp;
         private System.Windows.Forms.ToolStripButton toolStripButton_moveDown;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripButton toolStripButton_toggleVisibility;
         private System.Windows.Forms.ToolStripButton toolStripButton_replaceTileset;
         private System.Windows.Forms.Label labelTitle;
     }

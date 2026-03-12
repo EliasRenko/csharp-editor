@@ -94,6 +94,12 @@ namespace csharp_editor.Dialogs {
             if (dialog.ShowDialog(this) == DialogResult.OK) {
                 _currentRegion = dialog.SelectedRegion;
                 UpdateRegionLabel();
+                // Auto-fill width/height from the selected region's pixel dimensions
+                int ts = _currentTileSize > 0 ? _currentTileSize : 1;
+                numericUpDownWidth.Value  = Math.Max(numericUpDownWidth.Minimum,
+                    Math.Min(numericUpDownWidth.Maximum,  _currentRegion.Width  * ts));
+                numericUpDownHeight.Value = Math.Max(numericUpDownHeight.Minimum,
+                    Math.Min(numericUpDownHeight.Maximum, _currentRegion.Height * ts));
             }
         }
 

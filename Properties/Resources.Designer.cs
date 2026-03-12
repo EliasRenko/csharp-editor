@@ -262,6 +262,16 @@ namespace csharp_editor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap layer_edit1 {
+            get {
+                object obj = ResourceManager.GetObject("layer_edit1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap lightbulb {
             get {
                 object obj = ResourceManager.GetObject("lightbulb", resourceCulture);

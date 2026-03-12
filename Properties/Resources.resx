@@ -146,4 +146,7 @@
   <data name="layer_edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\layer_edit.png;System.Drawing.Bitmap, System.Drawing.Common, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51</value>
   </data>
+  <data name="layer_edit1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\layer_edit1.png;System.Drawing.Bitmap, System.Drawing.Common, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51</value>
+  </data>
 </root>

@@ -504,7 +504,6 @@ namespace csharp_editor.UserControls {
                 toolStripButton_moveUp.Enabled = false;
                 toolStripButton_moveDown.Enabled = false;
             }
-            toolStripButton_toggleVisibility.Enabled = layerSelected || batchSelected;
         }
 
         private void toolStripButton_replaceTileset_Click(object sender, EventArgs e)
