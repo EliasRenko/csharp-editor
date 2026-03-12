@@ -79,7 +79,6 @@ namespace csharp_editor.UserControls {
             // pictureBoxTexture
             // 
             pictureBoxTexture.BackColor = System.Drawing.SystemColors.Control;
-            pictureBoxTexture.Dock = System.Windows.Forms.DockStyle.Fill;
             pictureBoxTexture.Location = new System.Drawing.Point(0, 0);
             pictureBoxTexture.Name = "pictureBoxTexture";
             pictureBoxTexture.Size = new System.Drawing.Size(600, 475);

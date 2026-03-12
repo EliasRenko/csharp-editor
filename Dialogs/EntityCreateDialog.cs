@@ -16,7 +16,7 @@ namespace csharp_editor.Dialogs {
             .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
         private readonly ExternView _externView;
-        private Rectangle _currentRegion  = new Rectangle(0, 0, 1, 1);
+        private Rectangle _currentRegion  = Rectangle.Empty;  // stored in pixels
         private int       _currentTileSize = 32;
         private string    _selectedPivot   = "BottomCenter";
         private bool      _isEditMode      = false;
@@ -56,7 +56,7 @@ namespace csharp_editor.Dialogs {
         }
 
         private void ComboBoxTilemap_SelectedIndexChanged(object? sender, EventArgs e) {
-            _currentRegion = new Rectangle(0, 0, 1, 1);
+            _currentRegion = Rectangle.Empty;
             UpdateRegionLabel();
             UpdateCurrentTileSize();
         }
@@ -70,11 +70,13 @@ namespace csharp_editor.Dialogs {
         }
 
         private void UpdateRegionLabel() {
-            int ts = _currentTileSize > 0 ? _currentTileSize : 1;
+            if (_currentRegion == Rectangle.Empty) {
+                labelRegionInfo.Text = "No region selected";
+                return;
+            }
             labelRegionInfo.Text =
-                $"Tile ({_currentRegion.X},{_currentRegion.Y})  " +
-                $"{_currentRegion.Width}x{_currentRegion.Height} tiles  =  " +
-                $"{_currentRegion.Width * ts}x{_currentRegion.Height * ts} px";
+                $"({_currentRegion.X}, {_currentRegion.Y})  " +
+                $"{_currentRegion.Width}×{_currentRegion.Height} px";
         }
 
         private void ButtonSelectRegion_Click(object? sender, EventArgs e) {
@@ -89,17 +91,17 @@ namespace csharp_editor.Dialogs {
                 (int)numericUpDownWidth.Value,
                 (int)numericUpDownHeight.Value,
                 _currentRegion.X, _currentRegion.Y,
-                _currentRegion.Width, _currentRegion.Height);
+                _currentRegion.Width, _currentRegion.Height,
+                _currentTileSize);
 
             if (dialog.ShowDialog(this) == DialogResult.OK) {
-                _currentRegion = dialog.SelectedRegion;
+                _currentRegion = dialog.SelectedRegion;  // already in pixels
                 UpdateRegionLabel();
-                // Auto-fill width/height from the selected region's pixel dimensions
-                int ts = _currentTileSize > 0 ? _currentTileSize : 1;
+                // Auto-fill width/height directly from pixel dimensions
                 numericUpDownWidth.Value  = Math.Max(numericUpDownWidth.Minimum,
-                    Math.Min(numericUpDownWidth.Maximum,  _currentRegion.Width  * ts));
+                    Math.Min(numericUpDownWidth.Maximum,  _currentRegion.Width));
                 numericUpDownHeight.Value = Math.Max(numericUpDownHeight.Minimum,
-                    Math.Min(numericUpDownHeight.Maximum, _currentRegion.Height * ts));
+                    Math.Min(numericUpDownHeight.Maximum, _currentRegion.Height));
             }
         }
 
@@ -161,10 +163,10 @@ namespace csharp_editor.Dialogs {
                     width       = width,
                     height      = height,
                     tilesetName = Marshal.StringToHGlobalAnsi(comboBoxTilemap.SelectedItem.ToString() ?? ""),
-                    regionX     = _currentRegion.X * _currentTileSize,
-                    regionY     = _currentRegion.Y * _currentTileSize,
-                    regionWidth  = _currentRegion.Width  * _currentTileSize,
-                    regionHeight = _currentRegion.Height * _currentTileSize,
+                    regionX      = _currentRegion.X,
+                    regionY      = _currentRegion.Y,
+                    regionWidth  = _currentRegion.Width,
+                    regionHeight = _currentRegion.Height,
                     pivotX      = PivotToFloats(_selectedPivot).X,
                     pivotY      = PivotToFloats(_selectedPivot).Y
                 };
@@ -227,14 +229,12 @@ namespace csharp_editor.Dialogs {
                 }
             }
 
-            // entry.TileX/Y/Width/Height come from C++ as pixel coords; convert to tile indices
-            UpdateCurrentTileSize();
-            int ts = _currentTileSize > 0 ? _currentTileSize : 1;
+            // entry.TileX/Y/Width/Height are pixel coords from C++
             _currentRegion = new Rectangle(
-                entry.TileX     / ts,
-                entry.TileY     / ts,
-                Math.Max(1, entry.TileWidth  / ts),
-                Math.Max(1, entry.TileHeight / ts)
+                entry.TileX,
+                entry.TileY,
+                Math.Max(1, entry.TileWidth),
+                Math.Max(1, entry.TileHeight)
             );
             UpdateRegionLabel();
 
