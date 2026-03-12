@@ -420,14 +420,18 @@ namespace csharp_editor.UserControls {
             
             // Get layer count from backend
             int count = _externView.GetLayerCount();
-            
+            System.Diagnostics.Debug.WriteLine($"[LoadLayersFromBackend] GetLayerCount={count}");
+
+            treeViewLayers.BeginUpdate();
             for (int i = 0; i < count; i++) {
                 Externs.LayerInfoStruct layerInfo = new Externs.LayerInfoStruct();
                 int result = _externView.GetLayerInfoAt(i, out layerInfo);
+                System.Diagnostics.Debug.WriteLine($"[LoadLayersFromBackend] Layer[{i}]: GetLayerInfoAt result={result}");
                 
                 if (result != 0) {
                     string layerName = Marshal.PtrToStringAnsi(layerInfo.name) ?? "";
                     string tilesetName = Marshal.PtrToStringAnsi(layerInfo.tilesetName) ?? "";
+                    System.Diagnostics.Debug.WriteLine($"[LoadLayersFromBackend] Layer[{i}]: name='{layerName}', type={layerInfo.type}, tilesetName='{tilesetName}'");
                     
                     if (!string.IsNullOrEmpty(layerName)) {
                         LayerNode layer = new LayerNode {
@@ -453,6 +457,12 @@ namespace csharp_editor.UserControls {
                     }
                 }
             }
+            treeViewLayers.EndUpdate();
+            // Expand AFTER children have been added — Win32 TVM_EXPAND is a no-op on empty nodes,
+            // so any earlier Expand() call (when the node had 0 children) was silently ignored.
+            _stateNode!.Expand();
+            treeViewLayers.Refresh(); // force synchronous repaint
+            System.Diagnostics.Debug.WriteLine($"[LoadLayersFromBackend] Done. _layers.Count={_layers.Count}, treeViewLayers.Nodes.Count={treeViewLayers.Nodes.Count}, stateNode.Nodes.Count={_stateNode?.Nodes.Count}, stateNode.IsExpanded={_stateNode?.IsExpanded}");
             
             LayersChanged?.Invoke(this, EventArgs.Empty);
             UpdateButtonStates();

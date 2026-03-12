@@ -144,16 +144,35 @@ namespace csharp_editor {
 
         #region Core
 
+        private record TabState(int StateId, string FilePath);
+
         private void LoadMap(string path) {
+            // Prevent loading the same file twice
+            string normalizedPath = Path.GetFullPath(path);
+            foreach (TabPage existing in tabControl1.TabPages) {
+                if (existing.Tag is TabState ts && string.Equals(ts.FilePath, normalizedPath, StringComparison.OrdinalIgnoreCase)) {
+                    tabControl1.SelectedTab = existing;
+                    Log($"Map already open: {normalizedPath}");
+                    return;
+                }
+            }
+
             _suppressStateSwitch = true;
             int stateId = view_extern.ImportMap(path);
+            System.Diagnostics.Debug.WriteLine($"[LoadMap] ImportMap('{path}') returned stateId={stateId}");
+            Log($"[DEBUG] ImportMap returned stateId={stateId}");
 
             // Create a tab for this state
             string tabLabel = Path.GetFileNameWithoutExtension(path);
-            TabPage tab = new TabPage(tabLabel) { Tag = stateId };
+            TabPage tab = new TabPage(tabLabel) { Tag = new TabState(stateId, normalizedPath) };
             tabControl1.TabPages.Add(tab);
             tabControl1.SelectedTab = tab;
             _suppressStateSwitch = false;
+
+            // Explicitly activate the imported state (suppressed above so SelectedIndexChanged didn't do it)
+            int setStateResult = view_extern.SetActiveState(stateId);
+            System.Diagnostics.Debug.WriteLine($"[LoadMap] SetActiveState({stateId}) returned {setStateResult}");
+            Log($"[DEBUG] SetActiveState({stateId}) returned {setStateResult}");
 
             // Show the editor panel if it was hidden
             panelMain.Visible = true;
@@ -169,11 +188,12 @@ namespace csharp_editor {
 
         private void ToolStripButton_newMap_Click(object? sender, MouseEventArgs e) {
             int stateId = view_extern.NewEditorState();
-            TabPage tab = new TabPage($"New Map {stateId}") { Tag = stateId };
+            TabPage tab = new TabPage($"New Map {stateId}") { Tag = new TabState(stateId, "") };
             _suppressStateSwitch = true;
             tabControl1.TabPages.Add(tab);
             tabControl1.SelectedTab = tab;
             _suppressStateSwitch = false;
+            view_extern.SetActiveState(stateId);
             panelMain.Visible = true;
             hierarchyTree.LoadLayersFromBackend();
             entitySelector.LoadEntities();
@@ -182,12 +202,12 @@ namespace csharp_editor {
 
         private void TabControl1_SelectedIndexChanged(object? sender, EventArgs e) {
             if (_suppressStateSwitch) return;
-            if (tabControl1.SelectedTab?.Tag is int stateId) {
-                view_extern.SetActiveState(stateId);
+            if (tabControl1.SelectedTab?.Tag is TabState ts) {
+                view_extern.SetActiveState(ts.StateId);
                 hierarchyTree.LoadLayersFromBackend();
                 entitySelector.LoadEntities();
                 entitySelector.LoadInstances();
-                Log($"Switched to state {stateId}");
+                Log($"Switched to state {ts.StateId}");
             }
         }
 
@@ -227,8 +247,8 @@ namespace csharp_editor {
         }
 
         private void CloseStateTab(int index) {
-            if (tabControl1.TabPages[index].Tag is int stateId) {
-                view_extern.ReleaseState(stateId);
+            if (tabControl1.TabPages[index].Tag is TabState ts) {
+                view_extern.ReleaseState(ts.StateId);
             }
             tabControl1.TabPages.RemoveAt(index);
             if (tabControl1.TabPages.Count == 0) {
