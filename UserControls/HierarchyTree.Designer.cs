@@ -18,153 +18,177 @@ namespace csharp_editor.UserControls {
 
         #region Component Designer generated code
 
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
+        /// <summary>
+        /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
-            treeViewLayers = new TreeView();
-            panelButtons = new Panel();
-            buttonToggleVisibility = new Button();
-            buttonMoveDown = new Button();
-            buttonMoveUp = new Button();
-            buttonRemove = new Button();
-            buttonAddTileLayer = new Button();
-            buttonAddEntityLayer = new Button();
-            labelTitle = new Label();
-            button_replaceTileset = new Button();
-            panelButtons.SuspendLayout();
+        private void InitializeComponent()
+        {
+            treeViewLayers = new System.Windows.Forms.TreeView();
+            toolStrip_layers = new System.Windows.Forms.ToolStrip();
+            toolStripButton_addLayer = new System.Windows.Forms.ToolStripDropDownButton();
+            toolStripMenuItem_addTileLayer = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripMenuItem_addEntityLayer = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripButton_remove = new System.Windows.Forms.ToolStripButton();
+            toolStripButton_editLayer = new System.Windows.Forms.ToolStripButton();
+            toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            toolStripButton_moveUp = new System.Windows.Forms.ToolStripButton();
+            toolStripButton_moveDown = new System.Windows.Forms.ToolStripButton();
+            toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            toolStripButton_toggleVisibility = new System.Windows.Forms.ToolStripButton();
+            toolStripButton_replaceTileset = new System.Windows.Forms.ToolStripButton();
+            labelTitle = new System.Windows.Forms.Label();
+            toolStrip_layers.SuspendLayout();
             SuspendLayout();
             // 
             // treeViewLayers
             // 
-            treeViewLayers.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            treeViewLayers.BorderStyle = BorderStyle.FixedSingle;
-            treeViewLayers.Location = new Point(0, 25);
+            treeViewLayers.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            treeViewLayers.Dock = System.Windows.Forms.DockStyle.Fill;
+            treeViewLayers.Location = new System.Drawing.Point(0, 25);
             treeViewLayers.Name = "treeViewLayers";
-            treeViewLayers.Size = new Size(250, 375);
+            treeViewLayers.Size = new System.Drawing.Size(250, 450);
             treeViewLayers.TabIndex = 0;
             treeViewLayers.AfterSelect += treeViewLayers_AfterSelect;
             treeViewLayers.NodeMouseDoubleClick += treeViewLayers_NodeMouseDoubleClick;
             // 
-            // panelButtons
+            // toolStrip_layers
             // 
-            panelButtons.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            panelButtons.Controls.Add(button_replaceTileset);
-            panelButtons.Controls.Add(buttonToggleVisibility);
-            panelButtons.Controls.Add(buttonMoveDown);
-            panelButtons.Controls.Add(buttonMoveUp);
-            panelButtons.Controls.Add(buttonRemove);
-            panelButtons.Controls.Add(buttonAddTileLayer);
-            panelButtons.Controls.Add(buttonAddEntityLayer);
-            panelButtons.Location = new Point(0, 405);
-            panelButtons.Name = "panelButtons";
-            panelButtons.Size = new Size(250, 95);
-            panelButtons.TabIndex = 1;
+            toolStrip_layers.Dock = System.Windows.Forms.DockStyle.Bottom;
+            toolStrip_layers.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            toolStrip_layers.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripButton_addLayer, toolStripButton_remove, toolStripButton_editLayer, toolStripSeparator2, toolStripButton_moveUp, toolStripButton_moveDown, toolStripSeparator3, toolStripButton_toggleVisibility, toolStripButton_replaceTileset });
+            toolStrip_layers.Location = new System.Drawing.Point(0, 475);
+            toolStrip_layers.Name = "toolStrip_layers";
+            toolStrip_layers.Size = new System.Drawing.Size(250, 25);
+            toolStrip_layers.TabIndex = 1;
             // 
-            // buttonToggleVisibility
+            // toolStripButton_addLayer
             // 
-            buttonToggleVisibility.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            buttonToggleVisibility.Location = new Point(5, 65);
-            buttonToggleVisibility.Name = "buttonToggleVisibility";
-            buttonToggleVisibility.Size = new Size(240, 25);
-            buttonToggleVisibility.TabIndex = 4;
-            buttonToggleVisibility.Text = "Toggle Visibility";
-            buttonToggleVisibility.Click += buttonToggleVisibility_Click;
+            toolStripButton_addLayer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            toolStripButton_addLayer.Image = global::csharp_editor.Properties.Resources.layer_add;
+            toolStripButton_addLayer.Name = "toolStripButton_addLayer";
+            toolStripButton_addLayer.Size = new System.Drawing.Size(32, 22);
+            toolStripButton_addLayer.ToolTipText = "Add Layer";
+            toolStripButton_addLayer.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                toolStripMenuItem_addTileLayer,
+                toolStripMenuItem_addEntityLayer
+            });
             // 
-            // buttonMoveDown
+            // toolStripMenuItem_addTileLayer
             // 
-            buttonMoveDown.Location = new Point(125, 35);
-            buttonMoveDown.Name = "buttonMoveDown";
-            buttonMoveDown.Size = new Size(60, 25);
-            buttonMoveDown.TabIndex = 3;
-            buttonMoveDown.Text = "Down";
-            buttonMoveDown.Click += buttonMoveDown_Click;
+            toolStripMenuItem_addTileLayer.Name = "toolStripMenuItem_addTileLayer";
+            toolStripMenuItem_addTileLayer.Text = "Add Tile Layer";
+            toolStripMenuItem_addTileLayer.Click += toolStripButton_addTileLayer_Click;
             // 
-            // buttonMoveUp
+            // toolStripMenuItem_addEntityLayer
             // 
-            buttonMoveUp.Location = new Point(65, 35);
-            buttonMoveUp.Name = "buttonMoveUp";
-            buttonMoveUp.Size = new Size(55, 25);
-            buttonMoveUp.TabIndex = 2;
-            buttonMoveUp.Text = "Up";
-            buttonMoveUp.Click += buttonMoveUp_Click;
+            toolStripMenuItem_addEntityLayer.Name = "toolStripMenuItem_addEntityLayer";
+            toolStripMenuItem_addEntityLayer.Text = "Add Entity Layer";
+            toolStripMenuItem_addEntityLayer.Click += toolStripButton_addEntityLayer_Click;
             // 
-            // buttonRemove
+            // toolStripButton_remove
             // 
-            buttonRemove.Location = new Point(5, 35);
-            buttonRemove.Name = "buttonRemove";
-            buttonRemove.Size = new Size(55, 25);
-            buttonRemove.TabIndex = 1;
-            buttonRemove.Text = "Delete";
-            buttonRemove.Click += buttonRemove_Click;
+            toolStripButton_remove.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            toolStripButton_remove.Image = global::csharp_editor.Properties.Resources.layer_delete;
+            toolStripButton_remove.Name = "toolStripButton_remove";
+            toolStripButton_remove.Size = new System.Drawing.Size(23, 22);
+            toolStripButton_remove.ToolTipText = "Delete Layer";
+            toolStripButton_remove.Click += toolStripButton_remove_Click;
             // 
-            // buttonAddTileLayer
+            // toolStripButton_editLayer
             // 
-            buttonAddTileLayer.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            buttonAddTileLayer.Location = new Point(5, 5);
-            buttonAddTileLayer.Name = "buttonAddTileLayer";
-            buttonAddTileLayer.Size = new Size(115, 25);
-            buttonAddTileLayer.TabIndex = 0;
-            buttonAddTileLayer.Text = "Add Tile Layer";
-            buttonAddTileLayer.Click += buttonAddTileLayer_Click;
+            toolStripButton_editLayer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            toolStripButton_editLayer.Name = "toolStripButton_editLayer";
+            toolStripButton_editLayer.Size = new System.Drawing.Size(23, 22);
+            toolStripButton_editLayer.ToolTipText = "Edit Layer";
+            toolStripButton_editLayer.Click += toolStripButton_editLayer_Click;
             // 
-            // buttonAddEntityLayer
+            // toolStripSeparator2
             // 
-            buttonAddEntityLayer.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            buttonAddEntityLayer.Location = new Point(125, 5);
-            buttonAddEntityLayer.Name = "buttonAddEntityLayer";
-            buttonAddEntityLayer.Size = new Size(120, 25);
-            buttonAddEntityLayer.TabIndex = 5;
-            buttonAddEntityLayer.Text = "Add Entity Layer";
-            buttonAddEntityLayer.Click += buttonAddEntityLayer_Click;
+            toolStripSeparator2.Name = "toolStripSeparator2";
+            toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripButton_moveUp
+            // 
+            toolStripButton_moveUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            toolStripButton_moveUp.Image = global::csharp_editor.Properties.Resources.arrow_up;
+            toolStripButton_moveUp.Name = "toolStripButton_moveUp";
+            toolStripButton_moveUp.Size = new System.Drawing.Size(23, 22);
+            toolStripButton_moveUp.ToolTipText = "Move Up";
+            toolStripButton_moveUp.Click += toolStripButton_moveUp_Click;
+            // 
+            // toolStripButton_moveDown
+            // 
+            toolStripButton_moveDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            toolStripButton_moveDown.Image = global::csharp_editor.Properties.Resources.arrow_down;
+            toolStripButton_moveDown.Name = "toolStripButton_moveDown";
+            toolStripButton_moveDown.Size = new System.Drawing.Size(23, 22);
+            toolStripButton_moveDown.ToolTipText = "Move Down";
+            toolStripButton_moveDown.Click += toolStripButton_moveDown_Click;
+            // 
+            // toolStripSeparator3
+            // 
+            toolStripSeparator3.Name = "toolStripSeparator3";
+            toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripButton_toggleVisibility
+            // 
+            toolStripButton_toggleVisibility.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            toolStripButton_toggleVisibility.Name = "toolStripButton_toggleVisibility";
+            toolStripButton_toggleVisibility.Size = new System.Drawing.Size(23, 22);
+            toolStripButton_toggleVisibility.ToolTipText = "Toggle Visibility";
+            toolStripButton_toggleVisibility.Click += toolStripButton_toggleVisibility_Click;
+            // 
+            // toolStripButton_replaceTileset
+            // 
+            toolStripButton_replaceTileset.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            toolStripButton_replaceTileset.Image = global::csharp_editor.Properties.Resources.shading1;
+            toolStripButton_replaceTileset.Name = "toolStripButton_replaceTileset";
+            toolStripButton_replaceTileset.Size = new System.Drawing.Size(23, 22);
+            toolStripButton_replaceTileset.ToolTipText = "Replace Tileset";
+            toolStripButton_replaceTileset.Click += toolStripButton_replaceTileset_Click;
             // 
             // labelTitle
             // 
-            labelTitle.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            labelTitle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            labelTitle.Location = new Point(0, 0);
+            labelTitle.Dock = System.Windows.Forms.DockStyle.Top;
+            labelTitle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            labelTitle.Location = new System.Drawing.Point(0, 0);
             labelTitle.Name = "labelTitle";
-            labelTitle.Padding = new Padding(5, 0, 0, 0);
-            labelTitle.Size = new Size(250, 25);
+            labelTitle.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            labelTitle.Size = new System.Drawing.Size(250, 25);
             labelTitle.TabIndex = 2;
             labelTitle.Text = "Hierarchy";
-            labelTitle.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // button_replaceTileset
-            // 
-            button_replaceTileset.Location = new Point(187, 35);
-            button_replaceTileset.Name = "button_replaceTileset";
-            button_replaceTileset.Size = new Size(60, 25);
-            button_replaceTileset.TabIndex = 6;
-            button_replaceTileset.Text = "Replace";
-            button_replaceTileset.Click += button_replaceTileset_Click;
+            labelTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // HierarchyTree
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(labelTitle);
-            Controls.Add(panelButtons);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(treeViewLayers);
-            Name = "HierarchyTree";
-            Size = new Size(250, 500);
-            panelButtons.ResumeLayout(false);
+            Controls.Add(toolStrip_layers);
+            Controls.Add(labelTitle);
+            Size = new System.Drawing.Size(250, 500);
+            toolStrip_layers.ResumeLayout(false);
+            toolStrip_layers.PerformLayout();
             ResumeLayout(false);
-
+            PerformLayout();
         }
 
         #endregion
 
         private System.Windows.Forms.TreeView treeViewLayers;
-        private System.Windows.Forms.Panel panelButtons;
-        private System.Windows.Forms.Button buttonAddTileLayer;
-        private System.Windows.Forms.Button buttonAddEntityLayer;
-        private System.Windows.Forms.Button buttonRemove;
-        private System.Windows.Forms.Button buttonMoveUp;
-        private System.Windows.Forms.Button buttonMoveDown;
-        private System.Windows.Forms.Button buttonToggleVisibility;
+        private System.Windows.Forms.ToolStrip toolStrip_layers;
+        private System.Windows.Forms.ToolStripDropDownButton toolStripButton_addLayer;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_addTileLayer;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_addEntityLayer;
+        private System.Windows.Forms.ToolStripButton toolStripButton_remove;
+        private System.Windows.Forms.ToolStripButton toolStripButton_editLayer;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripButton toolStripButton_moveUp;
+        private System.Windows.Forms.ToolStripButton toolStripButton_moveDown;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripButton toolStripButton_toggleVisibility;
+        private System.Windows.Forms.ToolStripButton toolStripButton_replaceTileset;
         private System.Windows.Forms.Label labelTitle;
-        private Button button_replaceTileset;
     }
 }

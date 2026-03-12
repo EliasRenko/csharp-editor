@@ -128,4 +128,22 @@
   <data name="icon_cursor" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icon_cursor.png;System.Drawing.Bitmap, System.Drawing.Common, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51</value>
   </data>
+  <data name="layer_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\layer_add.png;System.Drawing.Bitmap, System.Drawing.Common, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51</value>
+  </data>
+  <data name="layer_delete" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\layer_delete.png;System.Drawing.Bitmap, System.Drawing.Common, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51</value>
+  </data>
+  <data name="arrow_up" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\arrow_up.png;System.Drawing.Bitmap, System.Drawing.Common, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51</value>
+  </data>
+  <data name="arrow_down" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\arrow_down.png;System.Drawing.Bitmap, System.Drawing.Common, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51</value>
+  </data>
+  <data name="shading1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\shading1.png;System.Drawing.Bitmap, System.Drawing.Common, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51</value>
+  </data>
+  <data name="layer_edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\layer_edit.png;System.Drawing.Bitmap, System.Drawing.Common, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51</value>
+  </data>
 </root>

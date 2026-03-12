@@ -82,6 +82,26 @@ namespace csharp_editor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap arrow_down {
+            get {
+                object obj = ResourceManager.GetObject("arrow_down", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap arrow_up {
+            get {
+                object obj = ResourceManager.GetObject("arrow_up", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap brush {
             get {
                 object obj = ResourceManager.GetObject("brush", resourceCulture);
@@ -212,6 +232,36 @@ namespace csharp_editor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap layer_add {
+            get {
+                object obj = ResourceManager.GetObject("layer_add", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap layer_delete {
+            get {
+                object obj = ResourceManager.GetObject("layer_delete", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap layer_edit {
+            get {
+                object obj = ResourceManager.GetObject("layer_edit", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap lightbulb {
             get {
                 object obj = ResourceManager.GetObject("lightbulb", resourceCulture);
@@ -245,6 +295,16 @@ namespace csharp_editor.Properties {
         internal static System.Drawing.Bitmap shading {
             get {
                 object obj = ResourceManager.GetObject("shading", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap shading1 {
+            get {
+                object obj = ResourceManager.GetObject("shading1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
