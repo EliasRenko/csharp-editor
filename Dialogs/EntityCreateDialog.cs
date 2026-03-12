@@ -201,10 +201,13 @@ namespace csharp_editor.Dialogs {
             _              => new PointF(0.5f, 1.0f)
         };
 
-        private static string FloatsToPivot(float x, float y) {
-            if (x <= 0.25f)       return y <= 0.25f ? "TopLeft"    : y <= 0.75f ? "MiddleLeft"   : "BottomLeft";
-            if (x <= 0.75f)       return y <= 0.25f ? "TopCenter"  : y <= 0.75f ? "MiddleCenter" : "BottomCenter";
-            /* x > 0.75 */        return y <= 0.25f ? "TopRight"   : y <= 0.75f ? "MiddleRight"  : "BottomRight";
+        public static string FloatsToPivot(float x, float y) {
+            // Snap to the nearest of {0, 0.5, 1} to handle floating-point drift from C++
+            float sx = x < 0.25f ? 0f : x < 0.75f ? 0.5f : 1f;
+            float sy = y < 0.25f ? 0f : y < 0.75f ? 0.5f : 1f;
+            string col = sx == 0f ? "Left"   : sx == 0.5f ? "Center" : "Right";
+            string row = sy == 0f ? "Top"    : sy == 0.5f ? "Middle" : "Bottom";
+            return row + col;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e) {
@@ -238,7 +241,9 @@ namespace csharp_editor.Dialogs {
             );
             UpdateRegionLabel();
 
-            _selectedPivot = FloatsToPivot(entry.PivotX, entry.PivotY);
+            _selectedPivot = string.IsNullOrEmpty(entry.PivotName)
+                ? FloatsToPivot(entry.PivotX, entry.PivotY)
+                : entry.PivotName;
             HighlightPivotButton(_selectedPivot);
 
             _isEditMode       = true;

@@ -15,6 +15,7 @@ namespace csharp_editor.Dialogs {
             public int TileHeight { get; set; } = 1;
             public float PivotX { get; set; } = 0.5f;
             public float PivotY { get; set; } = 1.0f;
+            public string PivotName { get; set; } = "BottomCenter";
 
             public override string ToString() {
                 string tilemapPart = string.IsNullOrEmpty(TilemapName) ? "" : $" [{TilemapName}]";
@@ -66,7 +67,8 @@ namespace csharp_editor.Dialogs {
                         TileWidth = entityData.regionWidth,
                         TileHeight = entityData.regionHeight,
                         PivotX = entityData.pivotX,
-                        PivotY = entityData.pivotY
+                        PivotY = entityData.pivotY,
+                        PivotName = EntityCreateDialog.FloatsToPivot(entityData.pivotX, entityData.pivotY)
                     };
                     _entities.Add(entry);
                     listBoxEntities.Items.Add(entry);
