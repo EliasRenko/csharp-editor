@@ -67,10 +67,8 @@ namespace csharp_editor.UserControls {
         
         public event EventHandler<LayerNode>? LayerSelected;
         public event EventHandler? StateSelected;
-        /// <summary>Raised when a batch group node is selected; argument is (tilesetName, batchIndex).</summary>
         public event EventHandler<(string TilesetName, int BatchIndex)>? BatchSelected;
         public event EventHandler? LayersChanged;
-        public event EventHandler? ReplaceTilesetClicked;
 
         public HierarchyTree() {
             InitializeComponent();
@@ -506,11 +504,6 @@ namespace csharp_editor.UserControls {
             }
         }
 
-        private void toolStripButton_replaceTileset_Click(object sender, EventArgs e)
-        {
-            ReplaceTilesetClicked?.Invoke(this, EventArgs.Empty);
-        }
-
         private void toolStripButton_addTileLayer_Click(object sender, EventArgs e) {
             using (var dialog = new TileLayerDialog(_externView!)) {
                 if (dialog.ShowDialog(this) == DialogResult.OK) {
@@ -551,17 +544,37 @@ namespace csharp_editor.UserControls {
             if (layer.Type == LayerType.TileLayer) {
                 using (var dialog = new TileLayerDialog(_externView!, layer.Name, layer.TilesetName, layer.TileSize)) {
                     if (dialog.ShowDialog(this) == DialogResult.OK) {
-                        string newName = dialog.LayerName;
-                        if (!string.IsNullOrWhiteSpace(newName) && newName != layer.Name)
+                        string newName    = dialog.LayerName;
+                        string newTileset = dialog.SelectedTileset;
+                        int    newSize    = dialog.TileSize;
+
+                        // Apply tileset change first (uses original layer name)
+                        if (newTileset != layer.TilesetName) {
+                            _externView?.ReplaceLayerTileset(layer.Name, newTileset);
+                            layer.TilesetName = newTileset;
+                        }
+
+                        // Apply name change
+                        if (!string.IsNullOrWhiteSpace(newName) && newName != layer.Name) {
+                            _externView?.SetLayerProperties(layer.Name, newName, layer.Visible, layer.TilesetName);
                             RenameLayer(layer.Name, newName);
+                        }
+
+                        layer.TileSize = newSize;
+
+                        // Refresh property grid and texture viewer in Editor
+                        LayerSelected?.Invoke(this, layer);
                     }
                 }
             } else {
                 using (var dialog = new EntityLayerDialog(layer.Name)) {
                     if (dialog.ShowDialog(this) == DialogResult.OK) {
                         string newName = dialog.LayerName;
-                        if (!string.IsNullOrWhiteSpace(newName) && newName != layer.Name)
+                        if (!string.IsNullOrWhiteSpace(newName) && newName != layer.Name) {
+                            _externView?.SetLayerProperties(layer.Name, newName, layer.Visible);
                             RenameLayer(layer.Name, newName);
+                        }
+                        LayerSelected?.Invoke(this, layer);
                     }
                 }
             }

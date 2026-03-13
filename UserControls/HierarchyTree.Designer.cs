@@ -34,8 +34,6 @@ namespace csharp_editor.UserControls {
             toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             toolStripButton_moveUp = new System.Windows.Forms.ToolStripButton();
             toolStripButton_moveDown = new System.Windows.Forms.ToolStripButton();
-            toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            toolStripButton_replaceTileset = new System.Windows.Forms.ToolStripButton();
             labelTitle = new System.Windows.Forms.Label();
             toolStrip_layers.SuspendLayout();
             SuspendLayout();
@@ -55,7 +53,7 @@ namespace csharp_editor.UserControls {
             // 
             toolStrip_layers.Dock = System.Windows.Forms.DockStyle.Bottom;
             toolStrip_layers.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            toolStrip_layers.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripButton_addLayer, toolStripButton_remove, toolStripButton_editLayer, toolStripSeparator2, toolStripButton_moveUp, toolStripButton_moveDown, toolStripSeparator3, toolStripButton_replaceTileset });
+            toolStrip_layers.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripButton_addLayer, toolStripButton_remove, toolStripButton_editLayer, toolStripSeparator2, toolStripButton_moveUp, toolStripButton_moveDown });
             toolStrip_layers.Location = new System.Drawing.Point(0, 475);
             toolStrip_layers.Name = "toolStrip_layers";
             toolStrip_layers.Size = new System.Drawing.Size(250, 25);
@@ -125,20 +123,6 @@ namespace csharp_editor.UserControls {
             toolStripButton_moveDown.ToolTipText = "Move Down";
             toolStripButton_moveDown.Click += toolStripButton_moveDown_Click;
             // 
-            // toolStripSeparator3
-            // 
-            toolStripSeparator3.Name = "toolStripSeparator3";
-            toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripButton_replaceTileset
-            // 
-            toolStripButton_replaceTileset.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            toolStripButton_replaceTileset.Image = global::csharp_editor.Properties.Resources.shading1;
-            toolStripButton_replaceTileset.Name = "toolStripButton_replaceTileset";
-            toolStripButton_replaceTileset.Size = new System.Drawing.Size(23, 22);
-            toolStripButton_replaceTileset.ToolTipText = "Replace Tileset";
-            toolStripButton_replaceTileset.Click += toolStripButton_replaceTileset_Click;
-            // 
             // labelTitle
             // 
             labelTitle.Dock = System.Windows.Forms.DockStyle.Top;
@@ -177,8 +161,6 @@ namespace csharp_editor.UserControls {
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton toolStripButton_moveUp;
         private System.Windows.Forms.ToolStripButton toolStripButton_moveDown;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripButton toolStripButton_replaceTileset;
         private System.Windows.Forms.Label labelTitle;
     }
 }

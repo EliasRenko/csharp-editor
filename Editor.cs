@@ -40,7 +40,6 @@ namespace csharp_editor {
             hierarchyTree.StateSelected += HierarchyTree_StateSelected;
             hierarchyTree.BatchSelected += HierarchyTree_BatchSelected;
             hierarchyTree.LayersChanged += HierarchyTree_LayersChanged;
-            hierarchyTree.ReplaceTilesetClicked += ReplaceTilesetButton_Click;
 
             // Initialize TextureViewer
             textureViewer.SelectionChanged += TextureViewer_SelectionChanged;
@@ -92,23 +91,6 @@ namespace csharp_editor {
 
         private void SelectEntitySelect(object? sender, MouseEventArgs e) {
             view_extern.SetToolType(ToolType.EntitySelect);
-        }
-
-        private void ReplaceTilesetButton_Click(object? sender, EventArgs e) {
-            var layer = hierarchyTree.GetSelectedLayer();
-
-            if (layer is not { Type: LayerType.TileLayer } selectedLayer) {
-                MessageBox.Show("The selected layer is not a Tile Layer. Please select a Tile Layer to view its tileset.", "No Tile Layer Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            string? selectedTileset = ShowTilesetSelectionDialog();
-            if (!string.IsNullOrEmpty(selectedTileset)) {
-                view_extern.ReplaceLayerTileset(selectedLayer.Name, selectedTileset);
-
-                layer.TilesetName = selectedTileset; // Update local layer info
-                UpdateTextureInfo(selectedLayer);
-            }
         }
 
         private void ShowEntitiesDefDialog(object? sender, MouseEventArgs e) {
