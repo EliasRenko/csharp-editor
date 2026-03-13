@@ -12,6 +12,7 @@ namespace csharp_editor {
         private string _currentTilesetName = "";
         private string _currentEntityName = "";
         private bool _suppressStateSwitch = false;
+        private bool _isEntityLayerActive = false;
         
         private ExternError lastError;
 
@@ -329,6 +330,8 @@ namespace csharp_editor {
         }
 
         private void ExternView_EntitySelectionChanged(object? sender, EventArgs e) {
+            if (!_isEntityLayerActive) return;
+
             int count = view_extern.GetEntitySelectionCount();
 
             if (count <= 0) {
@@ -459,18 +462,21 @@ namespace csharp_editor {
 
             // Switch between TextureViewer and EntitySelector based on layer type
             if (layer.Type == LayerType.TileLayer) {
+                _isEntityLayerActive = false;
                 textureViewer.Visible = true;
                 entitySelector.Visible = false;
                 view_extern?.DeselectEntity();
                 UpdateTextureInfo(layer);
             }
             else if (layer.Type == LayerType.EntityLayer) {
+                _isEntityLayerActive = true;
                 textureViewer.Visible = false;
                 entitySelector.Visible = true;
                 entitySelector.SetLayer(layer.Name);
             }
             else {
                 // Default or unknown layer type
+                _isEntityLayerActive = false;
                 textureViewer.Visible = false;
                 entitySelector.Visible = false;
                 view_extern?.DeselectEntity();
@@ -479,6 +485,7 @@ namespace csharp_editor {
 
         private void HierarchyTree_StateSelected(object? sender, EventArgs e) {
             Log("State row selected");
+            _isEntityLayerActive = false;
             view_extern?.DeselectEntity();
             try {
                 if (view_extern != null) {
