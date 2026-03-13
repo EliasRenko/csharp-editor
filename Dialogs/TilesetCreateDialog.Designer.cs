@@ -29,11 +29,8 @@ namespace csharp_editor.Dialogs {
             labelImagePath = new System.Windows.Forms.Label();
             textBoxImagePath = new System.Windows.Forms.TextBox();
             buttonBrowse = new System.Windows.Forms.Button();
-            labelTileSize = new System.Windows.Forms.Label();
-            numericUpDownTileSize = new System.Windows.Forms.NumericUpDown();
             buttonCreate = new System.Windows.Forms.Button();
             buttonCancel = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)numericUpDownTileSize).BeginInit();
             SuspendLayout();
             // 
             // labelName
@@ -81,33 +78,13 @@ namespace csharp_editor.Dialogs {
             buttonBrowse.UseVisualStyleBackColor = true;
             buttonBrowse.Click += buttonBrowse_Click;
             // 
-            // labelTileSize
-            // 
-            labelTileSize.AutoSize = true;
-            labelTileSize.Location = new System.Drawing.Point(12, 80);
-            labelTileSize.Name = "labelTileSize";
-            labelTileSize.Size = new System.Drawing.Size(51, 15);
-            labelTileSize.TabIndex = 5;
-            labelTileSize.Text = "Tile Size:";
-            // 
-            // numericUpDownTileSize
-            // 
-            numericUpDownTileSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
-            numericUpDownTileSize.Location = new System.Drawing.Point(95, 77);
-            numericUpDownTileSize.Maximum = new decimal(new int[] { 512, 0, 0, 0 });
-            numericUpDownTileSize.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            numericUpDownTileSize.Name = "numericUpDownTileSize";
-            numericUpDownTileSize.Size = new System.Drawing.Size(465, 23);
-            numericUpDownTileSize.TabIndex = 6;
-            numericUpDownTileSize.Value = new decimal(new int[] { 16, 0, 0, 0 });
-            // 
             // buttonCancel
             // 
             buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right));
-            buttonCancel.Location = new System.Drawing.Point(389, 115);
+            buttonCancel.Location = new System.Drawing.Point(389, 85);
             buttonCancel.Name = "buttonCancel";
             buttonCancel.Size = new System.Drawing.Size(85, 27);
-            buttonCancel.TabIndex = 7;
+            buttonCancel.TabIndex = 5;
             buttonCancel.Text = "Cancel";
             buttonCancel.UseVisualStyleBackColor = true;
             buttonCancel.Click += buttonCancel_Click;
@@ -115,10 +92,10 @@ namespace csharp_editor.Dialogs {
             // buttonCreate
             // 
             buttonCreate.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right));
-            buttonCreate.Location = new System.Drawing.Point(479, 115);
+            buttonCreate.Location = new System.Drawing.Point(479, 85);
             buttonCreate.Name = "buttonCreate";
             buttonCreate.Size = new System.Drawing.Size(81, 27);
-            buttonCreate.TabIndex = 8;
+            buttonCreate.TabIndex = 6;
             buttonCreate.Text = "Create";
             buttonCreate.UseVisualStyleBackColor = true;
             buttonCreate.Click += buttonCreate_Click;
@@ -129,11 +106,9 @@ namespace csharp_editor.Dialogs {
             CancelButton = buttonCancel;
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(584, 155);
+            ClientSize = new System.Drawing.Size(584, 125);
             Controls.Add(buttonCreate);
             Controls.Add(buttonCancel);
-            Controls.Add(numericUpDownTileSize);
-            Controls.Add(labelTileSize);
             Controls.Add(buttonBrowse);
             Controls.Add(textBoxImagePath);
             Controls.Add(labelImagePath);
@@ -144,7 +119,6 @@ namespace csharp_editor.Dialogs {
             MinimizeBox = false;
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             Text = "New Tileset";
-            ((System.ComponentModel.ISupportInitialize)numericUpDownTileSize).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -156,8 +130,6 @@ namespace csharp_editor.Dialogs {
         private System.Windows.Forms.Label labelImagePath;
         private System.Windows.Forms.TextBox textBoxImagePath;
         private System.Windows.Forms.Button buttonBrowse;
-        private System.Windows.Forms.Label labelTileSize;
-        private System.Windows.Forms.NumericUpDown numericUpDownTileSize;
         private System.Windows.Forms.Button buttonCreate;
         private System.Windows.Forms.Button buttonCancel;
     }

@@ -9,10 +9,9 @@ namespace csharp_editor.Dialogs {
         public class TilesetEntry {
             public string Name { get; set; } = "";
             public string ImagePath { get; set; } = "";
-            public int TileSize { get; set; } = 16;
             
             public override string ToString() {
-                return $"{Name} ({TileSize}px) - {Path.GetFileName(ImagePath)}";
+                return $"{Name} - {Path.GetFileName(ImagePath)}";
             }
         }
 
@@ -52,8 +51,7 @@ namespace csharp_editor.Dialogs {
                         
                         TilesetEntry entry = new TilesetEntry {
                             Name = tilesetName,
-                            ImagePath = texturePath,
-                            TileSize = tilesetInfo.tileSize
+                            ImagePath = texturePath
                         };
                         
                         _tilesets.Add(entry);
@@ -71,14 +69,10 @@ namespace csharp_editor.Dialogs {
                 if (result != 0 && !string.IsNullOrEmpty(entry.ImagePath)) {
                     Externs.TextureDataStruct textureData = new Externs.TextureDataStruct();
                     _externView.GetTextureData(entry.ImagePath, out textureData);
-                    textureViewer.SetTextureData(textureData, tilesetInfo);
+                    textureViewer.SetTextureData(textureData, 0);
 
-                    int totalTiles = tilesetInfo.tilesPerRow * tilesetInfo.tilesPerCol;
                     labelTilesetMeta.Text =
-                        $"Tile size: {tilesetInfo.tileSize} px   ·   " +
-                        $"Texture: {textureData.Width} × {textureData.Height} px   ·   " +
-                        $"Grid: {tilesetInfo.tilesPerRow} × {tilesetInfo.tilesPerCol}   ·   " +
-                        $"Total tiles: {totalTiles}";
+                        $"Texture: {textureData.Width} × {textureData.Height} px";
                     labelTilesetPath.Text = $"Path: {entry.ImagePath}";
                 } else {
                     textureViewer.Clear();
@@ -160,7 +154,7 @@ namespace csharp_editor.Dialogs {
             }
 
             // C++ has no rename API — recreate under the new name then update local entry
-            string? err = _externView.CreateTileset(old.ImagePath, newName, old.TileSize);
+            string? err = _externView.CreateTileset(old.ImagePath, newName);
             if (err != null) {
                 MessageBox.Show($"Rename failed: {err}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);

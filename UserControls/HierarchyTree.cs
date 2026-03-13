@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using csharp_editor.Dialogs;
 
 namespace csharp_editor.UserControls {
     public partial class HierarchyTree : UserControl {
@@ -14,6 +15,7 @@ namespace csharp_editor.UserControls {
             public bool Visible { get; set; } = true;
             public bool Locked { get; set; } = false;
             public string TilesetName { get; set; } = ""; // For TileLayer only
+            public int TileSize { get; set; } = 0;        // For TileLayer only
             public TreeNode TreeNodeRef { get; set; } = null!; // assigned when node created
             
             public override string ToString() {
@@ -133,12 +135,13 @@ namespace csharp_editor.UserControls {
             }
         }
 
-        public void AddLayer(string name, LayerType type, string tilesetName = "") {
+        public void AddLayer(string name, LayerType type, string tilesetName = "", int tileSize = 0) {
             LayerNode layer = new LayerNode {
                 Name = name,
                 Type = type,
                 Visible = true,
-                TilesetName = tilesetName
+                TilesetName = tilesetName,
+                TileSize = tileSize
             };
 
             TreeNode treeNode = new TreeNode(layer.ToString());
@@ -166,11 +169,14 @@ namespace csharp_editor.UserControls {
 
             // Notify backend - pass index for insertion
             if (type == LayerType.TileLayer) {
-                _externView?.CreateTilemapLayer(name, tilesetName, insertIndex);
+                _externView?.CreateTilemapLayer(name, tilesetName, tileSize, insertIndex);
             } else if (type == LayerType.EntityLayer) {
                 // API no longer requires a tileset for entity layers
                 _externView?.CreateEntityLayer(name);
             }
+
+            // Select the new layer as active in the backend
+            _externView?.SetActiveLayer(name);
 
             LayersChanged?.Invoke(this, EventArgs.Empty);
             UpdateButtonStates();
@@ -414,14 +420,18 @@ namespace csharp_editor.UserControls {
             
             // Get layer count from backend
             int count = _externView.GetLayerCount();
-            
+            System.Diagnostics.Debug.WriteLine($"[LoadLayersFromBackend] GetLayerCount={count}");
+
+            treeViewLayers.BeginUpdate();
             for (int i = 0; i < count; i++) {
                 Externs.LayerInfoStruct layerInfo = new Externs.LayerInfoStruct();
                 int result = _externView.GetLayerInfoAt(i, out layerInfo);
+                System.Diagnostics.Debug.WriteLine($"[LoadLayersFromBackend] Layer[{i}]: GetLayerInfoAt result={result}");
                 
                 if (result != 0) {
                     string layerName = Marshal.PtrToStringAnsi(layerInfo.name) ?? "";
                     string tilesetName = Marshal.PtrToStringAnsi(layerInfo.tilesetName) ?? "";
+                    System.Diagnostics.Debug.WriteLine($"[LoadLayersFromBackend] Layer[{i}]: name='{layerName}', type={layerInfo.type}, tilesetName='{tilesetName}'");
                     
                     if (!string.IsNullOrEmpty(layerName)) {
                         LayerNode layer = new LayerNode {
@@ -429,6 +439,7 @@ namespace csharp_editor.UserControls {
                             Type = (LayerType)layerInfo.type,
                             Visible = layerInfo.visible != 0,
                             TilesetName = tilesetName,
+                            TileSize = layerInfo.tileSize,
                         };
 
                         TreeNode treeNode = new TreeNode(layer.ToString());
@@ -446,6 +457,12 @@ namespace csharp_editor.UserControls {
                     }
                 }
             }
+            treeViewLayers.EndUpdate();
+            // Expand AFTER children have been added — Win32 TVM_EXPAND is a no-op on empty nodes,
+            // so any earlier Expand() call (when the node had 0 children) was silently ignored.
+            _stateNode!.Expand();
+            treeViewLayers.Refresh(); // force synchronous repaint
+            System.Diagnostics.Debug.WriteLine($"[LoadLayersFromBackend] Done. _layers.Count={_layers.Count}, treeViewLayers.Nodes.Count={treeViewLayers.Nodes.Count}, stateNode.Nodes.Count={_stateNode?.Nodes.Count}, stateNode.IsExpanded={_stateNode?.IsExpanded}");
             
             LayersChanged?.Invoke(this, EventArgs.Empty);
             UpdateButtonStates();
@@ -453,127 +470,56 @@ namespace csharp_editor.UserControls {
 
         private void UpdateButtonStates() {
             bool hasSelection = treeViewLayers.SelectedNode != null;
-            buttonRemove.Enabled = false;
+            toolStripButton_remove.Enabled = false;
+            toolStripButton_editLayer.Enabled = false;
             bool layerSelected = false;
             bool batchSelected = false;
             TreeNode? sel = treeViewLayers.SelectedNode;
             if (sel != null) {
                 layerSelected = sel.Tag is LayerNode;
                 batchSelected = sel.Tag is BatchInfo;
-                buttonRemove.Enabled = layerSelected;
+                toolStripButton_remove.Enabled = layerSelected;
+                toolStripButton_editLayer.Enabled = layerSelected;
             }
             // Determine move up/down enablement
             if (batchSelected) {
                 TreeNode? parent = sel!.Parent;
                 if (parent != null) {
-                    buttonMoveUp.Enabled = sel.Index > 0;
-                    buttonMoveDown.Enabled = sel.Index < parent.Nodes.Count - 1;
+                    toolStripButton_moveUp.Enabled = sel.Index > 0;
+                    toolStripButton_moveDown.Enabled = sel.Index < parent.Nodes.Count - 1;
                 } else {
-                    buttonMoveUp.Enabled = false;
-                    buttonMoveDown.Enabled = false;
+                    toolStripButton_moveUp.Enabled = false;
+                    toolStripButton_moveDown.Enabled = false;
                 }
             } else if (layerSelected) {
                 TreeNode? parent = sel!.Parent;
                 if (parent != null) {
-                    buttonMoveUp.Enabled = sel.Index > 0;
-                    buttonMoveDown.Enabled = sel.Index < parent.Nodes.Count - 1;
+                    toolStripButton_moveUp.Enabled = sel.Index > 0;
+                    toolStripButton_moveDown.Enabled = sel.Index < parent.Nodes.Count - 1;
                 } else {
-                    buttonMoveUp.Enabled = false;
-                    buttonMoveDown.Enabled = false;
+                    toolStripButton_moveUp.Enabled = false;
+                    toolStripButton_moveDown.Enabled = false;
                 }
             } else {
-                buttonMoveUp.Enabled = false;
-                buttonMoveDown.Enabled = false;
+                toolStripButton_moveUp.Enabled = false;
+                toolStripButton_moveDown.Enabled = false;
             }
-            buttonToggleVisibility.Enabled = layerSelected || batchSelected;
         }
 
-        private void button_replaceTileset_Click(object sender, EventArgs e)
+        private void toolStripButton_replaceTileset_Click(object sender, EventArgs e)
         {
             ReplaceTilesetClicked?.Invoke(this, EventArgs.Empty);
         }
 
-        private void buttonAddTileLayer_Click(object sender, EventArgs e) {
-            using (var dialog = new Form()) {
-                dialog.Text = "Add Tile Layer";
-                dialog.Size = new Size(350, 210);
-                dialog.StartPosition = FormStartPosition.CenterParent;
-                dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
-                dialog.MaximizeBox = false;
-                dialog.MinimizeBox = false;
-
-                Label labelName = new Label {
-                    Text = "Name:",
-                    Location = new Point(10, 20),
-                    Size = new Size(60, 20)
-                };
-
-                TextBox textBoxName = new TextBox {
-                    Location = new Point(80, 18),
-                    Size = new Size(240, 23)
-                };
-
-                Label labelTileset = new Label {
-                    Text = "Tileset:",
-                    Location = new Point(10, 55),
-                    Size = new Size(60, 20)
-                };
-
-                ComboBox comboBoxTileset = new ComboBox {
-                    Location = new Point(80, 53),
-                    Size = new Size(240, 23),
-                    DropDownStyle = ComboBoxStyle.DropDownList
-                };
-                
-                // Load available tilesets
-                int count = _externView?.GetTilesetCount() ?? 0;
-                for (int i = 0; i < count; i++) {
-                    Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
-                    int result = _externView?.GetTilesetAt(i, out tilesetInfo) ?? 0;
-                    
-                    if (result != 0) {
-                        string tilesetName = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "";
-                        if (!string.IsNullOrEmpty(tilesetName)) {
-                            comboBoxTileset.Items.Add(tilesetName);
-                        }
-                    }
-                }
-                if (comboBoxTileset.Items.Count > 0) {
-                    comboBoxTileset.SelectedIndex = 0;
-                }
-
-                Button buttonOk = new Button {
-                    Text = "Add",
-                    DialogResult = DialogResult.OK,
-                    Location = new Point(165, 130),
-                    Size = new Size(75, 30)
-                };
-
-                Button buttonCancel = new Button {
-                    Text = "Cancel",
-                    DialogResult = DialogResult.Cancel,
-                    Location = new Point(245, 130),
-                    Size = new Size(75, 30)
-                };
-
-                dialog.Controls.AddRange(new Control[] { 
-                    labelName, textBoxName, labelTileset, comboBoxTileset, buttonOk, buttonCancel 
-                });
-                dialog.AcceptButton = buttonOk;
-                dialog.CancelButton = buttonCancel;
-
-                if (dialog.ShowDialog(this) == DialogResult.OK && 
-                    !string.IsNullOrWhiteSpace(textBoxName.Text) &&
-                    comboBoxTileset.SelectedItem != null) {
-                    AddLayer(textBoxName.Text.Trim(), LayerType.TileLayer, comboBoxTileset.SelectedItem?.ToString() ?? "");
-                } else if (dialog.DialogResult == DialogResult.OK) {
-                    MessageBox.Show("Please enter a name and select a tileset.", "Validation Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        private void toolStripButton_addTileLayer_Click(object sender, EventArgs e) {
+            using (var dialog = new AddTileLayerDialog(_externView!)) {
+                if (dialog.ShowDialog(this) == DialogResult.OK) {
+                    AddLayer(dialog.LayerName, LayerType.TileLayer, dialog.SelectedTileset, dialog.TileSize);
                 }
             }
         }
 
-        private void buttonAddEntityLayer_Click(object sender, EventArgs e) {
+        private void toolStripButton_addEntityLayer_Click(object sender, EventArgs e) {
             using (var dialog = new Form()) {
                 dialog.Text = "Add Entity Layer";
                 dialog.Size = new Size(350, 130);
@@ -621,7 +567,7 @@ namespace csharp_editor.UserControls {
             }
         }
 
-        private void buttonRemove_Click(object sender, EventArgs e) {
+        private void toolStripButton_remove_Click(object sender, EventArgs e) {
             if (treeViewLayers.SelectedNode != null) {
                 LayerNode? layer = treeViewLayers.SelectedNode.Tag as LayerNode;
                 if (layer != null) {
@@ -638,15 +584,66 @@ namespace csharp_editor.UserControls {
             }
         }
 
-        private void buttonMoveUp_Click(object sender, EventArgs e) {
+        private void toolStripButton_editLayer_Click(object sender, EventArgs e) {
+            LayerNode? layer = GetSelectedLayer();
+            if (layer == null) return;
+
+            using (var dialog = new Form()) {
+                dialog.Text = "Edit Layer";
+                dialog.Size = new Size(350, 130);
+                dialog.StartPosition = FormStartPosition.CenterParent;
+                dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
+                dialog.MaximizeBox = false;
+                dialog.MinimizeBox = false;
+
+                Label labelName = new Label {
+                    Text = "Name:",
+                    Location = new Point(10, 20),
+                    Size = new Size(60, 20)
+                };
+
+                TextBox textBoxName = new TextBox {
+                    Location = new Point(80, 18),
+                    Size = new Size(240, 23),
+                    Text = layer.Name
+                };
+
+                Button buttonOk = new Button {
+                    Text = "OK",
+                    DialogResult = DialogResult.OK,
+                    Location = new Point(165, 70),
+                    Size = new Size(75, 30)
+                };
+
+                Button buttonCancel = new Button {
+                    Text = "Cancel",
+                    DialogResult = DialogResult.Cancel,
+                    Location = new Point(245, 70),
+                    Size = new Size(75, 30)
+                };
+
+                dialog.Controls.AddRange(new Control[] { labelName, textBoxName, buttonOk, buttonCancel });
+                dialog.AcceptButton = buttonOk;
+                dialog.CancelButton = buttonCancel;
+
+                if (dialog.ShowDialog(this) == DialogResult.OK) {
+                    string newName = textBoxName.Text.Trim();
+                    if (!string.IsNullOrWhiteSpace(newName) && newName != layer.Name) {
+                        RenameLayer(layer.Name, newName);
+                    }
+                }
+            }
+        }
+
+        private void toolStripButton_moveUp_Click(object sender, EventArgs e) {
             MoveLayerUp();
         }
 
-        private void buttonMoveDown_Click(object sender, EventArgs e) {
+        private void toolStripButton_moveDown_Click(object sender, EventArgs e) {
             MoveLayerDown();
         }
 
-        private void buttonToggleVisibility_Click(object sender, EventArgs e) {
+        private void toolStripButton_toggleVisibility_Click(object sender, EventArgs e) {
             ToggleLayerVisibility();
         }
 

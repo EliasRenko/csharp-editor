@@ -2,13 +2,18 @@ using System.Runtime.InteropServices;
 using csharp_editor.UserControls;
 using csharp_editor.Models;
 using csharp_editor.Dialogs;
+using csharp_editor.Helpers;
 
 namespace csharp_editor {
     public partial class Editor : Form {
 
         public bool active = false;
+        
         private string _currentTilesetName = "";
         private string _currentEntityName = "";
+        private bool _suppressStateSwitch = false;
+        
+        private ExternError lastError;
 
         public Editor() {
             InitializeComponent();
@@ -16,8 +21,9 @@ namespace csharp_editor {
             active = true;
             KeyPreview = true;
 
-            Externs.CallbackDelegate callback = (value) => {
-                Log(value);
+            Externs.CallbackDelegate callback = (priority, category, message) => {
+                lastError.SetError(priority, category, message);
+                Log(priority + " - " + category + " - " + message);
             };
 
             view_extern.Init(callback);
@@ -25,6 +31,7 @@ namespace csharp_editor {
             // Toolstrip Events
             toolStripMenuItem_open.MouseUp += toolStripButton_openFile;
             toolStripMenuItem_export.MouseUp += toolStripButton_export;
+            toolStripButton_newMap.MouseDown += ToolStripButton_newMap_Click;
 
             // Initialize HierarchyTree
             hierarchyTree.SetExternView(view_extern);
@@ -56,6 +63,11 @@ namespace csharp_editor {
             ToolStripMenuItem_textureInfo.MouseDown += ButtonTextureViewOnMouseDown;
             toolStripButton_tilesets.MouseDown += ShowTilesetDefDialog;
             toolStripButton_entitiesDefs.MouseDown += ShowEntitiesDefDialog;
+
+            // Tab / state switching
+            tabControl1.SelectedIndexChanged += TabControl1_SelectedIndexChanged;
+            tabControl1.DrawItem += TabControl1_DrawItem;
+            tabControl1.MouseClick += TabControl1_MouseClick;
 
             // Tools
 
@@ -132,8 +144,38 @@ namespace csharp_editor {
 
         #region Core
 
+        private record TabState(int StateId, string FilePath);
+
         private void LoadMap(string path) {
-            view_extern.ImportMap(path);
+            // Prevent loading the same file twice
+            string normalizedPath = Path.GetFullPath(path);
+            foreach (TabPage existing in tabControl1.TabPages) {
+                if (existing.Tag is TabState ts && string.Equals(ts.FilePath, normalizedPath, StringComparison.OrdinalIgnoreCase)) {
+                    tabControl1.SelectedTab = existing;
+                    Log($"Map already open: {normalizedPath}");
+                    return;
+                }
+            }
+
+            _suppressStateSwitch = true;
+            int stateId = view_extern.ImportMap(path);
+            System.Diagnostics.Debug.WriteLine($"[LoadMap] ImportMap('{path}') returned stateId={stateId}");
+            Log($"[DEBUG] ImportMap returned stateId={stateId}");
+
+            // Create a tab for this state
+            string tabLabel = Path.GetFileNameWithoutExtension(path);
+            TabPage tab = new TabPage(tabLabel) { Tag = new TabState(stateId, normalizedPath) };
+            tabControl1.TabPages.Add(tab);
+            tabControl1.SelectedTab = tab;
+            _suppressStateSwitch = false;
+
+            // Explicitly activate the imported state (suppressed above so SelectedIndexChanged didn't do it)
+            int setStateResult = view_extern.SetActiveState(stateId);
+            System.Diagnostics.Debug.WriteLine($"[LoadMap] SetActiveState({stateId}) returned {setStateResult}");
+            Log($"[DEBUG] SetActiveState({stateId}) returned {setStateResult}");
+
+            // Show the editor panel if it was hidden
+            panelMain.Visible = true;
 
             // Refresh the hierarchy tree to show loaded layers
             hierarchyTree.LoadLayersFromBackend();
@@ -141,7 +183,77 @@ namespace csharp_editor {
             // Reload entity definitions so selector is up-to-date (useful after import)
             entitySelector.LoadEntities();
 
-            Log($"Map loaded from: {path}");
+            Log($"Map loaded: {tabLabel} (state {stateId})");
+        }
+
+        private void ToolStripButton_newMap_Click(object? sender, MouseEventArgs e) {
+            int stateId = view_extern.NewEditorState();
+            TabPage tab = new TabPage($"New Map {stateId}") { Tag = new TabState(stateId, "") };
+            _suppressStateSwitch = true;
+            tabControl1.TabPages.Add(tab);
+            tabControl1.SelectedTab = tab;
+            _suppressStateSwitch = false;
+            view_extern.SetActiveState(stateId);
+            panelMain.Visible = true;
+            hierarchyTree.LoadLayersFromBackend();
+            entitySelector.LoadEntities();
+            Log($"New state created (id {stateId})");
+        }
+
+        private void TabControl1_SelectedIndexChanged(object? sender, EventArgs e) {
+            if (_suppressStateSwitch) return;
+            if (tabControl1.SelectedTab?.Tag is TabState ts) {
+                view_extern.SetActiveState(ts.StateId);
+                hierarchyTree.LoadLayersFromBackend();
+                entitySelector.LoadEntities();
+                entitySelector.LoadInstances();
+                Log($"Switched to state {ts.StateId}");
+            }
+        }
+
+        private Rectangle GetTabCloseRect(Rectangle tabRect) {
+            const int size = 14;
+            return new Rectangle(tabRect.Right - size - 4, tabRect.Top + (tabRect.Height - size) / 2, size, size);
+        }
+
+        private void TabControl1_DrawItem(object? sender, DrawItemEventArgs e) {
+            TabPage tab = tabControl1.TabPages[e.Index];
+            Rectangle tabRect = tabControl1.GetTabRect(e.Index);
+            bool isSelected = tabControl1.SelectedIndex == e.Index;
+
+            // Background
+            using Brush bgBrush = new SolidBrush(isSelected ? SystemColors.Window : SystemColors.Control);
+            e.Graphics.FillRectangle(bgBrush, tabRect);
+
+            // Tab text (leave room for ×)
+            Rectangle closeRect = GetTabCloseRect(tabRect);
+            Rectangle textRect = new Rectangle(tabRect.Left + 6, tabRect.Top, tabRect.Width - closeRect.Width - 12, tabRect.Height);
+            TextRenderer.DrawText(e.Graphics, tab.Text, tabControl1.Font, textRect,
+                SystemColors.ControlText, TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
+
+            // × button
+            using Font closeFont = new Font(tabControl1.Font.FontFamily, 7.5f, FontStyle.Bold);
+            TextRenderer.DrawText(e.Graphics, "×", closeFont, closeRect,
+                SystemColors.ControlDark, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+        }
+
+        private void TabControl1_MouseClick(object? sender, MouseEventArgs e) {
+            for (int i = 0; i < tabControl1.TabPages.Count; i++) {
+                if (GetTabCloseRect(tabControl1.GetTabRect(i)).Contains(e.Location)) {
+                    CloseStateTab(i);
+                    return;
+                }
+            }
+        }
+
+        private void CloseStateTab(int index) {
+            if (tabControl1.TabPages[index].Tag is TabState ts) {
+                view_extern.ReleaseState(ts.StateId);
+            }
+            tabControl1.TabPages.RemoveAt(index);
+            if (tabControl1.TabPages.Count == 0) {
+                panelMain.Visible = false;
+            }
         }
 
         #endregion
@@ -427,6 +539,8 @@ namespace csharp_editor {
 
         private void HierarchyTree_BatchSelected(object? sender, (string TilesetName, int BatchIndex) args) {
             Log($"Batch selected for tileset: {args.TilesetName} (index {args.BatchIndex})");
+            textureViewer.Visible = false;
+            entitySelector.Visible = true;
             entitySelector.SetBatchFilter(args.TilesetName, args.BatchIndex);
         }
 
@@ -464,7 +578,7 @@ namespace csharp_editor {
             view_extern.GetTextureData(texturePath, out textureData);
 
             // Update tileset viewer
-            textureViewer.SetTextureData(textureData, tilesetInfo);
+            textureViewer.SetTextureData(textureData, layer.TileSize);
 
             // Get and select the active tile from backend
             int activeTile = view_extern.GetActiveTile();
@@ -547,7 +661,7 @@ namespace csharp_editor {
 
                 UserControls.TextureInfo viewer = new UserControls.TextureInfo();
                 viewer.Dock = DockStyle.Fill;
-                viewer.SetTextureData(textureData, tilesetInfo);
+                viewer.SetTextureData(textureData, selectedLayer.TileSize);
 
                 dialog.Controls.Add(viewer);
                 dialog.ShowDialog(this);

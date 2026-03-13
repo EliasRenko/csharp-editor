@@ -7,7 +7,7 @@ namespace csharp_editor {
         public const string DLL = "Editor-debug.dll";
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void CallbackDelegate([MarshalAs(UnmanagedType.LPStr)] string message);
+        public delegate void CallbackDelegate([MarshalAs(UnmanagedType.LPStr)] string priority, [MarshalAs(UnmanagedType.LPStr)] string category, [MarshalAs(UnmanagedType.LPStr)] string message);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void EntitySelectionChangedCallback();
@@ -28,10 +28,6 @@ namespace csharp_editor {
         public struct TilesetInfoStruct {
             public IntPtr name;              // Tileset name (use Marshal.PtrToStringAnsi to read)
             public IntPtr texturePath;       // Resource path to texture (use Marshal.PtrToStringAnsi to read)
-            public int tileSize;             // Size of each tile in pixels
-            public int tilesPerRow;          // Number of tiles per row in atlas
-            public int tilesPerCol;          // Number of tiles per column in atlas
-            public int regionCount;          // Total number of tile regions
         }
         
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
@@ -39,6 +35,7 @@ namespace csharp_editor {
             public IntPtr name;              // Layer name (use Marshal.PtrToStringAnsi to read)
             public int type;                 // Layer type (0 = TileLayer, 1 = EntityLayer)
             public IntPtr tilesetName;       // Tileset name for TileLayers (use Marshal.PtrToStringAnsi to read)
+            public int tileSize;             // Tile size in pixels (TilemapLayer only, 0 for others)
             public int visible;              // Visibility flag (0 = hidden, 1 = visible)
             public bool silhouette;
             public int silhouetteColor;      // RGBA hex color for silhouette
@@ -116,6 +113,15 @@ namespace csharp_editor {
 
         [DllImport(DLL, EntryPoint = "loadState")]
         public static extern void LoadState(int id);
+
+        [DllImport(DLL, EntryPoint = "setActiveState")]
+        public static extern int SetActiveState(int index);
+
+        [DllImport(DLL, EntryPoint = "releaseState")]
+        public static extern int ReleaseState(int index);
+
+        [DllImport(DLL, EntryPoint = "newEditorState")]
+        public static extern int NewEditorState();
         
         // Window
         #region Window
@@ -170,7 +176,7 @@ namespace csharp_editor {
         public static extern int GetTilesetCount();
         
         [DllImport(DLL, EntryPoint = "createTileset", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr CreateTileset(string texturePath, string name, int tileSize);
+        public static extern IntPtr CreateTileset(string texturePath, string name);
         
         [DllImport(DLL, EntryPoint = "deleteTileset", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern IntPtr DeleteTileset(string name);
@@ -212,7 +218,7 @@ namespace csharp_editor {
         public static extern void SetLayerPropertiesAt(int index, ref LayerInfoStruct properties);
         
         [DllImport(DLL, EntryPoint = "createTilemapLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void CreateTilemapLayer(string layerName, string tilesetName, int index);
+        public static extern void CreateTilemapLayer(string layerName, string tilesetName, int tileSize, int index);
         
         [DllImport(DLL, EntryPoint = "createEntityLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void CreateEntityLayer(string layerName);
