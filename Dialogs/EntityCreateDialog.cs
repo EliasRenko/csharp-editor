@@ -85,6 +85,9 @@ namespace csharp_editor.Dialogs {
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+            // When a region is already set (edit mode), open without snap so the stored
+            // pixel-exact region is shown as-is rather than being snapped to grid.
+            bool hasExistingRegion = _currentRegion != Rectangle.Empty;
             using var dialog = new TilesetRegionDialog(
                 _externView,
                 comboBoxTilemap.SelectedItem.ToString() ?? "",
@@ -92,7 +95,9 @@ namespace csharp_editor.Dialogs {
                 (int)numericUpDownHeight.Value,
                 _currentRegion.X, _currentRegion.Y,
                 _currentRegion.Width, _currentRegion.Height,
-                _currentTileSize);
+                _currentTileSize,
+                snapToGrid: !hasExistingRegion,
+                showGrid:   false);
 
             if (dialog.ShowDialog(this) == DialogResult.OK) {
                 _currentRegion = dialog.SelectedRegion;  // already in pixels

@@ -16,7 +16,7 @@ namespace csharp_editor.Dialogs {
         
         public TilesetRegionDialog(ExternView externView, string tilesetName, int entityWidth, int entityHeight,
                                    int initialPixelX = 0, int initialPixelY = 0, int initialPixelW = 0, int initialPixelH = 0,
-                                   int tileSize = 32) {
+                                   int tileSize = 32, bool snapToGrid = true, bool showGrid = false) {
             InitializeComponent();
 
             _externView  = externView;
@@ -29,11 +29,13 @@ namespace csharp_editor.Dialogs {
 
             // Enable region selection mode
             textureViewer.RegionSelectionMode = true;
-            textureViewer.SnapToGrid = true;
+            textureViewer.SnapToGrid = snapToGrid;
+            textureViewer.ShowGrid   = showGrid;
 
             // Initialise snap controls
             numericUpDownGridSize.Value = Math.Max(1, Math.Min(512, tileSize));
-            checkBoxSnapToGrid.Checked  = true;
+            checkBoxSnapToGrid.Checked  = snapToGrid;
+            checkBoxShowGrid.Checked    = showGrid;
 
             checkBoxSnapToGrid.CheckedChanged += (s, e) => {
                 textureViewer.SnapToGrid      = checkBoxSnapToGrid.Checked;
