@@ -335,7 +335,9 @@ namespace csharp_editor {
             int count = view_extern.GetEntitySelectionCount();
 
             if (count <= 0) {
-                propertyGridPanel1.PropertyGrid.SelectedObject = null;
+                // Only wipe entity-specific info; preserve layer/state info if no entity was shown
+                if (propertyGridPanel1.PropertyGrid.SelectedObject is EntityInstanceDisplay)
+                    propertyGridPanel1.PropertyGrid.SelectedObject = null;
                 return;
             }
 

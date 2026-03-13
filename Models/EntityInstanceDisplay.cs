@@ -1,15 +1,11 @@
 using System.ComponentModel;
 
 namespace csharp_editor.Models {
-    /// <summary>
-    /// Read-only view model shown in the PropertyGrid when one or more placed
-    /// entity instances are selected in the C++ engine.
-    /// </summary>
     public class EntityInstanceDisplay {
-        [Category("Entity"), Description("Unique instance ID")]
+        [Category("Entity"), Description("Unique instance ID"), ReadOnly(true)]
         public string Uid { get; init; } = "";
 
-        [Category("Entity"), Description("Entity definition name")]
+        [Category("Entity"), Description("Entity definition name"), ReadOnly(true)]
         public string DefName { get; init; } = "";
 
         [Category("Entity"), Description("World X position")]

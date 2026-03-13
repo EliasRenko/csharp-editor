@@ -512,7 +512,7 @@ namespace csharp_editor.UserControls {
         }
 
         private void toolStripButton_addTileLayer_Click(object sender, EventArgs e) {
-            using (var dialog = new AddTileLayerDialog(_externView!)) {
+            using (var dialog = new TileLayerDialog(_externView!)) {
                 if (dialog.ShowDialog(this) == DialogResult.OK) {
                     AddLayer(dialog.LayerName, LayerType.TileLayer, dialog.SelectedTileset, dialog.TileSize);
                 }
@@ -520,49 +520,9 @@ namespace csharp_editor.UserControls {
         }
 
         private void toolStripButton_addEntityLayer_Click(object sender, EventArgs e) {
-            using (var dialog = new Form()) {
-                dialog.Text = "Add Entity Layer";
-                dialog.Size = new Size(350, 130);
-                dialog.StartPosition = FormStartPosition.CenterParent;
-                dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
-                dialog.MaximizeBox = false;
-                dialog.MinimizeBox = false;
-
-                Label labelName = new Label {
-                    Text = "Name:",
-                    Location = new Point(10, 20),
-                    Size = new Size(60, 20)
-                };
-
-                TextBox textBoxName = new TextBox {
-                    Location = new Point(80, 18),
-                    Size = new Size(240, 23)
-                };
-
-                Button buttonOk = new Button {
-                    Text = "Add",
-                    DialogResult = DialogResult.OK,
-                    Location = new Point(165, 70),
-                    Size = new Size(75, 30)
-                };
-
-                Button buttonCancel = new Button {
-                    Text = "Cancel",
-                    DialogResult = DialogResult.Cancel,
-                    Location = new Point(245, 70),
-                    Size = new Size(75, 30)
-                };
-
-                dialog.Controls.AddRange(new Control[] { labelName, textBoxName, buttonOk, buttonCancel });
-                dialog.AcceptButton = buttonOk;
-                dialog.CancelButton = buttonCancel;
-
-                if (dialog.ShowDialog(this) == DialogResult.OK && 
-                    !string.IsNullOrWhiteSpace(textBoxName.Text)) {
-                    AddLayer(textBoxName.Text.Trim(), LayerType.EntityLayer);
-                } else if (dialog.DialogResult == DialogResult.OK) {
-                    MessageBox.Show("Please enter a name.", "Validation Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            using (var dialog = new EntityLayerDialog()) {
+                if (dialog.ShowDialog(this) == DialogResult.OK) {
+                    AddLayer(dialog.LayerName, LayerType.EntityLayer);
                 }
             }
         }
@@ -588,48 +548,20 @@ namespace csharp_editor.UserControls {
             LayerNode? layer = GetSelectedLayer();
             if (layer == null) return;
 
-            using (var dialog = new Form()) {
-                dialog.Text = "Edit Layer";
-                dialog.Size = new Size(350, 130);
-                dialog.StartPosition = FormStartPosition.CenterParent;
-                dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
-                dialog.MaximizeBox = false;
-                dialog.MinimizeBox = false;
-
-                Label labelName = new Label {
-                    Text = "Name:",
-                    Location = new Point(10, 20),
-                    Size = new Size(60, 20)
-                };
-
-                TextBox textBoxName = new TextBox {
-                    Location = new Point(80, 18),
-                    Size = new Size(240, 23),
-                    Text = layer.Name
-                };
-
-                Button buttonOk = new Button {
-                    Text = "OK",
-                    DialogResult = DialogResult.OK,
-                    Location = new Point(165, 70),
-                    Size = new Size(75, 30)
-                };
-
-                Button buttonCancel = new Button {
-                    Text = "Cancel",
-                    DialogResult = DialogResult.Cancel,
-                    Location = new Point(245, 70),
-                    Size = new Size(75, 30)
-                };
-
-                dialog.Controls.AddRange(new Control[] { labelName, textBoxName, buttonOk, buttonCancel });
-                dialog.AcceptButton = buttonOk;
-                dialog.CancelButton = buttonCancel;
-
-                if (dialog.ShowDialog(this) == DialogResult.OK) {
-                    string newName = textBoxName.Text.Trim();
-                    if (!string.IsNullOrWhiteSpace(newName) && newName != layer.Name) {
-                        RenameLayer(layer.Name, newName);
+            if (layer.Type == LayerType.TileLayer) {
+                using (var dialog = new TileLayerDialog(_externView!, layer.Name, layer.TilesetName, layer.TileSize)) {
+                    if (dialog.ShowDialog(this) == DialogResult.OK) {
+                        string newName = dialog.LayerName;
+                        if (!string.IsNullOrWhiteSpace(newName) && newName != layer.Name)
+                            RenameLayer(layer.Name, newName);
+                    }
+                }
+            } else {
+                using (var dialog = new EntityLayerDialog(layer.Name)) {
+                    if (dialog.ShowDialog(this) == DialogResult.OK) {
+                        string newName = dialog.LayerName;
+                        if (!string.IsNullOrWhiteSpace(newName) && newName != layer.Name)
+                            RenameLayer(layer.Name, newName);
                     }
                 }
             }
