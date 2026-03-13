@@ -308,7 +308,7 @@ namespace csharp_editor {
             // clicking in the extern view may have placed an entity – if the active layer
             // is an entity layer, refresh its batch groups and instance list so everything stays current.
             hierarchyTree.RefreshSelectedEntityBatches();
-            entitySelector.LoadInstances();
+            entitySelector.ReloadInstancesKeepSelection();
         }
 
         private void ExternView_EntitySelectionChanged(object? sender, EventArgs e) {
@@ -337,6 +337,7 @@ namespace csharp_editor {
                     };
                     propertyGridPanel1.PropertyGrid.SelectedObject = display;
                     Log($"Entity selected: {display.DefName} at ({display.X}, {display.Y})");
+                    entitySelector.SelectInstanceByUid(display.Uid);
                 }
                 return;
             }

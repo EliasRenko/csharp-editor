@@ -12,6 +12,7 @@ namespace csharp_editor.UserControls {
         private string _currentLayerName = "";
         private string? _tilesetFilter = null;
         private int _currentBatchIndex = -1; // -1 = all batches
+        private bool _suppressInstanceSync = false;
 
         public string SelectedEntityName => _selectedEntityName;
         public bool HasSelection => !string.IsNullOrEmpty(_selectedEntityName);
@@ -142,7 +143,56 @@ namespace csharp_editor.UserControls {
                 LoadInstances();
             }
         }
+
+        /// <summary>
+        /// Reloads placed instances while preserving the currently selected UID.
+        /// </summary>
+        public void ReloadInstancesKeepSelection() {
+            string? currentUid = (listBoxInstances.SelectedItem as InstanceListItem)?.Uid;
+            LoadInstances();
+            if (!string.IsNullOrEmpty(currentUid)) {
+                _suppressInstanceSync = true;
+                try {
+                    for (int i = 0; i < listBoxInstances.Items.Count; i++) {
+                        if (listBoxInstances.Items[i] is InstanceListItem item && item.Uid == currentUid) {
+                            listBoxInstances.SelectedIndex = i;
+                            break;
+                        }
+                    }
+                } finally {
+                    _suppressInstanceSync = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Switches to the Instances tab and highlights the item matching <paramref name="uid"/>.
+        /// Does not trigger a backend selection call.
+        /// </summary>
+        public void SelectInstanceByUid(string uid) {
+            if (string.IsNullOrEmpty(uid)) return;
+
+            // Switch to instances tab (LoadInstances is called by the tab-change handler)
+            if (tabControl.SelectedTab != tabPageInstances)
+                tabControl.SelectedTab = tabPageInstances;
+
+            _suppressInstanceSync = true;
+            try {
+                for (int i = 0; i < listBoxInstances.Items.Count; i++) {
+                    if (listBoxInstances.Items[i] is InstanceListItem item && item.Uid == uid) {
+                        listBoxInstances.SelectedIndex = i;
+                        return;
+                    }
+                }
+                // No match — clear selection without triggering a deselect call
+                listBoxInstances.ClearSelected();
+            } finally {
+                _suppressInstanceSync = false;
+            }
+        }
+
         private void ListBoxInstances_SelectedIndexChanged(object? sender, EventArgs e) {
+            if (_suppressInstanceSync) return;
             if (_externView == null) return;
             if (listBoxInstances.SelectedItem is not InstanceListItem item) return;
             if (!string.IsNullOrEmpty(_currentLayerName))
