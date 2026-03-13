@@ -341,7 +341,8 @@ namespace csharp_editor {
                 Externs.EntityStruct data = new Externs.EntityStruct();
                 if (view_extern.GetEntitySelectionInfo(0, out data) != 0) {
                     var display = new EntityInstanceDisplay {
-                        DefName = Marshal.PtrToStringAnsi(data.defName) ?? "",
+                        Uid     = Marshal.PtrToStringAnsi(data.uid)    ?? "",
+                        DefName = Marshal.PtrToStringAnsi(data.name)   ?? "",
                         X       = data.x,
                         Y       = data.y,
                         Width   = data.width,
@@ -359,7 +360,8 @@ namespace csharp_editor {
                 Externs.EntityStruct data = new Externs.EntityStruct();
                 if (view_extern.GetEntitySelectionInfo(i, out data) != 0) {
                     items.Add(new EntityInstanceDisplay {
-                        DefName = Marshal.PtrToStringAnsi(data.defName) ?? "",
+                        Uid     = Marshal.PtrToStringAnsi(data.uid)    ?? "",
+                        DefName = Marshal.PtrToStringAnsi(data.name)   ?? "",
                         X       = data.x,
                         Y       = data.y,
                         Width   = data.width,
@@ -459,6 +461,7 @@ namespace csharp_editor {
             if (layer.Type == LayerType.TileLayer) {
                 textureViewer.Visible = true;
                 entitySelector.Visible = false;
+                view_extern?.DeselectEntity();
                 UpdateTextureInfo(layer);
             }
             else if (layer.Type == LayerType.EntityLayer) {
@@ -470,11 +473,13 @@ namespace csharp_editor {
                 // Default or unknown layer type
                 textureViewer.Visible = false;
                 entitySelector.Visible = false;
+                view_extern?.DeselectEntity();
             }
         }
 
         private void HierarchyTree_StateSelected(object? sender, EventArgs e) {
             Log("State row selected");
+            view_extern?.DeselectEntity();
             try {
                 if (view_extern != null) {
                     // call backend and capture possible error message

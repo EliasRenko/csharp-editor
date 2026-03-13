@@ -417,6 +417,18 @@ namespace csharp_editor.UserControls {
             return Externs.GetEntitySelectionInfo(index, out outData);
         }
 
+        public bool SelectEntityByUID(string uid) {
+            return Externs.SelectEntityByUID(uid);
+        }
+
+        public bool SelectEntityInLayerByUID(string layerName, string uid) {
+            return Externs.SelectEntityInLayerByUID(layerName, uid);
+        }
+
+        public void DeselectEntity() {
+            Externs.DeselectEntity();
+        }
+
         public int GetEntityLayerInstanceCount(string layerName, int batchIndex = -1) {
             return Externs.GetEntityLayerInstanceCount(layerName, batchIndex);
         }

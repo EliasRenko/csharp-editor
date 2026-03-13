@@ -6,6 +6,9 @@ namespace csharp_editor.Models {
     /// entity instances are selected in the C++ engine.
     /// </summary>
     public class EntityInstanceDisplay {
+        [Category("Entity"), Description("Unique instance ID")]
+        public string Uid { get; init; } = "";
+
         [Category("Entity"), Description("Entity definition name")]
         public string DefName { get; init; } = "";
 

@@ -20,8 +20,9 @@ namespace csharp_editor.UserControls {
 
         public EntitySelector() {
             InitializeComponent();
-            listBoxEntities.SelectedIndexChanged += ListBoxEntities_SelectedIndexChanged;
-            tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
+            listBoxEntities.SelectedIndexChanged  += ListBoxEntities_SelectedIndexChanged;
+            listBoxInstances.SelectedIndexChanged += ListBoxInstances_SelectedIndexChanged;
+            tabControl.SelectedIndexChanged       += TabControl_SelectedIndexChanged;
         }
 
         public void SetExternView(ExternView externView) {
@@ -33,6 +34,7 @@ namespace csharp_editor.UserControls {
         /// Sets the active entity layer and reloads both tabs.
         /// </summary>
         public void SetLayer(string layerName) {
+            _externView?.DeselectEntity();
             _currentLayerName = layerName;
             _tilesetFilter = null;
             _currentBatchIndex = -1;
@@ -113,7 +115,7 @@ namespace csharp_editor.UserControls {
                 Externs.EntityStruct data = new Externs.EntityStruct();
                 if (_externView.GetEntityLayerInstanceAt(_currentLayerName, _currentBatchIndex, i, out data) == 0) continue;
 
-                string defName = Marshal.PtrToStringAnsi(data.defName) ?? "";
+                string defName = Marshal.PtrToStringAnsi(data.name) ?? "";
 
                 // Tileset filter: cross-reference the entity def's tileset
                 if (!string.IsNullOrEmpty(_tilesetFilter)) {
@@ -123,7 +125,12 @@ namespace csharp_editor.UserControls {
                     if (defTileset != _tilesetFilter) continue;
                 }
 
-                listBoxInstances.Items.Add($"{defName} @ ({data.x}, {data.y})");
+                listBoxInstances.Items.Add(new InstanceListItem {
+                    Uid     = Marshal.PtrToStringAnsi(data.uid)  ?? "",
+                    DefName = defName,
+                    X       = data.x,
+                    Y       = data.y
+                });
                 visible++;
             }
 
@@ -134,6 +141,14 @@ namespace csharp_editor.UserControls {
             if (tabControl.SelectedTab == tabPageInstances) {
                 LoadInstances();
             }
+        }
+        private void ListBoxInstances_SelectedIndexChanged(object? sender, EventArgs e) {
+            if (_externView == null) return;
+            if (listBoxInstances.SelectedItem is not InstanceListItem item) return;
+            if (!string.IsNullOrEmpty(_currentLayerName))
+                _externView.SelectEntityInLayerByUID(_currentLayerName, item.Uid);
+            else
+                _externView.SelectEntityByUID(item.Uid);
         }
 
         private void ListBoxEntities_SelectedIndexChanged(object? sender, EventArgs e) {
@@ -159,6 +174,15 @@ namespace csharp_editor.UserControls {
             public int RegionHeight { get; set; }
 
             public override string ToString() => DisplayText;
+        }
+
+        private class InstanceListItem {
+            public string Uid     { get; set; } = "";
+            public string DefName { get; set; } = "";
+            public int    X       { get; set; }
+            public int    Y       { get; set; }
+
+            public override string ToString() => $"{DefName} @ ({X}, {Y})";
         }
     }
 }

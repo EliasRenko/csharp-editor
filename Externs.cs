@@ -57,13 +57,12 @@ namespace csharp_editor {
         
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
         public struct EntityStruct {
-            public IntPtr defName;           // Entity definition name (use Marshal.PtrToStringAnsi to read)
+            public IntPtr uid;               // Unique instance ID (use Marshal.PtrToStringAnsi to read)
+            public IntPtr name;              // Entity definition name (use Marshal.PtrToStringAnsi to read)
             public int width;                // Width in pixels
             public int height;               // Height in pixels
             public int x;                    // World X position
             public int y;                    // World Y position
-            public float pivotX;                // Pivot X (0.0 - 1.0)
-            public float pivotY;                // Pivot Y (0.0 - 1.0 
         }
         
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
@@ -289,6 +288,15 @@ namespace csharp_editor {
 
         [DllImport(DLL, EntryPoint = "getEntitySelectionInfo", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetEntitySelectionInfo(int index, out EntityStruct outData);
+
+        [DllImport(DLL, EntryPoint = "selectEntityByUID", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern bool SelectEntityByUID(string uid);
+
+        [DllImport(DLL, EntryPoint = "selectEntityInLayerByUID", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern bool SelectEntityInLayerByUID(string layerName, string uid);
+
+        [DllImport(DLL, EntryPoint = "deselectEntity", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void DeselectEntity();
 
         // Enumerate placed entity instances in a layer (batchIndex = -1 for all batches)
         [DllImport(DLL, EntryPoint = "getEntityLayerInstanceCount", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
