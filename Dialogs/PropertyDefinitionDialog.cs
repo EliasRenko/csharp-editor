@@ -1,9 +1,11 @@
+using csharp_editor.UserControls;
+
 namespace csharp_editor.Dialogs {
     public partial class PropertyDefinitionDialog : Form {
 
         // Output properties (read after ShowDialog == OK)
         public string       PropertyName  { get; private set; } = "";
-        public EntityCreateDialog.PropertyType PropertyType { get; private set; } = EntityCreateDialog.PropertyType.String;
+        public EntityEditor.PropertyType PropertyType { get; private set; } = EntityEditor.PropertyType.String;
         public string       DefaultValue  { get; private set; } = "";
 
         public PropertyDefinitionDialog() {
@@ -31,11 +33,11 @@ namespace csharp_editor.Dialogs {
 
             PropertyName = textBoxName.Text.Trim();
             PropertyType = comboBoxType.SelectedIndex switch {
-                0 => EntityCreateDialog.PropertyType.Int,
-                1 => EntityCreateDialog.PropertyType.Float,
-                3 => EntityCreateDialog.PropertyType.Bool,
-                4 => EntityCreateDialog.PropertyType.Color,
-                _ => EntityCreateDialog.PropertyType.String
+                0 => EntityEditor.PropertyType.Int,
+                1 => EntityEditor.PropertyType.Float,
+                3 => EntityEditor.PropertyType.Bool,
+                4 => EntityEditor.PropertyType.Color,
+                _ => EntityEditor.PropertyType.String
             };
             DefaultValue = textBoxDefault.Text;
         }
