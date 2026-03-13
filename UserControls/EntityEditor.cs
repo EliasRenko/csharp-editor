@@ -21,6 +21,9 @@ namespace csharp_editor.UserControls {
         private int         _currentTileSize = 32;
         private string      _selectedPivot   = "BottomCenter";
         private bool        _isEditMode      = false;
+        private float       _pivotXActual    = 0.5f;
+        private float       _pivotYActual    = 1.0f;
+        private bool        _suppressPivotSync = false;
 
         public string[] Tags => textBoxTags.Text
             .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
@@ -42,6 +45,11 @@ namespace csharp_editor.UserControls {
             checkBoxHitbox.CheckedChanged        += (s, e) => panelHitbox.Enabled = checkBoxHitbox.Checked;
             listViewProperties.SelectedIndexChanged += (s, e) =>
                 buttonRemoveProperty.Enabled = listViewProperties.SelectedItems.Count > 0;
+            numPivotX.ValueChanged += NumPivot_ValueChanged;
+            numPivotY.ValueChanged += NumPivot_ValueChanged;
+            SyncPivotNumerics(0.5f, 1.0f);
+
+            entityPreviewPanel.Clear();
         }
 
         /// <summary>Clears all fields and puts the editor in "New Entity" mode.</summary>
@@ -59,7 +67,11 @@ namespace csharp_editor.UserControls {
             _selectedPivot   = "BottomCenter";
             _isEditMode      = false;
             UpdateRegionLabel();
+            entityPreviewPanel.Clear();
             HighlightPivotButton(_selectedPivot);
+            _pivotXActual = 0.5f;
+            _pivotYActual = 1.0f;
+            SyncPivotNumerics(0.5f, 1.0f);
             buttonSave.Text = "Create";
             if (comboBoxTilemap.Items.Count > 0) comboBoxTilemap.SelectedIndex = 0;
             if (comboBoxClass.Items.Count > 0)   comboBoxClass.SelectedIndex   = 0;
@@ -94,6 +106,10 @@ namespace csharp_editor.UserControls {
                 ? FloatsToPivot(entry.PivotX, entry.PivotY)
                 : entry.PivotName;
             HighlightPivotButton(_selectedPivot);
+            _pivotXActual = entry.PivotX;
+            _pivotYActual = entry.PivotY;
+            SyncPivotNumerics(entry.PivotX, entry.PivotY);
+            UpdateRegionPreview();
 
             _isEditMode     = true;
             buttonSave.Text = "Save";
@@ -132,10 +148,33 @@ namespace csharp_editor.UserControls {
                 $"({_currentRegion.X}, {_currentRegion.Y})  " +
                 $"{_currentRegion.Width}×{_currentRegion.Height} px";
         }
+        private void UpdateRegionPreview() {
+            if (_externView == null || _currentRegion == Rectangle.Empty || comboBoxTilemap.SelectedItem == null) {
+                entityPreviewPanel.Clear();
+                return;
+            }
 
+            string selectedTilemap = comboBoxTilemap.SelectedItem.ToString() ?? "";
+            int count = _externView.GetTilesetCount();
+            for (int i = 0; i < count; i++) {
+                Externs.TilesetInfoStruct info = new Externs.TilesetInfoStruct();
+                if (_externView.GetTilesetAt(i, out info) == 0) continue;
+                string name = Marshal.PtrToStringAnsi(info.name) ?? "";
+                if (name != selectedTilemap) continue;
+
+                string texturePath = Marshal.PtrToStringAnsi(info.texturePath) ?? "";
+                if (string.IsNullOrEmpty(texturePath)) break;
+
+                _externView.GetTextureData(texturePath, out Externs.TextureDataStruct textureData);
+                entityPreviewPanel.SetPreview(textureData, _currentRegion, _pivotXActual, _pivotYActual);
+                return;
+            }
+            entityPreviewPanel.Clear();
+        }
         private void ComboBoxTilemap_SelectedIndexChanged(object? sender, EventArgs e) {
             _currentRegion = Rectangle.Empty;
             UpdateRegionLabel();
+            entityPreviewPanel.Clear();
         }
 
         private void ButtonSelectRegion_Click(object? sender, EventArgs e) {
@@ -160,6 +199,7 @@ namespace csharp_editor.UserControls {
             if (dialog.ShowDialog(this) == DialogResult.OK) {
                 _currentRegion = dialog.SelectedRegion;
                 UpdateRegionLabel();
+                UpdateRegionPreview();
                 numericUpDownWidth.Value  = Math.Max(numericUpDownWidth.Minimum,
                     Math.Min(numericUpDownWidth.Maximum,  _currentRegion.Width));
                 numericUpDownHeight.Value = Math.Max(numericUpDownHeight.Minimum,
@@ -171,6 +211,11 @@ namespace csharp_editor.UserControls {
             if (sender is Button btn && btn.Tag is string pivot) {
                 _selectedPivot = pivot;
                 HighlightPivotButton(pivot);
+                var pf = PivotToFloats(pivot);
+                _pivotXActual = pf.X;
+                _pivotYActual = pf.Y;
+                SyncPivotNumerics(pf.X, pf.Y);
+                entityPreviewPanel.UpdatePivot(pf.X, pf.Y);
             }
         }
 
@@ -184,6 +229,22 @@ namespace csharp_editor.UserControls {
                     ? System.Drawing.Color.FromArgb(0, 120, 215)
                     : System.Drawing.SystemColors.Control;
             }
+        }
+
+        private void SyncPivotNumerics(float x, float y) {
+            _suppressPivotSync = true;
+            numPivotX.Value = (decimal)Math.Clamp(x, 0f, 1f);
+            numPivotY.Value = (decimal)Math.Clamp(y, 0f, 1f);
+            _suppressPivotSync = false;
+        }
+
+        private void NumPivot_ValueChanged(object? sender, EventArgs e) {
+            if (_suppressPivotSync) return;
+            _pivotXActual  = (float)numPivotX.Value;
+            _pivotYActual  = (float)numPivotY.Value;
+            _selectedPivot = FloatsToPivot(_pivotXActual, _pivotYActual);
+            HighlightPivotButton(_selectedPivot);
+            entityPreviewPanel.UpdatePivot(_pivotXActual, _pivotYActual);
         }
 
         private void buttonAddProperty_Click(object? sender, EventArgs e) {
@@ -230,8 +291,8 @@ namespace csharp_editor.UserControls {
                     regionY      = _currentRegion.Y,
                     regionWidth  = _currentRegion.Width,
                     regionHeight = _currentRegion.Height,
-                    pivotX       = PivotToFloats(_selectedPivot).X,
-                    pivotY       = PivotToFloats(_selectedPivot).Y
+                    pivotX       = _pivotXActual,
+                    pivotY       = _pivotYActual
                 };
 
                 string? error = _isEditMode

@@ -216,7 +216,7 @@ namespace csharp_editor.Dialogs {
         /// <summary>
         /// Pre-populate the dialog with data from an existing entity for editing.
         /// </summary>
-        public void Populate(EntityEntry entry) {
+        public void Populate(Models.EntityEntry entry) {
             textBoxName.Text = entry.Name;
             textBoxName.ReadOnly = true;
 

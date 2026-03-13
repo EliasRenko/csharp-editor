@@ -25,6 +25,7 @@ namespace csharp_editor.UserControls {
             checkBoxFlipY        = new System.Windows.Forms.CheckBox();
             buttonSelectRegion   = new System.Windows.Forms.Button();
             labelRegionInfo      = new System.Windows.Forms.Label();
+            entityPreviewPanel   = new EntityPreviewPanel();
             groupBehaviour       = new System.Windows.Forms.GroupBox();
             labelClass           = new System.Windows.Forms.Label();
             comboBoxClass        = new System.Windows.Forms.ComboBox();
@@ -49,6 +50,10 @@ namespace csharp_editor.UserControls {
             numHitboxW           = new System.Windows.Forms.NumericUpDown();
             labelHitboxH         = new System.Windows.Forms.Label();
             numHitboxH           = new System.Windows.Forms.NumericUpDown();
+            labelPivotX          = new System.Windows.Forms.Label();
+            numPivotX            = new System.Windows.Forms.NumericUpDown();
+            labelPivotY          = new System.Windows.Forms.Label();
+            numPivotY            = new System.Windows.Forms.NumericUpDown();
             groupProperties      = new System.Windows.Forms.GroupBox();
             listViewProperties   = new System.Windows.Forms.ListView();
             colPropName          = new System.Windows.Forms.ColumnHeader();
@@ -63,6 +68,8 @@ namespace csharp_editor.UserControls {
             ((System.ComponentModel.ISupportInitialize)numHitboxY).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numHitboxW).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numHitboxH).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numPivotX).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numPivotY).BeginInit();
             groupBasic.SuspendLayout();
             groupAppearance.SuspendLayout();
             groupBehaviour.SuspendLayout();
@@ -103,10 +110,10 @@ namespace csharp_editor.UserControls {
 
             // ── groupAppearance  (Tilemap + Width/Height + FlipX/FlipY + Region)
             groupAppearance.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            groupAppearance.Controls.AddRange(new System.Windows.Forms.Control[] { labelTilemap, comboBoxTilemap, labelWidth, numericUpDownWidth, labelHeight, numericUpDownHeight, checkBoxFlipX, checkBoxFlipY, buttonSelectRegion, labelRegionInfo });
+            groupAppearance.Controls.AddRange(new System.Windows.Forms.Control[] { labelTilemap, comboBoxTilemap, labelWidth, numericUpDownWidth, labelHeight, numericUpDownHeight, checkBoxFlipX, checkBoxFlipY, buttonSelectRegion, labelRegionInfo, entityPreviewPanel });
             groupAppearance.Location = new System.Drawing.Point(12, 96);
             groupAppearance.Name = "groupAppearance";
-            groupAppearance.Size = new System.Drawing.Size(756, 138);
+            groupAppearance.Size = new System.Drawing.Size(756, 406);
             groupAppearance.TabStop = false;
             groupAppearance.Text = "Appearance";
 
@@ -170,12 +177,18 @@ namespace csharp_editor.UserControls {
             labelRegionInfo.Name = "labelRegionInfo";
             labelRegionInfo.Text = "";
 
+            entityPreviewPanel.Location = new System.Drawing.Point(10, 140);
+            entityPreviewPanel.Name = "entityPreviewPanel";
+            entityPreviewPanel.Size = new System.Drawing.Size(256, 256);
+            entityPreviewPanel.TabIndex = 20;
+            entityPreviewPanel.TabStop = false;
+
             // ── groupBehaviour  (Class + Pivot + Hitbox)
             groupBehaviour.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            groupBehaviour.Controls.AddRange(new System.Windows.Forms.Control[] { labelClass, comboBoxClass, labelPivot, panelPivot, checkBoxHitbox, panelHitbox });
-            groupBehaviour.Location = new System.Drawing.Point(12, 242);
+            groupBehaviour.Controls.AddRange(new System.Windows.Forms.Control[] { labelClass, comboBoxClass, labelPivot, panelPivot, checkBoxHitbox, panelHitbox, labelPivotX, numPivotX, labelPivotY, numPivotY });
+            groupBehaviour.Location = new System.Drawing.Point(12, 510);
             groupBehaviour.Name = "groupBehaviour";
-            groupBehaviour.Size = new System.Drawing.Size(756, 138);
+            groupBehaviour.Size = new System.Drawing.Size(756, 163);
             groupBehaviour.TabStop = false;
             groupBehaviour.Text = "Behaviour";
 
@@ -265,10 +278,38 @@ namespace csharp_editor.UserControls {
             numHitboxH.TabIndex = 13;
             numHitboxH.Value = new decimal(new int[] { 32, 0, 0, 0 });
 
+            labelPivotX.AutoSize = true;
+            labelPivotX.Location = new System.Drawing.Point(67, 134);
+            labelPivotX.Text = "X:";
+
+            numPivotX.DecimalPlaces = 2;
+            numPivotX.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
+            numPivotX.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
+            numPivotX.Minimum = new decimal(new int[] { 0, 0, 0, 0 });
+            numPivotX.Location = new System.Drawing.Point(80, 130);
+            numPivotX.Name = "numPivotX";
+            numPivotX.Size = new System.Drawing.Size(65, 23);
+            numPivotX.TabIndex = 20;
+            numPivotX.Value = new decimal(new int[] { 50, 0, 0, 131072 });
+
+            labelPivotY.AutoSize = true;
+            labelPivotY.Location = new System.Drawing.Point(153, 134);
+            labelPivotY.Text = "Y:";
+
+            numPivotY.DecimalPlaces = 2;
+            numPivotY.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
+            numPivotY.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
+            numPivotY.Minimum = new decimal(new int[] { 0, 0, 0, 0 });
+            numPivotY.Location = new System.Drawing.Point(166, 130);
+            numPivotY.Name = "numPivotY";
+            numPivotY.Size = new System.Drawing.Size(65, 23);
+            numPivotY.TabIndex = 21;
+            numPivotY.Value = new decimal(new int[] { 100, 0, 0, 131072 });
+
             // ── groupProperties
             groupProperties.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             groupProperties.Controls.AddRange(new System.Windows.Forms.Control[] { listViewProperties, buttonAddProperty, buttonRemoveProperty });
-            groupProperties.Location = new System.Drawing.Point(12, 388);
+            groupProperties.Location = new System.Drawing.Point(12, 681);
             groupProperties.Name = "groupProperties";
             groupProperties.Size = new System.Drawing.Size(756, 160);
             groupProperties.TabStop = false;
@@ -311,7 +352,7 @@ namespace csharp_editor.UserControls {
 
             // ── Save button
             buttonSave.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            buttonSave.Location = new System.Drawing.Point(688, 558);
+            buttonSave.Location = new System.Drawing.Point(688, 851);
             buttonSave.Name = "buttonSave";
             buttonSave.Size = new System.Drawing.Size(80, 27);
             buttonSave.TabIndex = 17;
@@ -324,7 +365,7 @@ namespace csharp_editor.UserControls {
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoScroll = true;
             Controls.AddRange(new System.Windows.Forms.Control[] { groupBasic, groupAppearance, groupBehaviour, groupProperties, buttonSave });
-            Size = new System.Drawing.Size(780, 598);
+            Size = new System.Drawing.Size(780, 891);
 
             groupBasic.ResumeLayout(false);
             groupBasic.PerformLayout();
@@ -341,6 +382,8 @@ namespace csharp_editor.UserControls {
             ((System.ComponentModel.ISupportInitialize)numHitboxY).EndInit();
             ((System.ComponentModel.ISupportInitialize)numHitboxW).EndInit();
             ((System.ComponentModel.ISupportInitialize)numHitboxH).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numPivotX).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numPivotY).EndInit();
             groupProperties.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
@@ -377,6 +420,7 @@ namespace csharp_editor.UserControls {
         private System.Windows.Forms.CheckBox      checkBoxFlipY;
         private System.Windows.Forms.Button        buttonSelectRegion;
         private System.Windows.Forms.Label         labelRegionInfo;
+        private EntityPreviewPanel                 entityPreviewPanel;
 
         // ── Behaviour
         private System.Windows.Forms.GroupBox   groupBehaviour;
@@ -391,6 +435,8 @@ namespace csharp_editor.UserControls {
         private System.Windows.Forms.Panel      panelHitbox;
         private System.Windows.Forms.Label      labelHitboxX, labelHitboxY, labelHitboxW, labelHitboxH;
         private System.Windows.Forms.NumericUpDown numHitboxX, numHitboxY, numHitboxW, numHitboxH;
+        private System.Windows.Forms.Label      labelPivotX, labelPivotY;
+        private System.Windows.Forms.NumericUpDown numPivotX, numPivotY;
 
         // ── Custom Properties
         private System.Windows.Forms.GroupBox    groupProperties;
