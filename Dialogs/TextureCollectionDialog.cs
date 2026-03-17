@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 using csharp_editor.UserControls;
 
 namespace csharp_editor.Dialogs {
-    public partial class TilesetImportDialog : Form {
+    public partial class TextureCollectionDialog : Form {
         
         public string SelectedTilesetName { get; private set; } = "";
         
@@ -20,7 +20,7 @@ namespace csharp_editor.Dialogs {
         private Action<string>? _onTilesetSelected;
         private Action? _onTilesetDeleted;
 
-        public TilesetImportDialog(ExternView externView, Action<string>? onTilesetSelected = null, Action? onTilesetDeleted = null) {
+        public TextureCollectionDialog(ExternView externView, Action<string>? onTilesetSelected = null, Action? onTilesetDeleted = null) {
             InitializeComponent();
             _externView = externView;
             _onTilesetSelected = onTilesetSelected;
@@ -86,10 +86,32 @@ namespace csharp_editor.Dialogs {
             }
         }
 
-        private void buttonNew_Click(object sender, EventArgs e) {
-            using (var createDialog = new TilesetCreateDialog(_externView)) {
-                if (createDialog.ShowDialog(this) == DialogResult.OK) {
-                    LoadExistingTilesets();
+        private void buttonImport_Click(object sender, EventArgs e) {
+            using (OpenFileDialog dialog = new OpenFileDialog()) {
+                dialog.Filter = "Image Files (*.png;*.tga;*.jpg;*.bmp)|*.png;*.tga;*.jpg;*.bmp|All Files (*.*)|*.*";
+                dialog.FilterIndex = 1;
+                dialog.Title = "Select Texture Image";
+
+                if (dialog.ShowDialog() != DialogResult.OK) return;
+
+                string imagePath = dialog.FileName;
+                string name = Path.GetFileNameWithoutExtension(imagePath);
+
+                var error = _externView.CreateTileset(imagePath, name);
+                if (error != null) {
+                    MessageBox.Show(error, "Import Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                LoadExistingTilesets();
+
+                // Select the newly imported entry
+                for (int i = 0; i < listBoxTilesets.Items.Count; i++) {
+                    if (listBoxTilesets.Items[i] is TilesetEntry e2 && e2.Name == name) {
+                        listBoxTilesets.SelectedIndex = i;
+                        break;
+                    }
                 }
             }
         }

@@ -1,5 +1,5 @@
 namespace csharp_editor.Dialogs {
-    partial class TilesetImportDialog {
+    partial class TextureCollectionDialog {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -32,7 +32,7 @@ namespace csharp_editor.Dialogs {
             textureViewer = new csharp_editor.UserControls.TextureViewer();
             labelTilesetMeta = new System.Windows.Forms.Label();
             labelTilesetPath = new System.Windows.Forms.Label();
-            buttonNew = new System.Windows.Forms.Button();
+            buttonImport = new System.Windows.Forms.Button();
             buttonClose = new System.Windows.Forms.Button();
             groupBoxExisting.SuspendLayout();
             SuspendLayout();
@@ -123,16 +123,16 @@ namespace csharp_editor.Dialogs {
             labelTilesetPath.TabIndex = 5;
             labelTilesetPath.Text = "";
             // 
-            // buttonNew
+            // buttonImport
             // 
-            buttonNew.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left));
-            buttonNew.Location = new System.Drawing.Point(12, 470);
-            buttonNew.Name = "buttonNew";
-            buttonNew.Size = new System.Drawing.Size(85, 28);
-            buttonNew.TabIndex = 1;
-            buttonNew.Text = "New...";
-            buttonNew.UseVisualStyleBackColor = true;
-            buttonNew.Click += buttonNew_Click;
+            buttonImport.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left));
+            buttonImport.Location = new System.Drawing.Point(12, 470);
+            buttonImport.Name = "buttonImport";
+            buttonImport.Size = new System.Drawing.Size(85, 28);
+            buttonImport.TabIndex = 1;
+            buttonImport.Text = "Import...";
+            buttonImport.UseVisualStyleBackColor = true;
+            buttonImport.Click += buttonImport_Click;
             // 
             // buttonClose
             // 
@@ -145,7 +145,7 @@ namespace csharp_editor.Dialogs {
             buttonClose.UseVisualStyleBackColor = true;
             buttonClose.Click += buttonClose_Click;
             // 
-            // TilesetImportDialog
+            // TextureCollectionDialog
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -153,7 +153,7 @@ namespace csharp_editor.Dialogs {
             Controls.Add(labelTilesetPath);
             Controls.Add(labelTilesetMeta);
             Controls.Add(textureViewer);
-            Controls.Add(buttonNew);
+            Controls.Add(buttonImport);
             Controls.Add(buttonClose);
             Controls.Add(groupBoxExisting);
             MinimumSize = new System.Drawing.Size(700, 450);
@@ -173,7 +173,7 @@ namespace csharp_editor.Dialogs {
         private csharp_editor.UserControls.TextureViewer textureViewer;
         private System.Windows.Forms.Label labelTilesetMeta;
         private System.Windows.Forms.Label labelTilesetPath;
-        private System.Windows.Forms.Button buttonNew;
+        private System.Windows.Forms.Button buttonImport;
         private System.Windows.Forms.Button buttonClose;
     }
 }

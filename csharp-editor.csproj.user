@@ -10,10 +10,7 @@
     <Compile Update="Dialogs\PropertyDefinitionDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Dialogs\TilesetCreateDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Dialogs\TilesetImportDialog.cs">
+    <Compile Update="Dialogs\TextureCollectionDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Dialogs\TilesetRegionDialog.cs">

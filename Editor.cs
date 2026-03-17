@@ -60,7 +60,7 @@ namespace csharp_editor {
 
             // Debug 
 
-            ToolStripMenuItem_textureInfo.MouseDown += ButtonTextureViewOnMouseDown;
+            //ToolStripMenuItem_textureInfo.MouseDown += ButtonTextureViewOnMouseDown;
             toolStripButton_tilesets.MouseDown += ShowTilesetDefDialog;
             toolStripButton_entitiesDefs.MouseDown += ShowEntitiesDefDialog;
 
@@ -608,74 +608,74 @@ namespace csharp_editor {
 
         // Externalized event handlers ------------------------------------------------
 
-        private void ButtonTextureViewOnMouseDown(object? sender, MouseEventArgs e) {
-            // Check if a layer is currently selected
-            var selectedLayer = hierarchyTree.GetSelectedLayer();
-            if (selectedLayer == null) {
-                MessageBox.Show("No layer is currently selected. Please select a layer from the Hierarchy first.",
-                    "No Layer Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            // Check if the layer has a tileset assigned
-            if (string.IsNullOrEmpty(selectedLayer.TilesetName)) {
-                MessageBox.Show("The selected layer does not have a tileset assigned.",
-                    "No Tileset", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
-
-            // Get tileset info from C++ using the layer's tileset
-            int result = view_extern.GetTileset(selectedLayer.TilesetName, out tilesetInfo);
-
-            if (result == 0) {
-                MessageBox.Show($"Failed to get tileset '{selectedLayer.TilesetName}'. Please try reloading the tileset.",
-                    "Tileset Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            // Get texture path from tileset info
-            string texturePath = Marshal.PtrToStringAnsi(tilesetInfo.texturePath) ?? "";
-
-            if (string.IsNullOrEmpty(texturePath)) {
-                MessageBox.Show("Invalid texture path in tileset", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            // Get texture data
-            Externs.TextureDataStruct textureData;
-            view_extern.GetTextureData(texturePath, out textureData);
-
-            // Create and show TextureInfo dialog
-            using (Form dialog = new Form()) {
-                string tilesetName = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "Unknown";
-                dialog.Text = $"Texture Info - {selectedLayer.Name} ({tilesetName})";
-                dialog.Size = new Size(620, 560);
-                dialog.StartPosition = FormStartPosition.CenterParent;
-                dialog.FormBorderStyle = FormBorderStyle.Sizable;
-                dialog.MinimumSize = new Size(400, 300);
-
-                UserControls.TextureInfo viewer = new UserControls.TextureInfo();
-                viewer.Dock = DockStyle.Fill;
-                viewer.SetTextureData(textureData, selectedLayer.TileSize);
-
-                dialog.Controls.Add(viewer);
-                dialog.ShowDialog(this);
-
-                // Get selection after dialog closes
-                if (viewer.HasSelection) {
-                    Point selectedTile = viewer.SelectedTile;
-                    int regionId = viewer.SelectedRegionId;
-                    Log($"Selected tile from layer '{selectedLayer.Name}': X={selectedTile.X}, Y={selectedTile.Y}, RegionId={regionId}");
-
-                    view_extern.SetActiveTile(regionId);
-                }
-            }
-        }
+        // private void ButtonTextureViewOnMouseDown(object? sender, MouseEventArgs e) {
+        //     // Check if a layer is currently selected
+        //     var selectedLayer = hierarchyTree.GetSelectedLayer();
+        //     if (selectedLayer == null) {
+        //         MessageBox.Show("No layer is currently selected. Please select a layer from the Hierarchy first.",
+        //             "No Layer Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //         return;
+        //     }
+        //
+        //     // Check if the layer has a tileset assigned
+        //     if (string.IsNullOrEmpty(selectedLayer.TilesetName)) {
+        //         MessageBox.Show("The selected layer does not have a tileset assigned.",
+        //             "No Tileset", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //         return;
+        //     }
+        //
+        //     Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
+        //
+        //     // Get tileset info from C++ using the layer's tileset
+        //     int result = view_extern.GetTileset(selectedLayer.TilesetName, out tilesetInfo);
+        //
+        //     if (result == 0) {
+        //         MessageBox.Show($"Failed to get tileset '{selectedLayer.TilesetName}'. Please try reloading the tileset.",
+        //             "Tileset Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //         return;
+        //     }
+        //
+        //     // Get texture path from tileset info
+        //     string texturePath = Marshal.PtrToStringAnsi(tilesetInfo.texturePath) ?? "";
+        //
+        //     if (string.IsNullOrEmpty(texturePath)) {
+        //         MessageBox.Show("Invalid texture path in tileset", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //         return;
+        //     }
+        //
+        //     // Get texture data
+        //     Externs.TextureDataStruct textureData;
+        //     view_extern.GetTextureData(texturePath, out textureData);
+        //
+        //     // Create and show TextureInfo dialog
+        //     using (Form dialog = new Form()) {
+        //         string tilesetName = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "Unknown";
+        //         dialog.Text = $"Texture Info - {selectedLayer.Name} ({tilesetName})";
+        //         dialog.Size = new Size(620, 560);
+        //         dialog.StartPosition = FormStartPosition.CenterParent;
+        //         dialog.FormBorderStyle = FormBorderStyle.Sizable;
+        //         dialog.MinimumSize = new Size(400, 300);
+        //
+        //         UserControls.TextureInfo viewer = new UserControls.TextureInfo();
+        //         viewer.Dock = DockStyle.Fill;
+        //         viewer.SetTextureData(textureData, selectedLayer.TileSize);
+        //
+        //         dialog.Controls.Add(viewer);
+        //         dialog.ShowDialog(this);
+        //
+        //         // Get selection after dialog closes
+        //         if (viewer.HasSelection) {
+        //             Point selectedTile = viewer.SelectedTile;
+        //             int regionId = viewer.SelectedRegionId;
+        //             Log($"Selected tile from layer '{selectedLayer.Name}': X={selectedTile.X}, Y={selectedTile.Y}, RegionId={regionId}");
+        //
+        //             view_extern.SetActiveTile(regionId);
+        //         }
+        //     }
+        // }
 
         private void ShowTilesetDefDialog(object? sender, MouseEventArgs e) {
-             using (TilesetImportDialog dialog = new TilesetImportDialog(
+             using (TextureCollectionDialog dialog = new TextureCollectionDialog(
                 view_extern,
                 onTilesetSelected: (tilesetName) => {
                     _currentTilesetName = tilesetName;

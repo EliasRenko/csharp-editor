@@ -27,7 +27,6 @@ C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\bin\x64\Debug\csharp
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\bin\x64\Debug\csharp-editor.dll
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\bin\x64\Debug\csharp-editor.pdb
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.Dialogs.EntitiesDialog.resources
-C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.Dialogs.EntityCreateDialog.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.Dialogs.PropertyDefinitionDialog.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.Dialogs.TilesetCreateDialog.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.Dialogs.TilesetImportDialog.resources
