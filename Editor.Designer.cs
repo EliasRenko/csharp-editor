@@ -80,7 +80,7 @@ namespace csharp_editor {
             view_extern.Dock = System.Windows.Forms.DockStyle.Fill;
             view_extern.Location = new System.Drawing.Point(265, 39);
             view_extern.Name = "view_extern";
-            view_extern.Size = new System.Drawing.Size(530, 502);
+            view_extern.Size = new System.Drawing.Size(530, 479);
             view_extern.TabIndex = 0;
             // 
             // menuStrip1
@@ -154,11 +154,11 @@ namespace csharp_editor {
             // 
             console.BackColor = System.Drawing.SystemColors.Control;
             console.Dock = System.Windows.Forms.DockStyle.Bottom;
-            console.Location = new System.Drawing.Point(0, 618);
+            console.Location = new System.Drawing.Point(0, 595);
             console.Margin = new System.Windows.Forms.Padding(4);
             console.Name = "console";
             console.Padding = new System.Windows.Forms.Padding(4);
-            console.Size = new System.Drawing.Size(1058, 128);
+            console.Size = new System.Drawing.Size(1058, 151);
             console.TabIndex = 3;
             // 
             // toolStripMenuItem1
@@ -175,7 +175,7 @@ namespace csharp_editor {
             panelRight.Dock = System.Windows.Forms.DockStyle.Right;
             panelRight.Location = new System.Drawing.Point(795, 39);
             panelRight.Name = "panelRight";
-            panelRight.Size = new System.Drawing.Size(263, 502);
+            panelRight.Size = new System.Drawing.Size(263, 479);
             panelRight.TabIndex = 7;
             // 
             // entitySelector
@@ -183,7 +183,7 @@ namespace csharp_editor {
             entitySelector.Dock = System.Windows.Forms.DockStyle.Fill;
             entitySelector.Location = new System.Drawing.Point(0, 344);
             entitySelector.Name = "entitySelector";
-            entitySelector.Size = new System.Drawing.Size(263, 158);
+            entitySelector.Size = new System.Drawing.Size(263, 135);
             entitySelector.TabIndex = 2;
             entitySelector.Visible = false;
             // 
@@ -194,9 +194,11 @@ namespace csharp_editor {
             textureViewer.Location = new System.Drawing.Point(0, 344);
             textureViewer.Name = "textureViewer";
             textureViewer.RegionSelectionMode = false;
-            textureViewer.Size = new System.Drawing.Size(263, 158);
+            textureViewer.ShowGrid = false;
+            textureViewer.Size = new System.Drawing.Size(263, 135);
             textureViewer.SnapToGrid = true;
             textureViewer.TabIndex = 1;
+            textureViewer.TileSize = 0;
             // 
             // hierarchyTree
             // 
@@ -318,7 +320,7 @@ namespace csharp_editor {
             propertyGridPanel1.Dock = System.Windows.Forms.DockStyle.Left;
             propertyGridPanel1.Location = new System.Drawing.Point(0, 39);
             propertyGridPanel1.Name = "propertyGridPanel1";
-            propertyGridPanel1.Size = new System.Drawing.Size(265, 502);
+            propertyGridPanel1.Size = new System.Drawing.Size(265, 479);
             propertyGridPanel1.TabIndex = 9;
             // 
             // toolStrip2
@@ -393,7 +395,7 @@ namespace csharp_editor {
             panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
             panelMain.Location = new System.Drawing.Point(0, 77);
             panelMain.Name = "panelMain";
-            panelMain.Size = new System.Drawing.Size(1058, 541);
+            panelMain.Size = new System.Drawing.Size(1058, 518);
             panelMain.TabIndex = 11;
             panelMain.Visible = false;
             // 
