@@ -6,11 +6,15 @@ namespace csharp_editor.UserControls {
         public DebugConsole() {
             InitializeComponent();
 
-            //button_copy.Click += Button_copy_Click;
+            button_copy.Click += Button_copy_Click;
+            button_clear.Click += (s, e) => logView.Clear();
         }
 
         private void Button_copy_Click(object sender, EventArgs e) {
-            // Copy functionality can be added to LogView if needed
+            string? textToCopy = logView.CopyText();
+            if (!string.IsNullOrEmpty(textToCopy)) {
+                Clipboard.SetText(textToCopy);
+            }
         }
 
         public void Log(string message) {

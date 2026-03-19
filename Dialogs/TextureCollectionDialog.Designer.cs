@@ -39,7 +39,7 @@ namespace csharp_editor.Dialogs {
             // 
             // groupBoxExisting
             // 
-            groupBoxExisting.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Bottom))));
+            groupBoxExisting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left));
             groupBoxExisting.Controls.Add(buttonUse);
             groupBoxExisting.Controls.Add(buttonRemove);
             groupBoxExisting.Controls.Add(textBoxFilter);
@@ -49,7 +49,7 @@ namespace csharp_editor.Dialogs {
             groupBoxExisting.Size = new System.Drawing.Size(300, 450);
             groupBoxExisting.TabIndex = 0;
             groupBoxExisting.TabStop = false;
-            groupBoxExisting.Text = "Imported Tilesets";
+            groupBoxExisting.Text = "Textures";
             // 
             // buttonUse
             // 
@@ -75,7 +75,7 @@ namespace csharp_editor.Dialogs {
             // 
             // textBoxFilter
             // 
-            textBoxFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
+            textBoxFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
             textBoxFilter.Location = new System.Drawing.Point(10, 22);
             textBoxFilter.Name = "textBoxFilter";
             textBoxFilter.PlaceholderText = "🔍  Filter by name...";
@@ -85,43 +85,46 @@ namespace csharp_editor.Dialogs {
             // 
             // listBoxTilesets
             // 
-            listBoxTilesets.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            listBoxTilesets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
             listBoxTilesets.FormattingEnabled = true;
             listBoxTilesets.ItemHeight = 15;
             listBoxTilesets.Location = new System.Drawing.Point(10, 50);
             listBoxTilesets.Name = "listBoxTilesets";
-            listBoxTilesets.Size = new System.Drawing.Size(280, 354);
+            listBoxTilesets.Size = new System.Drawing.Size(280, 349);
             listBoxTilesets.TabIndex = 0;
             listBoxTilesets.SelectedIndexChanged += listBoxTilesets_SelectedIndexChanged;
             listBoxTilesets.DoubleClick += listBoxTilesets_DoubleClick;
             // 
             // textureViewer
             // 
-            textureViewer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            textureViewer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
+            textureViewer.BackColor = System.Drawing.SystemColors.Control;
             textureViewer.Location = new System.Drawing.Point(320, 12);
             textureViewer.Name = "textureViewer";
+            textureViewer.RegionSelectionMode = false;
+            textureViewer.ShowGrid = false;
             textureViewer.Size = new System.Drawing.Size(572, 410);
+            textureViewer.SnapToGrid = true;
             textureViewer.TabIndex = 3;
+            textureViewer.TileSize = 0;
             // 
             // labelTilesetMeta
             // 
-            labelTilesetMeta.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
+            labelTilesetMeta.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
             labelTilesetMeta.Location = new System.Drawing.Point(320, 426);
             labelTilesetMeta.Name = "labelTilesetMeta";
             labelTilesetMeta.Size = new System.Drawing.Size(572, 18);
             labelTilesetMeta.TabIndex = 4;
-            labelTilesetMeta.Text = "";
             // 
             // labelTilesetPath
             // 
-            labelTilesetPath.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
+            labelTilesetPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
             labelTilesetPath.AutoEllipsis = true;
             labelTilesetPath.ForeColor = System.Drawing.SystemColors.GrayText;
             labelTilesetPath.Location = new System.Drawing.Point(320, 445);
             labelTilesetPath.Name = "labelTilesetPath";
             labelTilesetPath.Size = new System.Drawing.Size(572, 18);
             labelTilesetPath.TabIndex = 5;
-            labelTilesetPath.Text = "";
             // 
             // buttonImport
             // 
@@ -158,8 +161,9 @@ namespace csharp_editor.Dialogs {
             Controls.Add(groupBoxExisting);
             MinimumSize = new System.Drawing.Size(700, 450);
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            Text = "Tilesets";
+            Text = "Texture Collection";
             groupBoxExisting.ResumeLayout(false);
+            groupBoxExisting.PerformLayout();
             ResumeLayout(false);
         }
 

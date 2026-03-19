@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace csharp_editor {
+﻿namespace csharp_editor {
     internal static class Utils {
 
         public static string OpenFile(string startingPath) {

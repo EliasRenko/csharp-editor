@@ -134,6 +134,26 @@ namespace csharp_editor {
         [DllImport(DLL, EntryPoint = "setWindowSize")]
         public static extern void SetWindowSize(int width, int height);
 
+        public static void ApplyChildWindowStyle(IntPtr windowHandle) {
+            if (windowHandle == IntPtr.Zero) return;
+
+            const long RemoveFlags =
+                WS_CAPTION |
+                WS_THICKFRAME |
+                WS_MINIMIZE |
+                WS_MAXIMIZE |
+                WS_SYSMENU |
+                WS_BORDER |
+                WS_DLGFRAME;
+
+            const long AddFlags = WS_CHILD | WS_VISIBLE;
+
+            long style = GetWindowLong(windowHandle, GWL_STYLE);
+            style = (style & ~RemoveFlags) | AddFlags;
+            SetWindowLong(windowHandle, GWL_STYLE, style);
+            SetWindowPos(windowHandle, IntPtr.Zero, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+        }
+
         #endregion
         
         // Input

@@ -64,17 +64,8 @@ namespace csharp_editor.UserControls {
                 return;
             }
 
-            // Remove window border styles to prevent Vista-style frame
-            long style = Externs.GetWindowLong(sdlWindowHandle, Externs.GWL_STYLE);
-            style &= ~(Externs.WS_CAPTION | Externs.WS_THICKFRAME | Externs.WS_MINIMIZE |
-                       Externs.WS_MAXIMIZE | Externs.WS_SYSMENU | Externs.WS_BORDER | Externs.WS_DLGFRAME);
-            style |= Externs.WS_CHILD | Externs.WS_VISIBLE;
-            Externs.SetWindowLong(sdlWindowHandle, Externs.GWL_STYLE, style);
-
-            // Force window frame refresh to apply style changes
-            Externs.SetWindowPos(sdlWindowHandle, IntPtr.Zero, 0, 0, 0, 0,
-                Externs.SWP_FRAMECHANGED | Externs.SWP_NOMOVE | Externs.SWP_NOSIZE |
-                Externs.SWP_NOZORDER | Externs.SWP_NOACTIVATE);
+            // Make the SDL window a plain child window (no chrome/borders).
+            Externs.ApplyChildWindowStyle(sdlWindowHandle);
 
             // Disable rounded corners (Windows 11) - must be done before SetParent
             int preference = Externs.DWMWCP_DONOTROUND;
@@ -146,8 +137,8 @@ namespace csharp_editor.UserControls {
                 //Externs.SetWindowSize(panel_extern.Width, panel_extern.Height);
             }
         }
-        
-        #region Texture
+
+#region Texture
 
         public void GetTextureData(string path, out TextureDataStruct outData) {
             Externs.GetTextureData(path, out outData);
