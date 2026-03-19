@@ -56,6 +56,7 @@ namespace csharp_editor {
             // ExternView Events
             view_extern.MouseDown += view_extern_MouseDown;
             view_extern.MouseUp += view_extern_MouseUp;
+            view_extern.MouseWheel += view_extern_MouseWheel;
             view_extern.EntitySelectionChanged += ExternView_EntitySelectionChanged;
 
             // Debug 
@@ -299,6 +300,10 @@ namespace csharp_editor {
         private void view_extern_MouseDown(object? sender, MouseEventArgs e) {
             int button = MouseButtonMapper.ToSDLMouseButton(e.Button);
             view_extern.OnMouseButtonDown(e.X, e.Y, button);
+        }
+
+        private void view_extern_MouseWheel(object? sender, MouseEventArgs e) {
+            view_extern.OnMouseWheel(e.X, e.Y, e.Delta / 120.0f);
         }
 
         private void view_extern_MouseUp(object? sender, MouseEventArgs e) {

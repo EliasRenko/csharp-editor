@@ -154,6 +154,9 @@ namespace csharp_editor {
         [DllImport(DLL, EntryPoint = "onKeyboardUp")]
         public static extern void OnKeyboardUp(int keyCode);
 
+        [DllImport(DLL, EntryPoint = "onMouseWheel")]
+        public static extern void OnMouseWheel(float x, float y, float delta);
+
         #endregion
         
         #region Textures

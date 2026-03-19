@@ -128,6 +128,10 @@ namespace csharp_editor.UserControls {
             Externs.OnMouseButtonUp(x, y, button);
         }
 
+        public void OnMouseWheel(float x, float y, float delta) {
+            Externs.OnMouseWheel(x, y, delta);
+        }
+
         public void OnKeyboardDown(int keyCode) {
             Externs.OnKeyboardDown(keyCode);
         }
