@@ -15,6 +15,7 @@ namespace csharp_editor {
         private bool _isEntityLayerActive = false;
         
         private ExternError lastError;
+        private int _hoveredTabIndex = -1;
 
         public Editor() {
             InitializeComponent();
@@ -61,7 +62,7 @@ namespace csharp_editor {
 
             // Debug 
 
-            //ToolStripMenuItem_textureInfo.MouseDown += ButtonTextureViewOnMouseDown;
+            ToolStripMenuItem_timeline.MouseDown += ShowTimelineDialog;
             toolStripButton_tilesets.MouseDown += ShowTilesetDefDialog;
             toolStripButton_entitiesDefs.MouseDown += ShowEntitiesDefDialog;
 
@@ -69,13 +70,20 @@ namespace csharp_editor {
             tabControl1.SelectedIndexChanged += TabControl1_SelectedIndexChanged;
             tabControl1.DrawItem += TabControl1_DrawItem;
             tabControl1.MouseClick += TabControl1_MouseClick;
+            tabControl1.MouseMove += TabControl1_MouseMove;
+            tabControl1.MouseLeave += TabControl1_MouseLeave;
 
             // Tools
 
-            toolStripButton_tileDraw.MouseDown += SelectTileDraw;
-            toolStripButton_tileErase.MouseDown += SelectTileErase;
-            toolStripButton_entityAdd.MouseDown += SelectEntityAdd;
-            toolStripButton_entitySelect.MouseDown += SelectEntitySelect;
+            button_brush.MouseDown += SelectTileDraw;
+            //toolStripButton_tileErase.MouseDown += SelectTileErase;
+            button_entity.MouseDown += SelectEntityAdd;
+            button_cursor.MouseDown += SelectEntitySelect;
+        }
+
+        private void ShowTimelineDialog(object? sender, MouseEventArgs e) {
+            using var dialog = new Dialogs.TimelineDialog();
+            dialog.ShowDialog(this);
         }
 
         private void SelectTileDraw(object? sender, MouseEventArgs e) {
@@ -130,6 +138,33 @@ namespace csharp_editor {
 
         private record TabState(int StateId, string FilePath);
 
+        /// <summary>
+        /// Measures the widest tab label and updates ItemSize so no text is ever clipped.
+        /// Also shows/hides the tab strip depending on whether any tabs exist.
+        /// </summary>
+        private void UpdateTabItemSize() {
+            if (tabControl1.TabPages.Count == 0) {
+                tabControl1.Visible = false;
+                return;
+            }
+            tabControl1.Visible = true;
+
+            // Leave room for the close × button + horizontal padding
+            const int extraPadding = 50;
+            const int minWidth = 120;
+            const int maxWidth = 300;
+
+            int widest = minWidth;
+            foreach (TabPage page in tabControl1.TabPages) {
+                int w = TextRenderer.MeasureText(page.Text, tabControl1.Font).Width + extraPadding;
+                if (w > widest) widest = w;
+            }
+            widest = Math.Min(widest, maxWidth);
+
+            if (tabControl1.ItemSize.Width != widest)
+                tabControl1.ItemSize = new Size(widest, tabControl1.ItemSize.Height);
+        }
+
         private void LoadMap(string path) {
             // Prevent loading the same file twice
             string normalizedPath = Path.GetFullPath(path);
@@ -150,6 +185,7 @@ namespace csharp_editor {
             string tabLabel = Path.GetFileNameWithoutExtension(path);
             TabPage tab = new TabPage(tabLabel) { Tag = new TabState(stateId, normalizedPath) };
             tabControl1.TabPages.Add(tab);
+            UpdateTabItemSize();
             tabControl1.SelectedTab = tab;
             _suppressStateSwitch = false;
 
@@ -175,6 +211,7 @@ namespace csharp_editor {
             TabPage tab = new TabPage($"New Map {stateId}") { Tag = new TabState(stateId, "") };
             _suppressStateSwitch = true;
             tabControl1.TabPages.Add(tab);
+            UpdateTabItemSize();
             tabControl1.SelectedTab = tab;
             _suppressStateSwitch = false;
             view_extern.SetActiveState(stateId);
@@ -197,28 +234,70 @@ namespace csharp_editor {
 
         private Rectangle GetTabCloseRect(Rectangle tabRect) {
             const int size = 14;
-            return new Rectangle(tabRect.Right - size - 4, tabRect.Top + (tabRect.Height - size) / 2, size, size);
+            return new Rectangle(tabRect.Right - size - 5, tabRect.Top + (tabRect.Height - size) / 2, size, size);
+        }
+
+        private void TabControl1_MouseMove(object? sender, MouseEventArgs e) {
+            int hovered = -1;
+            for (int i = 0; i < tabControl1.TabPages.Count; i++) {
+                if (tabControl1.GetTabRect(i).Contains(e.Location)) {
+                    hovered = i;
+                    break;
+                }
+            }
+            if (hovered != _hoveredTabIndex) {
+                _hoveredTabIndex = hovered;
+                tabControl1.Invalidate();
+            }
+        }
+
+        private void TabControl1_MouseLeave(object? sender, EventArgs e) {
+            if (_hoveredTabIndex != -1) {
+                _hoveredTabIndex = -1;
+                tabControl1.Invalidate();
+            }
         }
 
         private void TabControl1_DrawItem(object? sender, DrawItemEventArgs e) {
             TabPage tab = tabControl1.TabPages[e.Index];
             Rectangle tabRect = tabControl1.GetTabRect(e.Index);
             bool isSelected = tabControl1.SelectedIndex == e.Index;
+            bool isHovered = !isSelected && _hoveredTabIndex == e.Index;
 
             // Background
-            using Brush bgBrush = new SolidBrush(isSelected ? SystemColors.Window : SystemColors.Control);
+            Color bgColor = isSelected ? SystemColors.Window
+                          : isHovered  ? SystemColors.ControlLightLight
+                                       : SystemColors.ControlLight;
+            using Brush bgBrush = new SolidBrush(bgColor);
             e.Graphics.FillRectangle(bgBrush, tabRect);
+
+            // Blue accent line along the bottom of the selected tab
+            if (isSelected) {
+                using Pen accent = new Pen(Color.FromArgb(0, 120, 215), 2);
+                e.Graphics.DrawLine(accent, tabRect.Left + 1, tabRect.Bottom - 1,
+                                            tabRect.Right - 1, tabRect.Bottom - 1);
+            }
+
+            // Subtle right-edge separator between inactive tabs
+            if (!isSelected && e.Index < tabControl1.TabPages.Count - 1) {
+                using Pen sep = new Pen(SystemColors.ControlDark, 1);
+                e.Graphics.DrawLine(sep, tabRect.Right - 1, tabRect.Top + 5,
+                                        tabRect.Right - 1, tabRect.Bottom - 5);
+            }
 
             // Tab text (leave room for ×)
             Rectangle closeRect = GetTabCloseRect(tabRect);
-            Rectangle textRect = new Rectangle(tabRect.Left + 6, tabRect.Top, tabRect.Width - closeRect.Width - 12, tabRect.Height);
-            TextRenderer.DrawText(e.Graphics, tab.Text, tabControl1.Font, textRect,
-                SystemColors.ControlText, TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
+            Rectangle textRect = new Rectangle(tabRect.Left + 8, tabRect.Top,
+                                               tabRect.Width - closeRect.Width - 16, tabRect.Height);
+            Color textColor = isSelected ? SystemColors.ControlText : Color.FromArgb(80, 80, 80);
+            TextRenderer.DrawText(e.Graphics, tab.Text, tabControl1.Font, textRect, textColor,
+                TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
 
-            // × button
-            using Font closeFont = new Font(tabControl1.Font.FontFamily, 7.5f, FontStyle.Bold);
-            TextRenderer.DrawText(e.Graphics, "×", closeFont, closeRect,
-                SystemColors.ControlDark, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+            // × button — more visible on active/hovered tabs
+            Color closeColor = isSelected || isHovered ? SystemColors.ControlDarkDark : SystemColors.ControlDark;
+            using Font closeFont = new Font(tabControl1.Font.FontFamily, 8f, FontStyle.Bold);
+            TextRenderer.DrawText(e.Graphics, "×", closeFont, closeRect, closeColor,
+                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
         }
 
         private void TabControl1_MouseClick(object? sender, MouseEventArgs e) {
@@ -235,6 +314,7 @@ namespace csharp_editor {
                 view_extern.ReleaseState(ts.StateId);
             }
             tabControl1.TabPages.RemoveAt(index);
+            UpdateTabItemSize();
             if (tabControl1.TabPages.Count == 0) {
                 panelMain.Visible = false;
             }

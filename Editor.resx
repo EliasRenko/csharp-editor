@@ -67,22 +67,4 @@
   <metadata name="toolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing.Primitives, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>247, 17</value>
   </metadata>
-  <metadata name="toolStrip2.TrayLocation" type="System.Drawing.Point, System.Drawing.Primitives, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>352, 17</value>
-  </metadata>
-  <assembly alias="System.Drawing.Common" name="System.Drawing.Common, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" />
-  <data name="toolStripButton_tileErase.Image" type="System.Drawing.Bitmap, System.Drawing.Common" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHISURBVDhPjZJfb9JQGIf5LH6A3fChvFAzY2LCBZkJheC9
-        jl3MaGSic5olJi7TRFQYgpbJ/23ROYMZZZZ17comrEx5PKeUGTLMeJJfzml7nvOenry+SUlcjy0mpmPI
-        0Xs1OfFrd8Fo09ctd5TP3qeLcWXzmNaDJLpI6/4bsckR8at3Lt7ElQ87GAspjMSam/2HKZyGAfs2z27O
-        J72l53l8ZRbsLvaTLNbTHNaSiJj3dBNtbsU9xaPp2fGnUMIKducXOy8+cPx8HVtmScURd9C89wozkYYj
-        h9jl26895R+KotDtdHmXzpDMZNhdXaezXDyTrcUMvZdl4oPqlwaWRygU4sRxyH5UyX3Kk1XzpFWV3t4h
-        zfnVgbxSZuHGnJT9A8tDyqenvykUSxRlSmXynwscWBbV5aT4/0Hl/8p/+n1qG5tsbG65qVRrmKbJ2/cp
-        CpUqda2BbCSxfFSORCI1BNvfds7y5es2B55cLFXZ1ZqEosp5WXJrZsZoGYZYpPGj0eB7vY5pDeUKDSGH
-        w+HxssdUIBDAbrf5qesjlSeRh/iDwSBd54S1bE7cxRZac29ieYhfCHo0GkVGbCibZGJ5yJSIlGRGm2Qs
-        Pt9f6T2nWtr3gukAAAAASUVORK5CYII=
-</value>
-  </data>
 </root>

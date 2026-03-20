@@ -27,7 +27,6 @@ namespace csharp_editor {
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Editor));
             view_extern = new csharp_editor.UserControls.ExternView();
             menuStrip1 = new System.Windows.Forms.MenuStrip();
             fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -36,7 +35,7 @@ namespace csharp_editor {
             editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            ToolStripMenuItem_textureInfo = new System.Windows.Forms.ToolStripMenuItem();
+            ToolStripMenuItem_timeline = new System.Windows.Forms.ToolStripMenuItem();
             helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             statusStrip1 = new System.Windows.Forms.StatusStrip();
             console = new csharp_editor.UserControls.DebugConsole();
@@ -59,18 +58,16 @@ namespace csharp_editor {
             toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             toolStripButton7 = new System.Windows.Forms.ToolStripButton();
             propertyGridPanel1 = new csharp_editor.UserControls.PropertyGridPanel();
-            toolStrip2 = new System.Windows.Forms.ToolStrip();
-            toolStripButton_tileDraw = new System.Windows.Forms.ToolStripButton();
-            toolStripButton_tileErase = new System.Windows.Forms.ToolStripButton();
-            toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            toolStripButton_entityAdd = new System.Windows.Forms.ToolStripButton();
-            toolStripButton_entitySelect = new System.Windows.Forms.ToolStripButton();
             tabControl1 = new System.Windows.Forms.TabControl();
             panelMain = new System.Windows.Forms.Panel();
+            button_cursor = new System.Windows.Forms.Button();
+            button_entity = new System.Windows.Forms.Button();
+            button_brush = new System.Windows.Forms.Button();
+            splitterLeft = new System.Windows.Forms.Splitter();
+            splitterRight = new System.Windows.Forms.Splitter();
             menuStrip1.SuspendLayout();
             panelRight.SuspendLayout();
             toolStrip1.SuspendLayout();
-            toolStrip2.SuspendLayout();
             panelMain.SuspendLayout();
             SuspendLayout();
             // 
@@ -78,9 +75,9 @@ namespace csharp_editor {
             // 
             view_extern.BackColor = System.Drawing.SystemColors.ControlDark;
             view_extern.Dock = System.Windows.Forms.DockStyle.Fill;
-            view_extern.Location = new System.Drawing.Point(265, 39);
+            view_extern.Location = new System.Drawing.Point(269, 34);
             view_extern.Name = "view_extern";
-            view_extern.Size = new System.Drawing.Size(530, 479);
+            view_extern.Size = new System.Drawing.Size(522, 512);
             view_extern.TabIndex = 0;
             // 
             // menuStrip1
@@ -125,16 +122,16 @@ namespace csharp_editor {
             // 
             // toolStripMenuItem2
             // 
-            toolStripMenuItem2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { ToolStripMenuItem_textureInfo });
+            toolStripMenuItem2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { ToolStripMenuItem_timeline });
             toolStripMenuItem2.Name = "toolStripMenuItem2";
             toolStripMenuItem2.Size = new System.Drawing.Size(46, 20);
             toolStripMenuItem2.Text = "Tools";
             // 
-            // ToolStripMenuItem_textureInfo
+            // ToolStripMenuItem_timeline
             // 
-            ToolStripMenuItem_textureInfo.Name = "ToolStripMenuItem_textureInfo";
-            ToolStripMenuItem_textureInfo.Size = new System.Drawing.Size(136, 22);
-            ToolStripMenuItem_textureInfo.Text = "Texture info";
+            ToolStripMenuItem_timeline.Name = "ToolStripMenuItem_timeline";
+            ToolStripMenuItem_timeline.Size = new System.Drawing.Size(153, 22);
+            ToolStripMenuItem_timeline.Text = "Timeline demo";
             // 
             // helpToolStripMenuItem
             // 
@@ -173,9 +170,9 @@ namespace csharp_editor {
             panelRight.Controls.Add(textureViewer);
             panelRight.Controls.Add(hierarchyTree);
             panelRight.Dock = System.Windows.Forms.DockStyle.Right;
-            panelRight.Location = new System.Drawing.Point(795, 39);
+            panelRight.Location = new System.Drawing.Point(795, 34);
             panelRight.Name = "panelRight";
-            panelRight.Size = new System.Drawing.Size(263, 479);
+            panelRight.Size = new System.Drawing.Size(263, 512);
             panelRight.TabIndex = 7;
             // 
             // entitySelector
@@ -183,7 +180,7 @@ namespace csharp_editor {
             entitySelector.Dock = System.Windows.Forms.DockStyle.Fill;
             entitySelector.Location = new System.Drawing.Point(0, 344);
             entitySelector.Name = "entitySelector";
-            entitySelector.Size = new System.Drawing.Size(263, 135);
+            entitySelector.Size = new System.Drawing.Size(263, 168);
             entitySelector.TabIndex = 2;
             entitySelector.Visible = false;
             // 
@@ -195,7 +192,7 @@ namespace csharp_editor {
             textureViewer.Name = "textureViewer";
             textureViewer.RegionSelectionMode = false;
             textureViewer.ShowGrid = false;
-            textureViewer.Size = new System.Drawing.Size(263, 135);
+            textureViewer.Size = new System.Drawing.Size(263, 168);
             textureViewer.SnapToGrid = true;
             textureViewer.TabIndex = 1;
             textureViewer.TileSize = 0;
@@ -318,86 +315,91 @@ namespace csharp_editor {
             // propertyGridPanel1
             // 
             propertyGridPanel1.Dock = System.Windows.Forms.DockStyle.Left;
-            propertyGridPanel1.Location = new System.Drawing.Point(0, 39);
+            propertyGridPanel1.Location = new System.Drawing.Point(0, 34);
             propertyGridPanel1.Name = "propertyGridPanel1";
-            propertyGridPanel1.Size = new System.Drawing.Size(265, 479);
+            propertyGridPanel1.Size = new System.Drawing.Size(265, 512);
             propertyGridPanel1.TabIndex = 9;
-            // 
-            // toolStrip2
-            // 
-            toolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            toolStrip2.ImageScalingSize = new System.Drawing.Size(32, 32);
-            toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripButton_tileDraw, toolStripButton_tileErase, toolStripSeparator4, toolStripButton_entityAdd, toolStripButton_entitySelect });
-            toolStrip2.Location = new System.Drawing.Point(0, 0);
-            toolStrip2.Name = "toolStrip2";
-            toolStrip2.Size = new System.Drawing.Size(1058, 39);
-            toolStrip2.TabIndex = 10;
-            toolStrip2.Text = "toolStrip2";
-            // 
-            // toolStripButton_tileDraw
-            // 
-            toolStripButton_tileDraw.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            toolStripButton_tileDraw.Image = global::csharp_editor.Properties.Resources.brush;
-            toolStripButton_tileDraw.ImageTransparentColor = System.Drawing.Color.Magenta;
-            toolStripButton_tileDraw.Name = "toolStripButton_tileDraw";
-            toolStripButton_tileDraw.Size = new System.Drawing.Size(36, 36);
-            toolStripButton_tileDraw.Text = "toolStripButton1";
-            // 
-            // toolStripButton_tileErase
-            // 
-            toolStripButton_tileErase.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            toolStripButton_tileErase.Image = ((System.Drawing.Image)resources.GetObject("toolStripButton_tileErase.Image"));
-            toolStripButton_tileErase.ImageTransparentColor = System.Drawing.Color.Magenta;
-            toolStripButton_tileErase.Name = "toolStripButton_tileErase";
-            toolStripButton_tileErase.Size = new System.Drawing.Size(36, 36);
-            toolStripButton_tileErase.Text = "toolStripButton2";
-            // 
-            // toolStripSeparator4
-            // 
-            toolStripSeparator4.Name = "toolStripSeparator4";
-            toolStripSeparator4.Size = new System.Drawing.Size(6, 39);
-            // 
-            // toolStripButton_entityAdd
-            // 
-            toolStripButton_entityAdd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            toolStripButton_entityAdd.Image = global::csharp_editor.Properties.Resources.entity;
-            toolStripButton_entityAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
-            toolStripButton_entityAdd.Name = "toolStripButton_entityAdd";
-            toolStripButton_entityAdd.Size = new System.Drawing.Size(36, 36);
-            toolStripButton_entityAdd.Text = "toolStripButton5";
-            // 
-            // toolStripButton_entitySelect
-            // 
-            toolStripButton_entitySelect.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            toolStripButton_entitySelect.Image = global::csharp_editor.Properties.Resources.icon_cursor;
-            toolStripButton_entitySelect.ImageTransparentColor = System.Drawing.Color.Magenta;
-            toolStripButton_entitySelect.Name = "toolStripButton_entitySelect";
-            toolStripButton_entitySelect.Size = new System.Drawing.Size(36, 36);
-            toolStripButton_entitySelect.Text = "toolStripButton6";
             // 
             // tabControl1
             // 
             tabControl1.Dock = System.Windows.Forms.DockStyle.Top;
             tabControl1.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
-            tabControl1.ItemSize = new System.Drawing.Size(130, 22);
-            tabControl1.Location = new System.Drawing.Point(0, 49);
+            tabControl1.ItemSize = new System.Drawing.Size(160, 28);
+            tabControl1.Location = new System.Drawing.Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new System.Drawing.Size(1058, 28);
+            tabControl1.Size = new System.Drawing.Size(1058, 34);
             tabControl1.TabIndex = 12;
+            tabControl1.Visible = false;
             // 
             // panelMain
             // 
+            panelMain.Controls.Add(button_cursor);
+            panelMain.Controls.Add(button_entity);
+            panelMain.Controls.Add(button_brush);
             panelMain.Controls.Add(view_extern);
+            panelMain.Controls.Add(splitterLeft);
             panelMain.Controls.Add(propertyGridPanel1);
+            panelMain.Controls.Add(splitterRight);
             panelMain.Controls.Add(panelRight);
-            panelMain.Controls.Add(toolStrip2);
+            panelMain.Controls.Add(tabControl1);
             panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            panelMain.Location = new System.Drawing.Point(0, 77);
+            panelMain.Location = new System.Drawing.Point(0, 49);
             panelMain.Name = "panelMain";
-            panelMain.Size = new System.Drawing.Size(1058, 518);
+            panelMain.Size = new System.Drawing.Size(1058, 546);
             panelMain.TabIndex = 11;
             panelMain.Visible = false;
+            // 
+            // button_cursor
+            // 
+            button_cursor.BackColor = System.Drawing.SystemColors.ControlDark;
+            button_cursor.Image = global::csharp_editor.Properties.Resources.icon_cursor;
+            button_cursor.Location = new System.Drawing.Point(275, 136);
+            button_cursor.Name = "button_cursor";
+            button_cursor.Size = new System.Drawing.Size(42, 42);
+            button_cursor.TabIndex = 17;
+            button_cursor.UseVisualStyleBackColor = false;
+            // 
+            // button_entity
+            // 
+            button_entity.BackColor = System.Drawing.SystemColors.ControlDark;
+            button_entity.Image = global::csharp_editor.Properties.Resources.entity;
+            button_entity.Location = new System.Drawing.Point(275, 88);
+            button_entity.Name = "button_entity";
+            button_entity.Size = new System.Drawing.Size(42, 42);
+            button_entity.TabIndex = 16;
+            button_entity.UseVisualStyleBackColor = false;
+            // 
+            // button_brush
+            // 
+            button_brush.BackColor = System.Drawing.SystemColors.ControlDark;
+            button_brush.Image = global::csharp_editor.Properties.Resources.brush;
+            button_brush.Location = new System.Drawing.Point(275, 40);
+            button_brush.Name = "button_brush";
+            button_brush.Size = new System.Drawing.Size(42, 42);
+            button_brush.TabIndex = 15;
+            button_brush.UseVisualStyleBackColor = false;
+            // 
+            // splitterLeft
+            // 
+            splitterLeft.Location = new System.Drawing.Point(265, 34);
+            splitterLeft.MinExtra = 200;
+            splitterLeft.MinSize = 120;
+            splitterLeft.Name = "splitterLeft";
+            splitterLeft.Size = new System.Drawing.Size(4, 512);
+            splitterLeft.TabIndex = 13;
+            splitterLeft.TabStop = false;
+            // 
+            // splitterRight
+            // 
+            splitterRight.Dock = System.Windows.Forms.DockStyle.Right;
+            splitterRight.Location = new System.Drawing.Point(791, 34);
+            splitterRight.MinExtra = 200;
+            splitterRight.MinSize = 150;
+            splitterRight.Name = "splitterRight";
+            splitterRight.Size = new System.Drawing.Size(4, 512);
+            splitterRight.TabIndex = 14;
+            splitterRight.TabStop = false;
             // 
             // Editor
             // 
@@ -405,7 +407,6 @@ namespace csharp_editor {
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(1058, 768);
             Controls.Add(panelMain);
-            Controls.Add(tabControl1);
             Controls.Add(toolStrip1);
             Controls.Add(console);
             Controls.Add(statusStrip1);
@@ -417,20 +418,16 @@ namespace csharp_editor {
             panelRight.ResumeLayout(false);
             toolStrip1.ResumeLayout(false);
             toolStrip1.PerformLayout();
-            toolStrip2.ResumeLayout(false);
-            toolStrip2.PerformLayout();
             panelMain.ResumeLayout(false);
-            panelMain.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
 
-        private System.Windows.Forms.ToolStrip toolStrip2;
-        private System.Windows.Forms.ToolStripButton toolStripButton_tileDraw;
-        private System.Windows.Forms.ToolStripButton toolStripButton_tileErase;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-        private System.Windows.Forms.ToolStripButton toolStripButton_entityAdd;
-        private System.Windows.Forms.ToolStripButton toolStripButton_entitySelect;
+        private System.Windows.Forms.Button button_cursor;
+
+        private System.Windows.Forms.Button button_entity;
+
+        private System.Windows.Forms.Button button_brush;
 
         private csharp_editor.UserControls.PropertyGridPanel propertyGridPanel1;
 
@@ -440,6 +437,8 @@ namespace csharp_editor {
 
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.Panel panelMain;
+        private System.Windows.Forms.Splitter splitterLeft;
+        private System.Windows.Forms.Splitter splitterRight;
         private csharp_editor.UserControls.ExternView view_extern;
         private MenuStrip menuStrip1;
         private ToolStripMenuItem fileToolStripMenuItem;
@@ -466,7 +465,7 @@ namespace csharp_editor {
         private ToolStripButton toolStripButton_tilesets;
         private ToolStripButton toolStripButton_entitiesDefs;
         private ToolStripMenuItem toolStripMenuItem2;
-        private ToolStripMenuItem ToolStripMenuItem_textureInfo;
+        private ToolStripMenuItem ToolStripMenuItem_timeline;
         private ToolStripSeparator toolStripSeparator3;
         private ToolStripButton toolStripButton7;
     }
