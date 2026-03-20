@@ -1,0 +1,505 @@
+{
+  "tilesets": [
+    {
+      "texturePath": "C:\\Users\\efedorenko\\Documents\\projects\\csharp\\csharp-editor\\bin\\x64\\Debug\\res\\textures\\dungeon.tga",
+      "name": "dungeon"
+    },
+    {
+      "texturePath": "C:\\Users\\efedorenko\\Documents\\projects\\csharp\\csharp-editor\\bin\\x64\\Debug\\res\\textures\\devTiles_alt.tga",
+      "name": "alt"
+    },
+    {
+      "texturePath": "C:\\Users\\efedorenko\\Documents\\projects\\csharp\\csharp-editor\\bin\\x64\\Debug\\res\\textures\\devTiles.tga",
+      "name": "dev"
+    }
+  ],
+  "entityDefinitions": [
+    {
+      "width": 32,
+      "tilesetName": "dungeon",
+      "regionHeight": 32,
+      "regionWidth": 32,
+      "height": 32,
+      "name": "zombie",
+      "regionX": 672,
+      "regionY": 256
+    },
+    {
+      "width": 32,
+      "tilesetName": "alt",
+      "regionHeight": 32,
+      "regionWidth": 32,
+      "height": 32,
+      "name": "Warrior",
+      "regionX": 32,
+      "regionY": 32
+    },
+    {
+      "width": 32,
+      "tilesetName": "alt",
+      "regionHeight": 32,
+      "regionWidth": 32,
+      "height": 32,
+      "name": "human",
+      "regionX": 0,
+      "regionY": 32
+    }
+  ],
+  "tileCount": 53,
+  "mapBounds": {
+    "gridWidth": 30,
+    "width": 960,
+    "x": 0,
+    "y": 0,
+    "height": 1024,
+    "tileSizeX": 32,
+    "tileSizeY": 32,
+    "gridHeight": 32
+  },
+  "currentTileset": "dev",
+  "layers": [
+    {
+      "entityCount": 21,
+      "visible": true,
+      "batches": [
+        {
+          "entities": [
+            {
+              "pivotX": 0.5,
+              "pivotY": 0.5,
+              "x": 793.697702250327,
+              "y": 795.276094958762,
+              "name": "Warrior"
+            },
+            {
+              "pivotX": 0.5,
+              "pivotY": 0.5,
+              "x": 547.10549460342,
+              "y": 351.487171770797,
+              "name": "zombie"
+            },
+            {
+              "pivotX": 0,
+              "pivotY": 0,
+              "x": 777.827951096709,
+              "y": 961.461316536876,
+              "name": "zombie"
+            },
+            {
+              "pivotX": 1,
+              "pivotY": 1,
+              "x": 513,
+              "y": 347,
+              "name": "human"
+            },
+            {
+              "pivotX": 0.5,
+              "pivotY": 0.5,
+              "x": 800.622594554783,
+              "y": 836.825448785498,
+              "name": "Warrior"
+            },
+            {
+              "pivotX": 1,
+              "pivotY": 1,
+              "x": 655,
+              "y": 347,
+              "name": "human"
+            },
+            {
+              "pivotX": 1,
+              "pivotY": 1,
+              "x": 554,
+              "y": 347,
+              "name": "human"
+            },
+            {
+              "pivotX": 0,
+              "pivotY": 0,
+              "x": 530.903009387376,
+              "y": 817.447065949242,
+              "name": "zombie"
+            },
+            {
+              "pivotX": 0.5,
+              "pivotY": 0.5,
+              "x": 422.607457674187,
+              "y": 372.952350551699,
+              "name": "zombie"
+            },
+            {
+              "pivotX": 0,
+              "pivotY": 0,
+              "x": 616.874869397904,
+              "y": 824.960907881403,
+              "name": "zombie"
+            },
+            {
+              "pivotX": 1,
+              "pivotY": 1,
+              "x": 423.680716613232,
+              "y": 480.27824445621,
+              "name": "human"
+            },
+            {
+              "pivotX": 0.5,
+              "pivotY": 0.5,
+              "x": 387.189912685699,
+              "y": 408.369895540188,
+              "name": "zombie"
+            },
+            {
+              "pivotX": 0.5,
+              "pivotY": 0.5,
+              "x": 491.296029773074,
+              "y": 295.677706940452,
+              "name": "zombie"
+            },
+            {
+              "pivotX": 0.5,
+              "pivotY": 0.5,
+              "x": 731.373671510223,
+              "y": 789.120635132579,
+              "name": "Warrior"
+            },
+            {
+              "pivotX": 0.5,
+              "pivotY": 0.5,
+              "x": 528.860092639653,
+              "y": 286.018376489046,
+              "name": "zombie"
+            },
+            {
+              "pivotX": 0.5,
+              "pivotY": 0.5,
+              "x": 791.389404815509,
+              "y": 730.643766783839,
+              "name": "Warrior"
+            },
+            {
+              "pivotX": 1,
+              "pivotY": 1,
+              "x": 506,
+              "y": 448,
+              "name": "human"
+            }
+          ],
+          "tilesetName": "dungeon",
+          "count": 17
+        },
+        {
+          "entities": [
+            {
+              "pivotX": 0,
+              "pivotY": 0,
+              "x": 840.960002576673,
+              "y": 928.96687827513,
+              "name": "human"
+            },
+            {
+              "pivotX": 0,
+              "pivotY": 0,
+              "x": 568.715974405588,
+              "y": 883.50701551912,
+              "name": "human"
+            },
+            {
+              "pivotX": 0.5,
+              "pivotY": 0.5,
+              "x": 787.112076314351,
+              "y": 922.46799062278,
+              "name": "Warrior"
+            },
+            {
+              "pivotX": 0,
+              "pivotY": 0,
+              "x": 695.421264082987,
+              "y": 904.497789350535,
+              "name": "human"
+            }
+          ],
+          "tilesetName": "alt",
+          "count": 4
+        }
+      ],
+      "name": "Characters",
+      "type": "entity"
+    },
+    {
+      "tileSize": 32,
+      "visible": true,
+      "tileCount": 53,
+      "tilesetName": "dev",
+      "tiles": [
+        {
+          "gridX": 16,
+          "gridY": 11,
+          "region": 1
+        },
+        {
+          "gridX": 17,
+          "gridY": 11,
+          "region": 1
+        },
+        {
+          "gridX": 18,
+          "gridY": 11,
+          "region": 1
+        },
+        {
+          "gridX": 19,
+          "gridY": 11,
+          "region": 1
+        },
+        {
+          "gridX": 16,
+          "gridY": 12,
+          "region": 1
+        },
+        {
+          "gridX": 17,
+          "gridY": 12,
+          "region": 1
+        },
+        {
+          "gridX": 18,
+          "gridY": 12,
+          "region": 1
+        },
+        {
+          "gridX": 19,
+          "gridY": 12,
+          "region": 1
+        },
+        {
+          "gridX": 16,
+          "gridY": 13,
+          "region": 7
+        },
+        {
+          "gridX": 17,
+          "gridY": 13,
+          "region": 7
+        },
+        {
+          "gridX": 18,
+          "gridY": 13,
+          "region": 7
+        },
+        {
+          "gridX": 19,
+          "gridY": 13,
+          "region": 7
+        },
+        {
+          "gridX": 17,
+          "gridY": 14,
+          "region": 7
+        },
+        {
+          "gridX": 16,
+          "gridY": 14,
+          "region": 7
+        },
+        {
+          "gridX": 19,
+          "gridY": 14,
+          "region": 1
+        },
+        {
+          "gridX": 18,
+          "gridY": 14,
+          "region": 1
+        },
+        {
+          "gridX": 19,
+          "gridY": 17,
+          "region": 1
+        },
+        {
+          "gridX": 21,
+          "gridY": 17,
+          "region": 5
+        },
+        {
+          "gridX": 12,
+          "gridY": 20,
+          "region": 1
+        },
+        {
+          "gridX": 13,
+          "gridY": 20,
+          "region": 1
+        },
+        {
+          "gridX": 14,
+          "gridY": 20,
+          "region": 1
+        },
+        {
+          "gridX": 14,
+          "gridY": 21,
+          "region": 5
+        },
+        {
+          "gridX": 13,
+          "gridY": 21,
+          "region": 5
+        },
+        {
+          "gridX": 12,
+          "gridY": 21,
+          "region": 5
+        },
+        {
+          "gridX": 15,
+          "gridY": 19,
+          "region": 1
+        },
+        {
+          "gridX": 16,
+          "gridY": 19,
+          "region": 1
+        },
+        {
+          "gridX": 17,
+          "gridY": 19,
+          "region": 1
+        },
+        {
+          "gridX": 18,
+          "gridY": 19,
+          "region": 1
+        },
+        {
+          "gridX": 15,
+          "gridY": 20,
+          "region": 5
+        },
+        {
+          "gridX": 16,
+          "gridY": 20,
+          "region": 5
+        },
+        {
+          "gridX": 17,
+          "gridY": 20,
+          "region": 5
+        },
+        {
+          "gridX": 18,
+          "gridY": 20,
+          "region": 5
+        },
+        {
+          "gridX": 19,
+          "gridY": 19,
+          "region": 2
+        },
+        {
+          "gridX": 19,
+          "gridY": 20,
+          "region": 2
+        },
+        {
+          "gridX": 19,
+          "gridY": 21,
+          "region": 2
+        },
+        {
+          "gridX": 20,
+          "gridY": 21,
+          "region": 2
+        },
+        {
+          "gridX": 20,
+          "gridY": 20,
+          "region": 2
+        },
+        {
+          "gridX": 20,
+          "gridY": 19,
+          "region": 2
+        },
+        {
+          "gridX": 21,
+          "gridY": 21,
+          "region": 2
+        },
+        {
+          "gridX": 21,
+          "gridY": 20,
+          "region": 2
+        },
+        {
+          "gridX": 22,
+          "gridY": 20,
+          "region": 2
+        },
+        {
+          "gridX": 22,
+          "gridY": 19,
+          "region": 2
+        },
+        {
+          "gridX": 18,
+          "gridY": 21,
+          "region": 6
+        },
+        {
+          "gridX": 17,
+          "gridY": 21,
+          "region": 6
+        },
+        {
+          "gridX": 16,
+          "gridY": 21,
+          "region": 6
+        },
+        {
+          "gridX": 15,
+          "gridY": 21,
+          "region": 6
+        },
+        {
+          "gridX": 16,
+          "gridY": 22,
+          "region": 6
+        },
+        {
+          "gridX": 17,
+          "gridY": 22,
+          "region": 6
+        },
+        {
+          "gridX": 18,
+          "gridY": 22,
+          "region": 6
+        },
+        {
+          "gridX": 19,
+          "gridY": 22,
+          "region": 6
+        },
+        {
+          "gridX": 20,
+          "gridY": 22,
+          "region": 6
+        },
+        {
+          "gridX": 22,
+          "gridY": 21,
+          "region": 6
+        },
+        {
+          "gridX": 16,
+          "gridY": 18,
+          "region": 6
+        }
+      ],
+      "name": "Layer_dev",
+      "type": "tilemap"
+    }
+  ],
+  "version": "1.5"
+}

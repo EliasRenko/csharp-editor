@@ -1,0 +1,58 @@
+{
+  "tilesets": [
+    {
+      "texturePath": "C:\\Users\\efedorenko\\Documents\\projects\\csharp\\csharp-editor\\bin\\x64\\Debug\\res\\textures\\jungle.tga",
+      "name": "res_jungle"
+    },
+    {
+      "texturePath": "C:\\Users\\efedorenko\\Documents\\projects\\csharp\\csharp-editor\\bin\\x64\\Debug\\res\\textures\\items.tga",
+      "name": "items"
+    },
+    {
+      "texturePath": "C:\\Users\\efedorenko\\Documents\\projects\\csharp\\csharp-editor\\bin\\x64\\Debug\\res\\textures\\mines.tga",
+      "name": "res_mines"
+    }
+  ],
+  "defaultTileSizeX": 64,
+  "defaultTileSizeY": 64,
+  "entityDefinitions": [
+    {
+      "pivotX": 0.5,
+      "pivotY": 0.800000011920929,
+      "width": 80,
+      "tilesetName": "items",
+      "regionHeight": 80,
+      "regionWidth": 80,
+      "height": 80,
+      "name": "Chest",
+      "regionX": 80,
+      "regionY": 0
+    },
+    {
+      "pivotX": 0.5,
+      "pivotY": 0.800000011920929,
+      "width": 80,
+      "tilesetName": "items",
+      "regionHeight": 80,
+      "regionWidth": 80,
+      "height": 80,
+      "name": "Crate",
+      "regionX": 0,
+      "regionY": 0
+    },
+    {
+      "pivotX": 0.5,
+      "pivotY": 0.800000011920929,
+      "width": 80,
+      "tilesetName": "items",
+      "regionHeight": 80,
+      "regionWidth": 80,
+      "height": 80,
+      "name": "Gem",
+      "regionX": 560,
+      "regionY": 0
+    }
+  ],
+  "projectName": "NewProject",
+  "version": "1.0"
+}

@@ -1,0 +1,118 @@
+{
+  "tilesets": [
+    {
+      "texturePath": "C:\\Users\\efedorenko\\Documents\\projects\\csharp\\csharp-editor\\bin\\x64\\Debug\\res\\textures\\jungle.tga",
+      "name": "res_jungle"
+    },
+    {
+      "texturePath": "C:\\Users\\efedorenko\\Documents\\projects\\csharp\\csharp-editor\\bin\\x64\\Debug\\res\\textures\\mines.tga",
+      "name": "res_mines"
+    }
+  ],
+  "entityDefinitions": [],
+  "tileCount": 16,
+  "mapBounds": {
+    "gridWidth": 16,
+    "width": 1024,
+    "x": 0,
+    "y": 0,
+    "height": 1024,
+    "tileSizeX": 64,
+    "tileSizeY": 64,
+    "gridHeight": 16
+  },
+  "currentTileset": "res_mines",
+  "layers": [
+    {
+      "tileSize": 64,
+      "visible": true,
+      "tileCount": 16,
+      "tilesetName": "res_mines",
+      "tiles": [
+        {
+          "gridX": 9,
+          "gridY": 10,
+          "region": 9
+        },
+        {
+          "gridX": 10,
+          "gridY": 10,
+          "region": 9
+        },
+        {
+          "gridX": 8,
+          "gridY": 10,
+          "region": 9
+        },
+        {
+          "gridX": 7,
+          "gridY": 10,
+          "region": 9
+        },
+        {
+          "gridX": 6,
+          "gridY": 10,
+          "region": 9
+        },
+        {
+          "gridX": 5,
+          "gridY": 10,
+          "region": 9
+        },
+        {
+          "gridX": 11,
+          "gridY": 10,
+          "region": 9
+        },
+        {
+          "gridX": 4,
+          "gridY": 10,
+          "region": 9
+        },
+        {
+          "gridX": 4,
+          "gridY": 11,
+          "region": 9
+        },
+        {
+          "gridX": 5,
+          "gridY": 11,
+          "region": 9
+        },
+        {
+          "gridX": 6,
+          "gridY": 11,
+          "region": 9
+        },
+        {
+          "gridX": 7,
+          "gridY": 11,
+          "region": 9
+        },
+        {
+          "gridX": 8,
+          "gridY": 11,
+          "region": 9
+        },
+        {
+          "gridX": 9,
+          "gridY": 11,
+          "region": 9
+        },
+        {
+          "gridX": 10,
+          "gridY": 11,
+          "region": 9
+        },
+        {
+          "gridX": 11,
+          "gridY": 11,
+          "region": 9
+        }
+      ],
+      "name": "mines_layer",
+      "type": "tilemap"
+    }
+  ],
+  "version": "1.5"
+}

@@ -225,6 +225,19 @@ namespace csharp_editor {
         
         [DllImport(DLL, EntryPoint = "importMap")]
         public static extern int ImportMap(string path);
+
+        // Project management
+        [DllImport(DLL, EntryPoint = "exportProject", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int ExportProject(string filePath, string projectName);
+
+        [DllImport(DLL, EntryPoint = "importProject", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int ImportProject(string filePath);
+
+        [DllImport(DLL, EntryPoint = "getProjectName", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern IntPtr GetProjectName(string filePath);
+
+        [DllImport(DLL, EntryPoint = "getActiveProjectPath", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr GetActiveProjectPath();
         
         [DllImport(DLL, EntryPoint = "getMapProps", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern IntPtr GetMapProps(out MapProps outInfo);

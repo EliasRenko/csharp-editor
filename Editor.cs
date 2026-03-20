@@ -16,6 +16,7 @@ namespace csharp_editor {
         
         private ExternError lastError;
         private int _hoveredTabIndex = -1;
+        private WelcomePanel _welcomePanel = null!;
 
         public Editor() {
             InitializeComponent();
@@ -79,6 +80,11 @@ namespace csharp_editor {
             //toolStripButton_tileErase.MouseDown += SelectTileErase;
             button_entity.MouseDown += SelectEntityAdd;
             button_cursor.MouseDown += SelectEntitySelect;
+            // Welcome panel
+            _welcomePanel = new WelcomePanel();
+            _welcomePanel.NewProjectRequested  += WelcomePanel_NewProjectRequested;
+            _welcomePanel.OpenProjectRequested += WelcomePanel_OpenProjectRequested;
+            Controls.Add(_welcomePanel);
         }
 
         private void ShowTimelineDialog(object? sender, MouseEventArgs e) {
@@ -166,6 +172,8 @@ namespace csharp_editor {
         }
 
         private void LoadMap(string path) {
+            _welcomePanel.Visible = false;
+
             // Prevent loading the same file twice
             string normalizedPath = Path.GetFullPath(path);
             foreach (TabPage existing in tabControl1.TabPages) {
@@ -197,6 +205,10 @@ namespace csharp_editor {
             // Show the editor panel if it was hidden
             panelMain.Visible = true;
 
+            // Track in recent projects
+            RecentProjectsManager.Add(normalizedPath);
+            _welcomePanel.RefreshRecent();
+
             // Refresh the hierarchy tree to show loaded layers
             hierarchyTree.LoadLayersFromBackend();
 
@@ -216,6 +228,7 @@ namespace csharp_editor {
             _suppressStateSwitch = false;
             view_extern.SetActiveState(stateId);
             panelMain.Visible = true;
+            _welcomePanel.Visible = false;
             hierarchyTree.LoadLayersFromBackend();
             entitySelector.LoadEntities();
             Log($"New state created (id {stateId})");
@@ -317,6 +330,8 @@ namespace csharp_editor {
             UpdateTabItemSize();
             if (tabControl1.TabPages.Count == 0) {
                 panelMain.Visible = false;
+                _welcomePanel.RefreshRecent();
+                _welcomePanel.Visible = true;
             }
         }
 
@@ -688,6 +703,60 @@ namespace csharp_editor {
             var selectedLayer = hierarchyTree.GetSelectedLayer();
             if (selectedLayer != null) {
                 Log($"Selected entity from '{selectedLayer.Name}': {entityName}");
+            }
+        }
+
+        private void WelcomePanel_NewProjectRequested(object? sender, string path) {
+            int stateId = view_extern.NewEditorState();
+            string normalizedPath = Path.GetFullPath(path);
+            string tabLabel = Path.GetFileNameWithoutExtension(path);
+            TabPage tab = new TabPage(tabLabel) { Tag = new TabState(stateId, normalizedPath) };
+            _suppressStateSwitch = true;
+            tabControl1.TabPages.Add(tab);
+            UpdateTabItemSize();
+            tabControl1.SelectedTab = tab;
+            _suppressStateSwitch = false;
+            view_extern.SetActiveState(stateId);
+            panelMain.Visible = true;
+            _welcomePanel.Visible = false;
+            hierarchyTree.LoadLayersFromBackend();
+            entitySelector.LoadEntities();
+            RecentProjectsManager.Add(normalizedPath);
+            _welcomePanel.RefreshRecent();
+            // Save/initialise the project file via the backend
+            string projectName = Path.GetFileNameWithoutExtension(normalizedPath);
+            int saveResult = view_extern.ExportProject(normalizedPath, projectName);
+            if (saveResult == 0)
+                Log($"Warning: ExportProject returned 0 for '{normalizedPath}'");
+            Log($"New project created: {tabLabel} (state {stateId})");
+        }
+
+        private void WelcomePanel_OpenProjectRequested(object? sender, string path) {
+            // Try to load as a project first; fall back to plain map import
+            string normalizedPath = Path.GetFullPath(path);
+            int result = view_extern.ImportProject(normalizedPath);
+            if (result != 0) {
+                // Project imported successfully — resolve name from backend
+                string? projectName = view_extern.GetProjectName(normalizedPath);
+                string tabLabel = projectName ?? Path.GetFileNameWithoutExtension(path);
+                _welcomePanel.Visible = false;
+                int stateId = view_extern.NewEditorState();
+                TabPage tab = new TabPage(tabLabel) { Tag = new TabState(stateId, normalizedPath) };
+                _suppressStateSwitch = true;
+                tabControl1.TabPages.Add(tab);
+                UpdateTabItemSize();
+                tabControl1.SelectedTab = tab;
+                _suppressStateSwitch = false;
+                view_extern.SetActiveState(stateId);
+                panelMain.Visible = true;
+                hierarchyTree.LoadLayersFromBackend();
+                entitySelector.LoadEntities();
+                RecentProjectsManager.Add(normalizedPath);
+                _welcomePanel.RefreshRecent();
+                Log($"Project opened: {tabLabel}");
+            } else {
+                // Fall back to plain map load
+                LoadMap(path);
             }
         }
 

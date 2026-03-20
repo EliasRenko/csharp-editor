@@ -214,6 +214,30 @@ namespace csharp_editor.UserControls {
         public void ExportMap(string path) {
             Externs.ExportMap(path);
         }
+
+        /// <summary>Saves the current project state to <paramref name="filePath"/>.</summary>
+        /// <returns>Non-zero on success.</returns>
+        public int ExportProject(string filePath, string projectName) {
+            return Externs.ExportProject(filePath, projectName);
+        }
+
+        /// <summary>Loads a project from <paramref name="filePath"/> into the engine.</summary>
+        /// <returns>Non-zero on success.</returns>
+        public int ImportProject(string filePath) {
+            return Externs.ImportProject(filePath);
+        }
+
+        /// <summary>Returns the project name embedded in the file at <paramref name="filePath"/>, or null.</summary>
+        public string? GetProjectName(string filePath) {
+            IntPtr ptr = Externs.GetProjectName(filePath);
+            return ptr != IntPtr.Zero ? Marshal.PtrToStringAnsi(ptr) : null;
+        }
+
+        /// <summary>Returns the file path of the project that is currently active in the engine, or null.</summary>
+        public string? GetActiveProjectPath() {
+            IntPtr ptr = Externs.GetActiveProjectPath();
+            return ptr != IntPtr.Zero ? Marshal.PtrToStringAnsi(ptr) : null;
+        }
         
         #endregion
         
