@@ -13,6 +13,15 @@ namespace csharp_editor.UserControls {
         public int tileSizeY;
         public int bgColor;
         public int gridColor;
+        public string? projectFilePath;
+        public string? projectName;
+    }
+
+    public struct ProjectInfoStruct {
+        public string? FilePath;
+        public string? ProjectName;
+        public int DefaultTileSizeX;
+        public int DefaultTileSizeY;
     }
 
     public partial class ExternView : UserControl {
@@ -43,7 +52,7 @@ namespace csharp_editor.UserControls {
 
             logCallback = callback;
 
-            if (Externs.InitWithCallback(callback) != 1) {
+            if (!Externs.InitWithCallback(callback)) {
                 MessageBox.Show("Failed to initialize engine", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -195,10 +204,6 @@ namespace csharp_editor.UserControls {
             return Externs.ImportMap(path);
         }
 
-        public void LoadState(int id) {
-            Externs.LoadState(id);
-        }
-
         public int SetActiveState(int stateId) {
             return Externs.SetActiveState(stateId);
         }
@@ -217,26 +222,30 @@ namespace csharp_editor.UserControls {
 
         /// <summary>Saves the current project state to <paramref name="filePath"/>.</summary>
         /// <returns>Non-zero on success.</returns>
-        public int ExportProject(string filePath, string projectName) {
+        public bool ExportProject(string filePath, string projectName) {
             return Externs.ExportProject(filePath, projectName);
         }
 
         /// <summary>Loads a project from <paramref name="filePath"/> into the engine.</summary>
         /// <returns>Non-zero on success.</returns>
-        public int ImportProject(string filePath) {
+        public bool ImportProject(string filePath) {
             return Externs.ImportProject(filePath);
         }
 
-        /// <summary>Returns the project name embedded in the file at <paramref name="filePath"/>, or null.</summary>
-        public string? GetProjectName(string filePath) {
-            IntPtr ptr = Externs.GetProjectName(filePath);
-            return ptr != IntPtr.Zero ? Marshal.PtrToStringAnsi(ptr) : null;
-        }
-
-        /// <summary>Returns the file path of the project that is currently active in the engine, or null.</summary>
-        public string? GetActiveProjectPath() {
-            IntPtr ptr = Externs.GetActiveProjectPath();
-            return ptr != IntPtr.Zero ? Marshal.PtrToStringAnsi(ptr) : null;
+        /// <summary>Returns project properties if a project is loaded. Returns false and default outInfo if no project is loaded.</summary>
+        public bool GetProjectProps(out ProjectInfoStruct outInfo) {
+            bool result = Externs.GetProjectProps(out Externs.ProjectProps temp);
+            if (result) {
+                outInfo = new ProjectInfoStruct {
+                    FilePath = Marshal.PtrToStringAnsi(temp.filePath),
+                    ProjectName = Marshal.PtrToStringAnsi(temp.projectName),
+                    DefaultTileSizeX = temp.defaultTileSizeX,
+                    DefaultTileSizeY = temp.defaultTileSizeY
+                };
+            } else {
+                outInfo = default;
+            }
+            return result;
         }
         
         #endregion
@@ -292,7 +301,9 @@ namespace csharp_editor.UserControls {
                     tileSizeX = temp.tileSizeX,
                     tileSizeY = temp.tileSizeY,
                     bgColor = temp.bgColor,
-                    gridColor = temp.gridColor
+                    gridColor = temp.gridColor,
+                    projectFilePath = Marshal.PtrToStringAnsi(temp.projectFilePath),
+                    projectName = Marshal.PtrToStringAnsi(temp.projectName)
                 };
                 
                 return null;

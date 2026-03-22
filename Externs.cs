@@ -67,51 +67,57 @@ namespace csharp_editor {
         
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
         public struct MapProps {
-            public IntPtr idd;       // id string
-            public IntPtr name;      // name string
+            public IntPtr idd;               // id string
+            public IntPtr name;              // name string
             public int worldx;
             public int worldy;
             public int width;
             public int height;
             public int tileSizeX;
             public int tileSizeY;
-            public int bgColor;      // rgba hex
-            public int gridColor;    // rgba hex
+            public int bgColor;              // rgba hex
+            public int gridColor;            // rgba hex
+            public IntPtr projectFilePath;   // null / empty if map is not linked to a project
+            public IntPtr projectName;       // null / empty if map is not linked to a project
         }
-        
-        // Core functionality
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        public struct ProjectProps {
+            public IntPtr filePath;          // Project file path
+            public IntPtr projectName;       // Project name
+            public int defaultTileSizeX;
+            public int defaultTileSizeY;
+        }
+
+        #region Lifecycle functions
+
         [DllImport(DLL, EntryPoint = "init")]
-        public static extern int Init();
+        public static extern bool Init();
         
         [DllImport(DLL, EntryPoint = "initWithCallback")]
-        public static extern int InitWithCallback(CallbackDelegate callback);
+        public static extern bool InitWithCallback(CallbackDelegate callback);
         
         [DllImport(DLL, EntryPoint = "release")]
         public static extern void Release();
-        
+
+        [DllImport(DLL, EntryPoint = "isRunning")]
+        public static extern bool IsRunning();
+
         [DllImport(DLL, EntryPoint = "updateFrame")]
         public static extern void UpdateFrame(float deltaTime);
-
-        [DllImport(DLL, EntryPoint = "preRender")]
-        public static extern void PreRender();
 
         [DllImport(DLL, EntryPoint = "render")]
         public static extern void Render();
 
-        [DllImport(DLL, EntryPoint = "postRender")]
-        public static extern void PostRender();
-
         [DllImport(DLL, EntryPoint = "swapBuffers")]
         public static extern void SwapBuffers();
-        
-        // Resources
-        [DllImport(DLL, EntryPoint = "loadTexture", CharSet = CharSet.Ansi)]
-        public static extern void LoadTexture(string filepath, int tileSize, string id);
 
-        // --- States
+        #endregion
 
-        [DllImport(DLL, EntryPoint = "loadState")]
-        public static extern void LoadState(int id);
+        #region State managment
+
+        [DllImport(DLL, EntryPoint = "newEditorState")]
+        public static extern int NewEditorState();
 
         [DllImport(DLL, EntryPoint = "setActiveState")]
         public static extern int SetActiveState(int index);
@@ -119,12 +125,10 @@ namespace csharp_editor {
         [DllImport(DLL, EntryPoint = "releaseState")]
         public static extern int ReleaseState(int index);
 
-        [DllImport(DLL, EntryPoint = "newEditorState")]
-        public static extern int NewEditorState();
-        
-        // Window
+        #endregion
+
         #region Window
-        
+
         [DllImport(DLL, EntryPoint = "getWindowHandle")]
         public static extern IntPtr GetWindowHandle();
 
@@ -134,31 +138,10 @@ namespace csharp_editor {
         [DllImport(DLL, EntryPoint = "setWindowSize")]
         public static extern void SetWindowSize(int width, int height);
 
-        public static void ApplyChildWindowStyle(IntPtr windowHandle) {
-            if (windowHandle == IntPtr.Zero) return;
-
-            const long RemoveFlags =
-                WS_CAPTION |
-                WS_THICKFRAME |
-                WS_MINIMIZE |
-                WS_MAXIMIZE |
-                WS_SYSMENU |
-                WS_BORDER |
-                WS_DLGFRAME;
-
-            const long AddFlags = WS_CHILD | WS_VISIBLE;
-
-            long style = GetWindowLong(windowHandle, GWL_STYLE);
-            style = (style & ~RemoveFlags) | AddFlags;
-            SetWindowLong(windowHandle, GWL_STYLE, style);
-            SetWindowPos(windowHandle, IntPtr.Zero, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-        }
-
         #endregion
-        
-        // Input
+
         #region Input
-        
+
         [DllImport(DLL, EntryPoint = "onMouseMotion")]
         public static extern void OnMouseMotion(int x, int y);
 
@@ -178,9 +161,22 @@ namespace csharp_editor {
         public static extern void OnMouseWheel(float x, float y, float delta);
 
         #endregion
-        
+
+        #region Project management
+
+        [DllImport(DLL, EntryPoint = "exportProject", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern bool ExportProject(string filePath, string projectName);
+
+        [DllImport(DLL, EntryPoint = "importProject", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern bool ImportProject(string filePath);
+
+        [DllImport(DLL, EntryPoint = "getProjectProps", CallingConvention = CallingConvention.Cdecl)]
+        public static extern bool GetProjectProps(out ProjectProps outProps);
+
+        #endregion
+
         #region Textures
-        
+
         [DllImport(DLL, EntryPoint = "getTextureData", CharSet = CharSet.Ansi)]
         public static extern void GetTextureData(string path, out TextureDataStruct outData);
         
@@ -225,19 +221,6 @@ namespace csharp_editor {
         
         [DllImport(DLL, EntryPoint = "importMap")]
         public static extern int ImportMap(string path);
-
-        // Project management
-        [DllImport(DLL, EntryPoint = "exportProject", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int ExportProject(string filePath, string projectName);
-
-        [DllImport(DLL, EntryPoint = "importProject", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int ImportProject(string filePath);
-
-        [DllImport(DLL, EntryPoint = "getProjectName", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr GetProjectName(string filePath);
-
-        [DllImport(DLL, EntryPoint = "getActiveProjectPath", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr GetActiveProjectPath();
         
         [DllImport(DLL, EntryPoint = "getMapProps", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern IntPtr GetMapProps(out MapProps outInfo);
@@ -385,6 +368,26 @@ namespace csharp_editor {
         public static extern int MoveLayerDownByIndex(int index);
 
         #region WinAPI Entry Points
+
+        public static void ApplyChildWindowStyle(IntPtr windowHandle) {
+            if (windowHandle == IntPtr.Zero) return;
+
+            const long RemoveFlags =
+                WS_CAPTION |
+                WS_THICKFRAME |
+                WS_MINIMIZE |
+                WS_MAXIMIZE |
+                WS_SYSMENU |
+                WS_BORDER |
+                WS_DLGFRAME;
+
+            const long AddFlags = WS_CHILD | WS_VISIBLE;
+
+            long style = GetWindowLong(windowHandle, GWL_STYLE);
+            style = (style & ~RemoveFlags) | AddFlags;
+            SetWindowLong(windowHandle, GWL_STYLE, style);
+            SetWindowPos(windowHandle, IntPtr.Zero, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+        }
 
         [DllImport("user32.dll") ]
         public static extern IntPtr SetWindowPos(

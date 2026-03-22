@@ -1,13 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Compile Update="Dialogs\AddTileLayerDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Update="Dialogs\EntitiesDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Dialogs\EntityLayerDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Dialogs\PropertyDefinitionDialog.cs">
@@ -16,13 +10,7 @@
     <Compile Update="Dialogs\TextureCollectionDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Dialogs\TileLayerDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Update="Dialogs\TilesetRegionDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Dialogs\TimelineDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Editor.cs">
@@ -30,12 +18,6 @@
     </Compile>
     <Compile Update="UserControls\DebugConsole.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="UserControls\EntityEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="UserControls\EntityPreviewPanel.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Update="UserControls\EntitySelector.cs">
       <SubType>UserControl</SubType>
@@ -56,12 +38,6 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="UserControls\TextureViewer.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="UserControls\Timeline\TimelineControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="UserControls\WelcomePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>

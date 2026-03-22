@@ -73,7 +73,7 @@ namespace csharp_editor.UserControls {
             _pivotYActual = 1.0f;
             SyncPivotNumerics(0.5f, 1.0f);
             buttonSave.Text = "Create";
-            if (comboBoxTilemap.Items.Count > 0) comboBoxTilemap.SelectedIndex = 0;
+            comboBoxTilemap.SelectedIndex = 0; // always valid – (No Texture) is index 0
             if (comboBoxClass.Items.Count > 0)   comboBoxClass.SelectedIndex   = 0;
             buttonRemoveProperty.Enabled = false;
             checkBoxHitbox.Checked       = false;
@@ -88,12 +88,16 @@ namespace csharp_editor.UserControls {
             numericUpDownWidth.Value  = Math.Clamp(entry.Width,  (int)numericUpDownWidth.Minimum,  (int)numericUpDownWidth.Maximum);
             numericUpDownHeight.Value = Math.Clamp(entry.Height, (int)numericUpDownHeight.Minimum, (int)numericUpDownHeight.Maximum);
 
-            for (int i = 0; i < comboBoxTilemap.Items.Count; i++) {
-                if ((comboBoxTilemap.Items[i]?.ToString() ?? "") == entry.TilemapName) {
-                    comboBoxTilemap.SelectedIndex = i;
-                    break;
+            int tilemapIndex = 0; // default to (No Texture)
+            if (!string.IsNullOrEmpty(entry.TilemapName)) {
+                for (int i = 0; i < comboBoxTilemap.Items.Count; i++) {
+                    if ((comboBoxTilemap.Items[i]?.ToString() ?? "") == entry.TilemapName) {
+                        tilemapIndex = i;
+                        break;
+                    }
                 }
             }
+            comboBoxTilemap.SelectedIndex = tilemapIndex;
 
             _currentRegion = new Rectangle(
                 entry.TileX, entry.TileY,
@@ -117,9 +121,12 @@ namespace csharp_editor.UserControls {
 
         // ── Private helpers ──────────────────────────────────────────────────────────
 
+        private const string NoTextureOption = "(No Texture)";
+
         private void LoadAvailableTilemaps() {
             comboBoxTilemap.Items.Clear();
-            if (_externView == null) return;
+            comboBoxTilemap.Items.Add(NoTextureOption);
+            if (_externView == null) { comboBoxTilemap.SelectedIndex = 0; return; }
             int count = _externView.GetTilesetCount();
             for (int i = 0; i < count; i++) {
                 Externs.TilesetInfoStruct info = new Externs.TilesetInfoStruct();
@@ -128,7 +135,7 @@ namespace csharp_editor.UserControls {
                     if (!string.IsNullOrEmpty(name)) comboBoxTilemap.Items.Add(name);
                 }
             }
-            if (comboBoxTilemap.Items.Count > 0) comboBoxTilemap.SelectedIndex = 0;
+            comboBoxTilemap.SelectedIndex = 0;
         }
 
         private void LoadAvailableClasses() {
@@ -149,12 +156,13 @@ namespace csharp_editor.UserControls {
                 $"{_currentRegion.Width}×{_currentRegion.Height} px";
         }
         private void UpdateRegionPreview() {
-            if (_externView == null || _currentRegion == Rectangle.Empty || comboBoxTilemap.SelectedItem == null) {
+            string selectedTilemap = comboBoxTilemap.SelectedItem?.ToString() ?? "";
+            if (_externView == null || _currentRegion == Rectangle.Empty ||
+                comboBoxTilemap.SelectedItem == null || selectedTilemap == NoTextureOption) {
                 entityPreviewPanel.Clear();
                 return;
             }
 
-            string selectedTilemap = comboBoxTilemap.SelectedItem.ToString() ?? "";
             int count = _externView.GetTilesetCount();
             for (int i = 0; i < count; i++) {
                 Externs.TilesetInfoStruct info = new Externs.TilesetInfoStruct();
@@ -175,6 +183,8 @@ namespace csharp_editor.UserControls {
             _currentRegion = Rectangle.Empty;
             UpdateRegionLabel();
             entityPreviewPanel.Clear();
+            bool hasTexture = comboBoxTilemap.SelectedItem?.ToString() != NoTextureOption;
+            buttonSelectRegion.Enabled = hasTexture;
         }
 
         private void ButtonSelectRegion_Click(object? sender, EventArgs e) {
@@ -274,23 +284,23 @@ namespace csharp_editor.UserControls {
                 MessageBox.Show("Please enter an entity name.", "Validation Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning); return;
             }
-            if (comboBoxTilemap.SelectedItem == null) {
-                MessageBox.Show("Please select a tilemap.", "Validation Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning); return;
-            }
 
             int width  = (int)numericUpDownWidth.Value;
             int height = (int)numericUpDownHeight.Value;
+            bool noTexture = comboBoxTilemap.SelectedItem?.ToString() == NoTextureOption;
+            IntPtr tilesetPtr = noTexture
+                ? IntPtr.Zero
+                : Marshal.StringToHGlobalAnsi(comboBoxTilemap.SelectedItem?.ToString() ?? "");
 
             try {
                 var data = new Externs.EntityDataStruct {
                     width        = width,
                     height       = height,
-                    tilesetName  = Marshal.StringToHGlobalAnsi(comboBoxTilemap.SelectedItem.ToString() ?? ""),
-                    regionX      = _currentRegion.X,
-                    regionY      = _currentRegion.Y,
-                    regionWidth  = _currentRegion.Width,
-                    regionHeight = _currentRegion.Height,
+                    tilesetName  = tilesetPtr,
+                    regionX      = noTexture ? 0 : _currentRegion.X,
+                    regionY      = noTexture ? 0 : _currentRegion.Y,
+                    regionWidth  = noTexture ? 0 : _currentRegion.Width,
+                    regionHeight = noTexture ? 0 : _currentRegion.Height,
                     pivotX       = _pivotXActual,
                     pivotY       = _pivotYActual
                 };
@@ -309,6 +319,8 @@ namespace csharp_editor.UserControls {
             catch (Exception ex) {
                 MessageBox.Show($"Error saving entity: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            } finally {
+                if (tilesetPtr != IntPtr.Zero) Marshal.FreeHGlobal(tilesetPtr);
             }
         }
 

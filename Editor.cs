@@ -34,6 +34,8 @@ namespace csharp_editor {
             // Toolstrip Events
             toolStripMenuItem_open.MouseUp += toolStripButton_openFile;
             toolStripMenuItem_export.MouseUp += toolStripButton_export;
+            saveProjectToolStripMenuItem.Click += SaveProject_Click;
+            saveAsProjectToolStripMenuItem.Click += SaveAsProject_Click;
             toolStripButton_newMap.MouseDown += ToolStripButton_newMap_Click;
 
             // Initialize HierarchyTree
@@ -141,6 +143,42 @@ namespace csharp_editor {
         }
 
         #region Core
+
+        private void SaveProject_Click(object? sender, EventArgs e) {
+            if (tabControl1.SelectedTab?.Tag is TabState ts && !string.IsNullOrEmpty(ts.FilePath)) {
+                string projectName = Path.GetFileNameWithoutExtension(ts.FilePath);
+                bool result = view_extern.ExportProject(ts.FilePath, projectName);
+                if (result == false)
+                    Log($"Warning: ExportProject returned 0 for '{ts.FilePath}'");
+                else
+                    Log($"Project saved: {ts.FilePath}");
+            } else {
+                Log("Save: no project path available for the current tab.");
+            }
+        }
+
+        private void SaveAsProject_Click(object? sender, EventArgs e) {
+            if (tabControl1.SelectedTab?.Tag is not TabState ts) return;
+            using SaveFileDialog dlg = new SaveFileDialog {
+                Title = "Save Project As",
+                Filter = "Project files (*.proj)|*.proj|All files (*.*)|*.*",
+                FileName = string.IsNullOrEmpty(ts.FilePath)
+                    ? ""
+                    : Path.GetFileName(ts.FilePath)
+            };
+            if (dlg.ShowDialog(this) != DialogResult.OK) return;
+            string newPath = Path.GetFullPath(dlg.FileName);
+            string projectName = Path.GetFileNameWithoutExtension(newPath);
+            bool result = view_extern.ExportProject(newPath, projectName);
+            if (result == false) {
+                Log($"Warning: ExportProject returned 0 for '{newPath}'");
+            } else {
+                tabControl1.SelectedTab!.Tag = new TabState(ts.StateId, newPath);
+                tabControl1.SelectedTab.Text = projectName;
+                UpdateTabItemSize();
+                Log($"Project saved as: {newPath}");
+            }
+        }
 
         private record TabState(int StateId, string FilePath);
 
@@ -346,6 +384,13 @@ namespace csharp_editor {
         }
 
         #endregion
+
+        private void UpdateProjectStatus() {
+            if (view_extern.GetProjectProps(out ProjectInfoStruct info))
+                statusLabel_project.Text = $"Project: {info.ProjectName}";
+            else
+                statusLabel_project.Text = "No project loaded";
+        }
 
         #region Events
 
@@ -595,7 +640,9 @@ namespace csharp_editor {
                             TileSizeX = info.tileSizeX,
                             TileSizeY = info.tileSizeY,
                             BackgroundColor = Utils.ConvertFromRGBA(info.bgColor),
-                            GridColor = Utils.ConvertFromRGBA(info.gridColor)
+                            GridColor = Utils.ConvertFromRGBA(info.gridColor),
+                            ProjectFilePath = info.projectFilePath,
+                            ProjectName = info.projectName
                         };
                         display.PropertyChanged += (s, args) => {
                             if (s is MapInfoDisplay m && view_extern != null) {
@@ -725,20 +772,39 @@ namespace csharp_editor {
             _welcomePanel.RefreshRecent();
             // Save/initialise the project file via the backend
             string projectName = Path.GetFileNameWithoutExtension(normalizedPath);
-            int saveResult = view_extern.ExportProject(normalizedPath, projectName);
-            if (saveResult == 0)
+            bool saveResult = view_extern.ExportProject(normalizedPath, projectName);
+            if (saveResult == false)
                 Log($"Warning: ExportProject returned 0 for '{normalizedPath}'");
             Log($"New project created: {tabLabel} (state {stateId})");
+            UpdateProjectStatus();
         }
 
         private void WelcomePanel_OpenProjectRequested(object? sender, string path) {
+            // Check if a project is already loaded — warn the user before overwriting
+            if (view_extern.GetProjectProps(out ProjectInfoStruct existing)) {
+                var action = ShowProjectLoadConflictDialog(existing.ProjectName ?? "Unknown");
+                switch (action) {
+                    case ProjectLoadAction.Abort:
+                        return;
+                    case ProjectLoadAction.SaveAll:
+                        CloseAllTabs(saveFirst: true);
+                        break;
+                    case ProjectLoadAction.Close:
+                        CloseAllTabs(saveFirst: false);
+                        break;
+                    case ProjectLoadAction.Add:
+                        // Keep existing tabs open; just replace the project in the engine
+                        break;
+                }
+            }
+
             // Try to load as a project first; fall back to plain map import
             string normalizedPath = Path.GetFullPath(path);
-            int result = view_extern.ImportProject(normalizedPath);
-            if (result != 0) {
+            bool result = view_extern.ImportProject(normalizedPath);
+            if (result != false) {
                 // Project imported successfully — resolve name from backend
-                string? projectName = view_extern.GetProjectName(normalizedPath);
-                string tabLabel = projectName ?? Path.GetFileNameWithoutExtension(path);
+                view_extern.GetProjectProps(out ProjectInfoStruct importedProps);
+                string tabLabel = importedProps.ProjectName ?? Path.GetFileNameWithoutExtension(path);
                 _welcomePanel.Visible = false;
                 int stateId = view_extern.NewEditorState();
                 TabPage tab = new TabPage(tabLabel) { Tag = new TabState(stateId, normalizedPath) };
@@ -749,15 +815,88 @@ namespace csharp_editor {
                 _suppressStateSwitch = false;
                 view_extern.SetActiveState(stateId);
                 panelMain.Visible = true;
+                _welcomePanel.Visible = false;
                 hierarchyTree.LoadLayersFromBackend();
                 entitySelector.LoadEntities();
                 RecentProjectsManager.Add(normalizedPath);
                 _welcomePanel.RefreshRecent();
                 Log($"Project opened: {tabLabel}");
+                UpdateProjectStatus();
             } else {
                 // Fall back to plain map load
                 LoadMap(path);
             }
+        }
+
+        private enum ProjectLoadAction { SaveAll, Close, Add, Abort }
+
+        private ProjectLoadAction ShowProjectLoadConflictDialog(string projectName) {
+            var result = ProjectLoadAction.Abort;
+
+            using var dlg = new Form {
+                Text = "Project Already Loaded",
+                Size = new Size(500, 190),
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                StartPosition = FormStartPosition.CenterParent,
+                MaximizeBox = false,
+                MinimizeBox = false
+            };
+
+            var label = new Label {
+                Text = $"A project is already loaded: \"{projectName}\"\n\n" +
+                       "Loading a new project will overwrite it. What would you like to do with the currently open maps?",
+                Dock = DockStyle.Top,
+                Height = 65,
+                TextAlign = ContentAlignment.MiddleLeft,
+                Padding = new Padding(12, 10, 12, 0)
+            };
+
+            var btnPanel = new FlowLayoutPanel {
+                Dock = DockStyle.Bottom,
+                FlowDirection = FlowDirection.RightToLeft,
+                Height = 45,
+                Padding = new Padding(8, 6, 8, 0)
+            };
+
+            var btnAbort   = new Button { Text = "Abort",            Width = 80,  Height = 30 };
+            var btnAdd     = new Button { Text = "Add",              Width = 80,  Height = 30 };
+            var btnClose   = new Button { Text = "Close All",        Width = 90,  Height = 30 };
+            var btnSaveAll = new Button { Text = "Save All & Close", Width = 120, Height = 30 };
+
+            btnAbort.Click   += (s, e) => { result = ProjectLoadAction.Abort;   dlg.Close(); };
+            btnAdd.Click     += (s, e) => { result = ProjectLoadAction.Add;     dlg.Close(); };
+            btnClose.Click   += (s, e) => { result = ProjectLoadAction.Close;   dlg.Close(); };
+            btnSaveAll.Click += (s, e) => { result = ProjectLoadAction.SaveAll; dlg.Close(); };
+
+            btnPanel.Controls.AddRange(new Control[] { btnAbort, btnAdd, btnClose, btnSaveAll });
+            dlg.Controls.AddRange(new Control[] { label, btnPanel });
+            dlg.ShowDialog(this);
+            return result;
+        }
+
+        /// <summary>
+        /// Releases and removes all open tabs, optionally saving maps with a known file path first.
+        /// Does not show the welcome panel — caller handles that.
+        /// </summary>
+        private void CloseAllTabs(bool saveFirst) {
+            _suppressStateSwitch = true;
+            var tabs = tabControl1.TabPages.Cast<TabPage>().ToList();
+            foreach (var tab in tabs) {
+                if (tab.Tag is TabState ts) {
+                    if (saveFirst && !string.IsNullOrEmpty(ts.FilePath) &&
+                        ts.FilePath.EndsWith(".json", StringComparison.OrdinalIgnoreCase)) {
+                        view_extern.SetActiveState(ts.StateId);
+                        view_extern.ExportMap(ts.FilePath);
+                        Log($"Saved map: {ts.FilePath}");
+                    }
+                    view_extern.ReleaseState(ts.StateId);
+                }
+            }
+            tabControl1.TabPages.Clear();
+            _suppressStateSwitch = false;
+            UpdateTabItemSize();
+            panelMain.Visible = false;
+            UpdateProjectStatus();
         }
 
         private void ShowTilesetDefDialog(object? sender, MouseEventArgs e) {

@@ -127,6 +127,12 @@ namespace csharp_editor.Models {
             }
         }
 
+        [Category("Project"), Description("File path of the project this map is linked to. Empty if not linked."), ReadOnly(true)]
+        public string? ProjectFilePath { get; set; }
+
+        [Category("Project"), Description("Name of the project this map is linked to. Empty if not linked."), ReadOnly(true)]
+        public string? ProjectName { get; set; }
+
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

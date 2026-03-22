@@ -47,10 +47,8 @@ C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\refint
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp-editor.pdb
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp-editor.genruntimeconfig.cache
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\ref\csharp-editor.dll
-C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.Dialogs.EntityCreateDialog.resources
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.Dialogs.PropertyDefinitionDialog.resources
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.Dialogs.TilesetCreateDialog.resources
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.ExternView.resources
-C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.TextureInfo.resources
 C:\Users\Renko\Documents\Libraries\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.DebugConsole.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.UserControls.DebugConsole.resources
