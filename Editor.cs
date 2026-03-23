@@ -36,6 +36,7 @@ namespace csharp_editor {
             toolStripMenuItem_export.MouseUp += toolStripButton_export;
             saveProjectToolStripMenuItem.Click += SaveProject_Click;
             saveAsProjectToolStripMenuItem.Click += SaveAsProject_Click;
+            editToolStripMenuItem_editProject.Click += EditProject_Click;
             toolStripButton_newMap.MouseDown += ToolStripButton_newMap_Click;
 
             // Initialize HierarchyTree
@@ -390,6 +391,35 @@ namespace csharp_editor {
                 statusLabel_project.Text = $"Project: {info.ProjectName}";
             else
                 statusLabel_project.Text = "No project loaded";
+        }
+
+        private void EditProject_Click(object? sender, EventArgs e) {
+            if (!view_extern.GetProjectProps(out ProjectInfoStruct existingProps)) {
+                MessageBox.Show(this,
+                    "No project is loaded. Open or create a project first.",
+                    "Edit Project",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            using var dialog = new Dialogs.ProjectSettingsDialog(existingProps);
+            if (dialog.ShowDialog(this) != DialogResult.OK)
+                return;
+
+            ProjectInfoStruct updated = dialog.UpdatedProjectInfo;
+            bool edited = view_extern.EditProject(updated);
+            if (!edited) {
+                MessageBox.Show(this,
+                    "Failed to apply project settings to engine.",
+                    "Edit Project",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+
+            UpdateProjectStatus();
+            Log($"Project settings updated: {updated.ProjectName} ({updated.DefaultTileSizeX}x{updated.DefaultTileSizeY})");
         }
 
         #region Events

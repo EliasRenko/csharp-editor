@@ -173,6 +173,9 @@ namespace csharp_editor {
         [DllImport(DLL, EntryPoint = "getProjectProps", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool GetProjectProps(out ProjectProps outProps);
 
+        [DllImport(DLL, EntryPoint = "editProject", CallingConvention = CallingConvention.Cdecl)]
+        public static extern bool EditProject(ref ProjectProps inProps);
+
         #endregion
 
         #region Textures

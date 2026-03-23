@@ -247,6 +247,24 @@ namespace csharp_editor.UserControls {
             }
             return result;
         }
+
+        public bool EditProject(ProjectInfoStruct info) {
+            IntPtr filePathPtr = Marshal.StringToHGlobalAnsi(info.FilePath ?? "");
+            IntPtr projectNamePtr = Marshal.StringToHGlobalAnsi(info.ProjectName ?? "");
+            try {
+                var native = new Externs.ProjectProps {
+                    filePath = filePathPtr,
+                    projectName = projectNamePtr,
+                    defaultTileSizeX = info.DefaultTileSizeX,
+                    defaultTileSizeY = info.DefaultTileSizeY
+                };
+
+                return Externs.EditProject(ref native);
+            } finally {
+                Marshal.FreeHGlobal(filePathPtr);
+                Marshal.FreeHGlobal(projectNamePtr);
+            }
+        }
         
         #endregion
         
