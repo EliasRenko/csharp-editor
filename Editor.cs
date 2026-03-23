@@ -687,7 +687,9 @@ namespace csharp_editor {
                                     tileSizeX = m.TileSizeX,
                                     tileSizeY = m.TileSizeY,
                                     bgColor = Utils.ConvertToRGBA(m.BackgroundColor),
-                                    gridColor = Utils.ConvertToRGBA(m.GridColor)
+                                    gridColor = Utils.ConvertToRGBA(m.GridColor),
+                                    projectFilePath = m.ProjectFilePath,
+                                    projectName = m.ProjectName
                                 };
                                 view_extern.SetMapProps(native);
                             }

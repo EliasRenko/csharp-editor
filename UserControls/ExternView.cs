@@ -332,6 +332,9 @@ namespace csharp_editor.UserControls {
         }
 
         public string? SetMapProps(MapInfoStruct info) {
+            IntPtr projectFilePathPtr = Marshal.StringToHGlobalAnsi(info.projectFilePath ?? "");
+            IntPtr projectNamePtr = Marshal.StringToHGlobalAnsi(info.projectName ?? "");
+
             MapProps temp = new MapProps {
                 idd = Marshal.StringToHGlobalAnsi(info.idd ?? ""),
                 name = Marshal.StringToHGlobalAnsi(info.name ?? ""),
@@ -342,7 +345,9 @@ namespace csharp_editor.UserControls {
                 tileSizeX = info.tileSizeX,
                 tileSizeY = info.tileSizeY,
                 bgColor = info.bgColor,
-                gridColor = info.gridColor
+                gridColor = info.gridColor,
+                projectFilePath = projectFilePathPtr,
+                projectName = projectNamePtr
             };
             
             try {
@@ -355,6 +360,8 @@ namespace csharp_editor.UserControls {
             } finally {
                 Marshal.FreeHGlobal(temp.idd);
                 Marshal.FreeHGlobal(temp.name);
+                Marshal.FreeHGlobal(temp.projectFilePath);
+                Marshal.FreeHGlobal(temp.projectName);
             }
         }
         

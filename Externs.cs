@@ -178,6 +178,22 @@ namespace csharp_editor {
 
         #endregion
 
+        #region Map management
+
+        [DllImport(DLL, EntryPoint = "exportMap")]
+        public static extern int ExportMap(string path);
+        
+        [DllImport(DLL, EntryPoint = "importMap")]
+        public static extern int ImportMap(string path);
+        
+        [DllImport(DLL, EntryPoint = "getMapProps", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern IntPtr GetMapProps(out MapProps outInfo);
+        
+        [DllImport(DLL, EntryPoint = "setMapProps", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern IntPtr SetMapProps(ref MapProps info);
+
+        #endregion
+
         #region Textures
 
         [DllImport(DLL, EntryPoint = "getTextureData", CharSet = CharSet.Ansi)]
@@ -218,18 +234,6 @@ namespace csharp_editor {
         public static extern int GetToolType();
 
         #endregion
-        
-        [DllImport(DLL, EntryPoint = "exportMap")]
-        public static extern int ExportMap(string path);
-        
-        [DllImport(DLL, EntryPoint = "importMap")]
-        public static extern int ImportMap(string path);
-        
-        [DllImport(DLL, EntryPoint = "getMapProps", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr GetMapProps(out MapProps outInfo);
-        
-        [DllImport(DLL, EntryPoint = "setMapProps", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr SetMapProps(ref MapProps info);
         
         // Layer Management
         [DllImport(DLL, EntryPoint = "setLayerProperties", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
