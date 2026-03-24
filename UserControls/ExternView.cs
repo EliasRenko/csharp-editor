@@ -216,8 +216,8 @@ namespace csharp_editor.UserControls {
             return Externs.NewEditorState();
         }
         
-        public void ExportMap(string path) {
-            Externs.ExportMap(path);
+        public bool ExportMap(string path) {
+            return Externs.ExportMap(path);
         }
 
         /// <summary>Saves the current project state to <paramref name="filePath"/>.</summary>
@@ -303,35 +303,34 @@ namespace csharp_editor.UserControls {
             return Externs.GetLayerCount();
         }
 
-        public string? GetMapProps(out MapInfoStruct outInfo) {
+        public bool GetMapProps(out MapInfoStruct outInfo) {
             MapProps temp;
-            IntPtr result = Externs.GetMapProps(out temp);
-            
-            if (result == IntPtr.Zero) {
-                
-                outInfo = new MapInfoStruct {
-                    idd = Marshal.PtrToStringAnsi(temp.idd),
-                    name = Marshal.PtrToStringAnsi(temp.name),
-                    worldx = temp.worldx,
-                    worldy = temp.worldy,
-                    width = temp.width,
-                    height = temp.height,
-                    tileSizeX = temp.tileSizeX,
-                    tileSizeY = temp.tileSizeY,
-                    bgColor = temp.bgColor,
-                    gridColor = temp.gridColor,
-                    projectFilePath = Marshal.PtrToStringAnsi(temp.projectFilePath),
-                    projectName = Marshal.PtrToStringAnsi(temp.projectName)
-                };
-                
-                return null;
+            bool success = Externs.GetMapProps(out temp);
+
+            if (!success) {
+                outInfo = default;
+                return false;
             }
-            
-            outInfo = default;
-            return Marshal.PtrToStringAnsi(result);
+
+            outInfo = new MapInfoStruct {
+                idd = Marshal.PtrToStringAnsi(temp.idd),
+                name = Marshal.PtrToStringAnsi(temp.name),
+                worldx = temp.worldx,
+                worldy = temp.worldy,
+                width = temp.width,
+                height = temp.height,
+                tileSizeX = temp.tileSizeX,
+                tileSizeY = temp.tileSizeY,
+                bgColor = temp.bgColor,
+                gridColor = temp.gridColor,
+                projectFilePath = Marshal.PtrToStringAnsi(temp.projectFilePath),
+                projectName = Marshal.PtrToStringAnsi(temp.projectName)
+            };
+
+            return true;
         }
 
-        public string? SetMapProps(MapInfoStruct info) {
+        public bool SetMapProps(MapInfoStruct info) {
             IntPtr projectFilePathPtr = Marshal.StringToHGlobalAnsi(info.projectFilePath ?? "");
             IntPtr projectNamePtr = Marshal.StringToHGlobalAnsi(info.projectName ?? "");
 
@@ -349,14 +348,9 @@ namespace csharp_editor.UserControls {
                 projectFilePath = projectFilePathPtr,
                 projectName = projectNamePtr
             };
-            
+
             try {
-                IntPtr result = Externs.SetMapProps(ref temp);
-                if (result == IntPtr.Zero) {
-                    return null;
-                }
-                
-                return Marshal.PtrToStringAnsi(result);
+                return Externs.SetMapProps(ref temp);
             } finally {
                 Marshal.FreeHGlobal(temp.idd);
                 Marshal.FreeHGlobal(temp.name);

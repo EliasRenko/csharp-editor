@@ -210,6 +210,13 @@ namespace csharp_editor {
                 tabControl1.ItemSize = new Size(widest, tabControl1.ItemSize.Height);
         }
 
+        private string GetLastErrorMessage() {
+            if (!string.IsNullOrWhiteSpace(lastError.message)) {
+                return $"{lastError.priority} - {lastError.category} - {lastError.message}";
+            }
+            return "Unknown native error.";
+        }
+
         private void LoadMap(string path) {
             _welcomePanel.Visible = false;
 
@@ -225,8 +232,16 @@ namespace csharp_editor {
 
             _suppressStateSwitch = true;
             int stateId = view_extern.ImportMap(path);
-            System.Diagnostics.Debug.WriteLine($"[LoadMap] ImportMap('{path}') returned stateId={stateId}");
-            Log($"[DEBUG] ImportMap returned stateId={stateId}");
+            System.Diagnostics.Debug.WriteLine($"[LoadMap] ImportMap('{path}') returned state={stateId}");
+            Log($"[DEBUG] ImportMap returned state={stateId}");
+
+            if (stateId < 0) {
+                _suppressStateSwitch = false;
+                MessageBox.Show($"Failed to import map:\n{GetLastErrorMessage()}", "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            view_extern.SetActiveState(stateId);
 
             // Create a tab for this state
             string tabLabel = Path.GetFileNameWithoutExtension(path);
@@ -235,11 +250,6 @@ namespace csharp_editor {
             UpdateTabItemSize();
             tabControl1.SelectedTab = tab;
             _suppressStateSwitch = false;
-
-            // Explicitly activate the imported state (suppressed above so SelectedIndexChanged didn't do it)
-            int setStateResult = view_extern.SetActiveState(stateId);
-            System.Diagnostics.Debug.WriteLine($"[LoadMap] SetActiveState({stateId}) returned {setStateResult}");
-            Log($"[DEBUG] SetActiveState({stateId}) returned {setStateResult}");
 
             // Show the editor panel if it was hidden
             panelMain.Visible = true;
@@ -253,6 +263,9 @@ namespace csharp_editor {
 
             // Reload entity definitions so selector is up-to-date (useful after import)
             entitySelector.LoadEntities();
+
+            // Ensure project status is accurate after the first-map load path
+            UpdateProjectStatus();
 
             Log($"Map loaded: {tabLabel} (state {stateId})");
         }
@@ -573,7 +586,10 @@ namespace csharp_editor {
                     dialog.AddExtension = true;
 
                     if (dialog.ShowDialog() == DialogResult.OK) {
-                        view_extern.ExportMap(dialog.FileName);
+                        bool ok = view_extern.ExportMap(dialog.FileName);
+                        if (!ok) {
+                            MessageBox.Show($"Failed to export map:\n{GetLastErrorMessage()}", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                 }
             }
@@ -649,12 +665,10 @@ namespace csharp_editor {
             view_extern?.DeselectEntity();
             try {
                 if (view_extern != null) {
-                    // call backend and capture possible error message
-                    string? error = view_extern.GetMapProps(out MapInfoStruct info);
+                    bool gotInfo = view_extern.GetMapProps(out MapInfoStruct info);
 
-                    if (!string.IsNullOrEmpty(error)) {
-                        // backend returned an error string – show to user and abort
-                        MessageBox.Show(error, "Map Info Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (!gotInfo) {
+                        MessageBox.Show($"Failed to retrieve map info:\n{GetLastErrorMessage()}", "Map Info Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         if (propertyGridPanel1?.PropertyGrid != null)
                             propertyGridPanel1.PropertyGrid.SelectedObject = null;
                     }
@@ -691,7 +705,10 @@ namespace csharp_editor {
                                     projectFilePath = m.ProjectFilePath,
                                     projectName = m.ProjectName
                                 };
-                                view_extern.SetMapProps(native);
+                                bool setOk = view_extern.SetMapProps(native);
+                                if (!setOk) {
+                                    MessageBox.Show($"Failed to set map info:\n{GetLastErrorMessage()}", "Set Map Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
                             }
                         };
                         propertyGridPanel1.PropertyGrid.SelectedObject = display;
@@ -918,8 +935,12 @@ namespace csharp_editor {
                     if (saveFirst && !string.IsNullOrEmpty(ts.FilePath) &&
                         ts.FilePath.EndsWith(".json", StringComparison.OrdinalIgnoreCase)) {
                         view_extern.SetActiveState(ts.StateId);
-                        view_extern.ExportMap(ts.FilePath);
-                        Log($"Saved map: {ts.FilePath}");
+                        bool ok = view_extern.ExportMap(ts.FilePath);
+                        if (!ok) {
+                            MessageBox.Show($"Failed to save map '{ts.FilePath}':\n{GetLastErrorMessage()}", "Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        } else {
+                            Log($"Saved map: {ts.FilePath}");
+                        }
                     }
                     view_extern.ReleaseState(ts.StateId);
                 }

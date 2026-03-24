@@ -2,8 +2,7 @@
 using System.Runtime.InteropServices;
 
 namespace csharp_editor {
-    public static class Externs
-    {
+    public static class Externs {
         public const string DLL = "Editor-debug.dll";
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -180,17 +179,17 @@ namespace csharp_editor {
 
         #region Map management
 
-        [DllImport(DLL, EntryPoint = "exportMap")]
-        public static extern int ExportMap(string path);
+        [DllImport(DLL, EntryPoint = "exportMap", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern bool ExportMap(string path);
         
-        [DllImport(DLL, EntryPoint = "importMap")]
+        [DllImport(DLL, EntryPoint = "importMap", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int ImportMap(string path);
         
         [DllImport(DLL, EntryPoint = "getMapProps", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr GetMapProps(out MapProps outInfo);
+        public static extern bool GetMapProps(out MapProps outInfo);
         
         [DllImport(DLL, EntryPoint = "setMapProps", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr SetMapProps(ref MapProps info);
+        public static extern bool SetMapProps(ref MapProps info);
 
         #endregion
 

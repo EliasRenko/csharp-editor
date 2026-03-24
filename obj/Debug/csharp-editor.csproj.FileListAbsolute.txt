@@ -51,8 +51,6 @@ C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_edi
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.Dialogs.TilesetImportDialog.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.UserControls.ExternView.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.UserControls.HierarchyTree.resources
-C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.UserControls.TextureInfo.resources
-C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.Dialogs.EntityCreateDialog.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.Dialogs.PropertyDefinitionDialog.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.Dialogs.TilesetCreateDialog.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\Debug\csharp_editor.UserControls.DebugConsole.resources
