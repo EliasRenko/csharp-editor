@@ -200,110 +200,60 @@ namespace csharp_editor {
         
         #endregion
 
-        #region Tilesets
+        #region Tileset managment
+        
+        [DllImport(DLL, EntryPoint = "createTileset", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern bool CreateTileset(string texturePath, string name);
+        
+        [DllImport(DLL, EntryPoint = "deleteTileset", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern bool DeleteTileset(string name);
         
         [DllImport(DLL, EntryPoint = "getTileset", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int GetTileset(string tilesetName, out TilesetInfoStruct outInfo);
+        public static extern bool GetTileset(string tilesetName, out TilesetInfoStruct outInfo);
         
         [DllImport(DLL, EntryPoint = "getTilesetAt", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int GetTilesetAt(int index, out TilesetInfoStruct outInfo);
+        public static extern bool GetTilesetAt(int index, out TilesetInfoStruct outInfo);
         
         [DllImport(DLL, EntryPoint = "getTilesetCount", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetTilesetCount();
         
-        [DllImport(DLL, EntryPoint = "createTileset", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr CreateTileset(string texturePath, string name);
-        
-        [DllImport(DLL, EntryPoint = "deleteTileset", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr DeleteTileset(string name);
-        
         [DllImport(DLL, EntryPoint = "setActiveTileset", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern bool SetActiveTileset(string tilesetName);
+
+        [DllImport(DLL, EntryPoint = "getActiveTile")]
+        public static extern int GetActiveTile();
         
         [DllImport(DLL, EntryPoint = "setActiveTile")]
         public static extern void SetActiveTile(int tileRegionId);
-        
-        [DllImport(DLL, EntryPoint = "getActiveTile")]
-        public static extern int GetActiveTile();
-
-        [DllImport(DLL, EntryPoint = "setToolType")]
-        public static extern void SetToolType(int toolType);
-        
-        [DllImport(DLL, EntryPoint = "getToolType")]
-        public static extern int GetToolType();
 
         #endregion
-        
-        // Layer Management
-        [DllImport(DLL, EntryPoint = "setLayerProperties", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void SetLayerProperties(string layerName, ref LayerInfoStruct properties);
 
-        [DllImport(DLL, EntryPoint = "setLayerPropertiesAt", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void SetLayerPropertiesAt(int index, ref LayerInfoStruct properties);
-        
-        [DllImport(DLL, EntryPoint = "createTilemapLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void CreateTilemapLayer(string layerName, string tilesetName, int tileSize, int index);
-        
-        [DllImport(DLL, EntryPoint = "createEntityLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void CreateEntityLayer(string layerName);
-        
-        [DllImport(DLL, EntryPoint = "createFolderLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void CreateFolderLayer(string layerName);
+        #region Entity definitions managment
 
-        [DllImport(DLL, EntryPoint = "replaceLayerTileset", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void ReplaceLayerTileset(string layerName, string tilesetName);
+        [DllImport(DLL, EntryPoint = "createEntityDef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern bool CreateEntity(string entityName, ref EntityDataStruct data);
         
-        // --
+        [DllImport(DLL, EntryPoint = "editEntityDef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern bool EditEntity(string entityName, ref EntityDataStruct data);
         
-        [DllImport(DLL, EntryPoint = "setActiveLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int SetActiveLayer(string layerName);
-        
-        [DllImport(DLL, EntryPoint = "setActiveLayerAt", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int SetActiveLayerAt(int index);
-        
-        [DllImport(DLL, EntryPoint = "removeLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int RemoveLayer(string layerName);
-        
-        [DllImport(DLL, EntryPoint = "removeLayerByIndex", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int RemoveLayerByIndex(int index);
-        
-        [DllImport(DLL, EntryPoint = "getLayerCount", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int GetLayerCount();
-        
-        [DllImport(DLL, EntryPoint = "getLayerInfoAt", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int GetLayerInfoAt(int index, out LayerInfoStruct outInfo);
-        
-        [DllImport(DLL, EntryPoint = "getLayerInfo", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int GetLayerInfo(string layerName, out LayerInfoStruct outInfo);
-        
-        // Entity Management
+        [DllImport(DLL, EntryPoint = "deleteEntityDef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern bool DeleteEntityDef(string entityName);
         
         [DllImport(DLL, EntryPoint = "getEntityDef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr GetEntity(string entityName, out EntityDataStruct outData);
+        public static extern bool GetEntity(string entityName, out EntityDataStruct outData);
         
         [DllImport(DLL, EntryPoint = "getEntityDefAt", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr GetEntityAt(int index, out EntityDataStruct outData);
+        public static extern bool GetEntityAt(int index, out EntityDataStruct outData);
         
         [DllImport(DLL, EntryPoint = "getEntityDefCount", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetEntityCount();
         
-        [DllImport(DLL, EntryPoint = "createEntityDef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr CreateEntity(string entityName, ref EntityDataStruct data);
-        
-        [DllImport(DLL, EntryPoint = "editEntityDef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr EditEntity(string entityName, ref EntityDataStruct data);
-        
-        [DllImport(DLL, EntryPoint = "removeEntity", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int RemoveEntity(string entityName);
-        
-        [DllImport(DLL, EntryPoint = "deleteEntityDef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr DeleteEntityDef(string entityName);
-        
         [DllImport(DLL, EntryPoint = "setActiveEntityDef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int SetActiveEntity(string entityName);
-        
-        [DllImport(DLL, EntryPoint = "placeEntity", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int PlaceEntity(int x, int y);
+        public static extern bool SetActiveEntity(string entityName);
+
+        #endregion
+
+        #region Entity instances management
 
         [DllImport(DLL, EntryPoint = "setEntitySelectionChangedCallback", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetEntitySelectionChangedCallback(EntitySelectionChangedCallback callback);
@@ -312,8 +262,8 @@ namespace csharp_editor {
         public static extern int GetEntitySelectionCount();
 
         [DllImport(DLL, EntryPoint = "getEntitySelectionInfo", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int GetEntitySelectionInfo(int index, out EntityStruct outData);
-
+        public static extern bool GetEntitySelectionInfo(int index, out EntityStruct outData);
+        
         [DllImport(DLL, EntryPoint = "selectEntityByUID", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern bool SelectEntityByUID(string uid);
 
@@ -323,14 +273,74 @@ namespace csharp_editor {
         [DllImport(DLL, EntryPoint = "deselectEntity", CallingConvention = CallingConvention.Cdecl)]
         public static extern void DeselectEntity();
 
-        // Enumerate placed entity instances in a layer (batchIndex = -1 for all batches)
-        [DllImport(DLL, EntryPoint = "getEntityLayerInstanceCount", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int GetEntityLayerInstanceCount(string layerName, int batchIndex);
+        #endregion
 
-        [DllImport(DLL, EntryPoint = "getEntityLayerInstanceAt", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int GetEntityLayerInstanceAt(string layerName, int batchIndex, int instanceIndex, out EntityStruct outData);
+        #region  Layer managment
+        
+        [DllImport(DLL, EntryPoint = "createTilemapLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void CreateTilemapLayer(string layerName, string tilesetName, int tileSize, int index);
+        
+        [DllImport(DLL, EntryPoint = "createEntityLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void CreateEntityLayer(string layerName);
+        
+        [DllImport(DLL, EntryPoint = "createFolderLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void CreateFolderLayer(string layerName);
+        
+        [DllImport(DLL, EntryPoint = "getLayerCount", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetLayerCount();
+        
+        [DllImport(DLL, EntryPoint = "getLayerInfo", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern bool GetLayerInfo(string layerName, out LayerInfoStruct outInfo);
+        
+        [DllImport(DLL, EntryPoint = "getLayerInfoAt", CallingConvention = CallingConvention.Cdecl)]
+        public static extern bool GetLayerInfoAt(int index, out LayerInfoStruct outInfo);
+        
+        [DllImport(DLL, EntryPoint = "replaceLayerTileset", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern bool ReplaceLayerTileset(string layerName, string tilesetName);
 
-        // Batch group queries for entity layers
+        [DllImport(DLL, EntryPoint = "setActiveLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern bool SetActiveLayer(string layerName);
+        
+        [DllImport(DLL, EntryPoint = "setActiveLayerAt", CallingConvention = CallingConvention.Cdecl)]
+        public static extern bool SetActiveLayerAt(int index);
+        
+        [DllImport(DLL, EntryPoint = "setLayerProperties", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern bool SetLayerProperties(string layerName, ref LayerInfoStruct properties);
+
+        [DllImport(DLL, EntryPoint = "setLayerPropertiesAt", CallingConvention = CallingConvention.Cdecl)]
+        public static extern bool SetLayerPropertiesAt(int index, ref LayerInfoStruct properties);
+
+        [DllImport(DLL, EntryPoint = "removeLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern bool RemoveLayer(string layerName);
+        
+        [DllImport(DLL, EntryPoint = "removeLayerByIndex", CallingConvention = CallingConvention.Cdecl)]
+        public static extern bool RemoveLayerByIndex(int index);
+
+        [DllImport(DLL, EntryPoint = "moveLayerUp", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern bool MoveLayerUp(string layerName);
+        
+        [DllImport(DLL, EntryPoint = "moveLayerDown", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern bool MoveLayerDown(string layerName);
+        
+        [DllImport(DLL, EntryPoint = "moveLayerTo", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern bool MoveLayerTo(string layerName, int newIndex);
+        
+        [DllImport(DLL, EntryPoint = "moveLayerUpByIndex", CallingConvention = CallingConvention.Cdecl)]
+        public static extern bool MoveLayerUpByIndex(int index);
+        
+        [DllImport(DLL, EntryPoint = "moveLayerDownByIndex", CallingConvention = CallingConvention.Cdecl)]
+        public static extern bool MoveLayerDownByIndex(int index);
+        
+        [DllImport(DLL, EntryPoint = "setToolType")]
+        public static extern void SetToolType(int toolType);
+        
+        [DllImport(DLL, EntryPoint = "getToolType")]
+        public static extern int GetToolType();
+
+        #endregion
+        
+        #region Layer batch managment
+        
         [DllImport(DLL, EntryPoint = "getEntityLayerBatchCount", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int GetEntityLayerBatchCount(string layerName);
 
@@ -340,39 +350,32 @@ namespace csharp_editor {
         [DllImport(DLL, EntryPoint = "getEntityLayerBatchTilesetName", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern IntPtr GetEntityLayerBatchTilesetName(string layerName, int batchIndex);
 
-        // movement operations for batch groups within an entity layer
+        [DllImport(DLL, EntryPoint = "getEntityLayerInstanceCount", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int GetEntityLayerInstanceCount(string layerName, int batchIndex);
+
+        [DllImport(DLL, EntryPoint = "getEntityLayerInstanceAt", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int GetEntityLayerInstanceAt(string layerName, int batchIndex, int instanceIndex, out EntityStruct outData);
+
         [DllImport(DLL, EntryPoint = "moveEntityLayerBatchUp", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int MoveEntityLayerBatchUp(string layerName, int batchIndex);
+        public static extern bool MoveEntityLayerBatchUp(string layerName, int batchIndex);
 
         [DllImport(DLL, EntryPoint = "moveEntityLayerBatchDown", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int MoveEntityLayerBatchDown(string layerName, int batchIndex);
+        public static extern bool MoveEntityLayerBatchDown(string layerName, int batchIndex);
 
         [DllImport(DLL, EntryPoint = "moveEntityLayerBatchTo", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int MoveEntityLayerBatchTo(string layerName, int batchIndex, int newIndex);
+        public static extern bool MoveEntityLayerBatchTo(string layerName, int batchIndex, int newIndex);
 
         [DllImport(DLL, EntryPoint = "moveEntityLayerBatchUpByIndex", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int MoveEntityLayerBatchUpByIndex(int layerIndex, int batchIndex);
+        public static extern bool MoveEntityLayerBatchUpByIndex(int layerIndex, int batchIndex);
+        
         [DllImport(DLL, EntryPoint = "moveEntityLayerBatchDownByIndex", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int MoveEntityLayerBatchDownByIndex(int layerIndex, int batchIndex);
+        public static extern bool MoveEntityLayerBatchDownByIndex(int layerIndex, int batchIndex);
+        
         [DllImport(DLL, EntryPoint = "moveEntityLayerBatchToByIndex", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int MoveEntityLayerBatchToByIndex(int layerIndex, int batchIndex, int newIndex);
-        
-        [DllImport(DLL, EntryPoint = "moveLayerUp", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int MoveLayerUp(string layerName);
-        
-        [DllImport(DLL, EntryPoint = "moveLayerDown", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int MoveLayerDown(string layerName);
-        
-        // move a layer directly to a specified position
-        [DllImport(DLL, EntryPoint = "moveLayerTo", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int MoveLayerTo(string layerName, int newIndex);
-        
-        [DllImport(DLL, EntryPoint = "moveLayerUpByIndex", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int MoveLayerUpByIndex(int index);
-        
-        [DllImport(DLL, EntryPoint = "moveLayerDownByIndex", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int MoveLayerDownByIndex(int index);
+        public static extern bool MoveEntityLayerBatchToByIndex(int layerIndex, int batchIndex, int newIndex);
 
+        #endregion
+        
         #region WinAPI Entry Points
 
         public static void ApplyChildWindowStyle(IntPtr windowHandle) {

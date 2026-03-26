@@ -67,9 +67,9 @@ namespace csharp_editor.Dialogs {
             
             for (int i = 0; i < count; i++) {
                 Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
-                int result = _externView.GetTilesetAt(i, out tilesetInfo);
+                bool result = _externView.GetTilesetAt(i, out tilesetInfo);
                 
-                if (result != 0) {
+                if (result) {
                     string name = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "";
                     if (name == _tilesetName) {
                         tilesetIndex = i;
@@ -90,8 +90,8 @@ namespace csharp_editor.Dialogs {
             Externs.TextureDataStruct textureData = new Externs.TextureDataStruct();
             Externs.TilesetInfoStruct tileset = new Externs.TilesetInfoStruct();
             
-            int loadResult = _externView.GetTilesetAt(tilesetIndex, out tileset);
-            if (loadResult != 0) {
+            bool loadResult = _externView.GetTilesetAt(tilesetIndex, out tileset);
+            if (loadResult) {
                 string texturePath = Marshal.PtrToStringAnsi(tileset.texturePath) ?? "";
                 _externView.GetTextureData(texturePath, out textureData);
                 

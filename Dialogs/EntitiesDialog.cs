@@ -88,12 +88,13 @@ namespace csharp_editor.Dialogs {
 
             int index = listBoxEntities.SelectedIndex;
             try {
-                string? error = _externView.DeleteEntityDef(entity.Name);
-                if (error == null) {
+                bool success = _externView.DeleteEntityDef(entity.Name);
+                if (success) {
                     _entities.RemoveAt(index);
                     listBoxEntities.Items.RemoveAt(index);
                     _onEntityDefDeleted?.Invoke();
                 } else {
+                    string error = _externView.GetLastErrorMessage();
                     MessageBox.Show($"Failed to delete entity '{entity.Name}': {error}",
                         "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }

@@ -29,8 +29,18 @@ namespace csharp_editor.UserControls {
         public CallbackDelegate logCallback = null!; // initialized in Init()
         public bool active = false;
 
+        private string _lastErrorMessage = "Unknown native error.";
+
         // Fired on the UI thread whenever the C++ engine reports a selection change
         public event EventHandler? EntitySelectionChanged;
+
+        public void SetLastErrorMessage(string message) {
+            _lastErrorMessage = string.IsNullOrWhiteSpace(message) ? "Unknown native error." : message;
+        }
+
+        public string GetLastErrorMessage() {
+            return _lastErrorMessage;
+        }
 
         // Keep a strong reference so the delegate isn't GC'd while the C++ side holds a pointer
         private Externs.EntitySelectionChangedCallback? _entitySelectionChangedCallback;
@@ -154,11 +164,11 @@ namespace csharp_editor.UserControls {
         }
         
         
-        public int GetTileset(string tilesetName, out TilesetInfoStruct outInfo) {
+        public bool GetTileset(string tilesetName, out TilesetInfoStruct outInfo) {
             return Externs.GetTileset(tilesetName, out outInfo);
         }
         
-        public int GetTilesetAt(int index, out TilesetInfoStruct outInfo) {
+        public bool GetTilesetAt(int index, out TilesetInfoStruct outInfo) {
             return Externs.GetTilesetAt(index, out outInfo);
         }
 
@@ -170,18 +180,12 @@ namespace csharp_editor.UserControls {
             return Externs.SetActiveTileset(tilesetName);
         }
 
-        public string? CreateTileset(string texturePath, string name) {
-            IntPtr result = Externs.CreateTileset(texturePath, name);
-            if (result == IntPtr.Zero) {
-                return null;
-            }
-            return Marshal.PtrToStringAnsi(result);
+        public bool CreateTileset(string texturePath, string name) {
+            return Externs.CreateTileset(texturePath, name);
         }
 
-        /// <summary>Deletes a tileset. Returns null on success, or an error message on failure.</summary>
-        public string? DeleteTileset(string name) {
-            IntPtr result = Externs.DeleteTileset(name);
-            return result == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(result);
+        public bool DeleteTileset(string name) {
+            return Externs.DeleteTileset(name);
         }
 
         public int GetActiveTile() {
@@ -283,19 +287,19 @@ namespace csharp_editor.UserControls {
             Externs.CreateFolderLayer(layerName);
         }
         
-        public int SetActiveLayer(string layerName) {
+        public bool SetActiveLayer(string layerName) {
             return Externs.SetActiveLayer(layerName);
         }
 
-        public int SetActiveLayerAt(int index) {
+        public bool SetActiveLayerAt(int index) {
             return Externs.SetActiveLayerAt(index);
         }
 
-        public int RemoveLayer(string layerName) {
+public bool RemoveLayer(string layerName) {
             return Externs.RemoveLayer(layerName);
         }
-        
-        public int RemoveLayerByIndex(int index) {
+
+        public bool RemoveLayerByIndex(int index) {
             return Externs.RemoveLayerByIndex(index);
         }
         
@@ -359,19 +363,19 @@ namespace csharp_editor.UserControls {
             }
         }
         
-        public int GetLayerInfoAt(int index, out Externs.LayerInfoStruct outInfo) {
+        public bool GetLayerInfoAt(int index, out Externs.LayerInfoStruct outInfo) {
             return Externs.GetLayerInfoAt(index, out outInfo);
         }
         
-        public int GetLayerInfo(string layerName, out Externs.LayerInfoStruct outInfo) {
+        public bool GetLayerInfo(string layerName, out Externs.LayerInfoStruct outInfo) {
             return Externs.GetLayerInfo(layerName, out outInfo);
         }
 
-        public void ReplaceLayerTileset(string layerName, string tilesetName) {
-            Externs.ReplaceLayerTileset(layerName, tilesetName);
+        public bool ReplaceLayerTileset(string layerName, string tilesetName) {
+            return Externs.ReplaceLayerTileset(layerName, tilesetName);
         }
 
-        public void SetLayerProperties(string originalName, string newName, bool visible, string? tilesetName = null, int type = 0, bool silhouette = false, System.Drawing.Color silhouetteColor = default) {
+        public bool SetLayerProperties(string originalName, string newName, bool visible, string? tilesetName = null, int type = 0, bool silhouette = false, System.Drawing.Color silhouetteColor = default) {
             IntPtr namePtr = Marshal.StringToHGlobalAnsi(newName);
             IntPtr tilesetNamePtr = tilesetName != null ? Marshal.StringToHGlobalAnsi(tilesetName) : IntPtr.Zero;
             try {
@@ -385,7 +389,7 @@ namespace csharp_editor.UserControls {
                     silhouette = silhouette,
                     silhouetteColor = rgba
                 };
-                Externs.SetLayerProperties(originalName, ref info);
+                return Externs.SetLayerProperties(originalName, ref info);
             } finally {
                 Marshal.FreeHGlobal(namePtr);
                 if (tilesetNamePtr != IntPtr.Zero) {
@@ -394,75 +398,61 @@ namespace csharp_editor.UserControls {
             }
         }
         
-        public int MoveLayerUp(string layerName) {
+public bool MoveLayerUp(string layerName) {
             return Externs.MoveLayerUp(layerName);
         }
-        
-        public int MoveLayerDown(string layerName) {
+
+        public bool MoveLayerDown(string layerName) {
             return Externs.MoveLayerDown(layerName);
         }
-        
-        public int MoveLayerTo(string layerName, int newIndex) {
+
+        public bool MoveLayerTo(string layerName, int newIndex) {
             return Externs.MoveLayerTo(layerName, newIndex);
         }
-        
-        public int MoveLayerUpByIndex(int index) {
+
+        public bool MoveLayerUpByIndex(int index) {
             return Externs.MoveLayerUpByIndex(index);
         }
-        
-        public int MoveLayerDownByIndex(int index) {
+
+        public bool MoveLayerDownByIndex(int index) {
             return Externs.MoveLayerDownByIndex(index);
         }
         
         // Entity Management
         
-        public string? CreateEntity(string entityName, ref Externs.EntityDataStruct data) {
-            IntPtr result = Externs.CreateEntity(entityName, ref data);
-            return result == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(result);
+        public bool CreateEntity(string entityName, ref Externs.EntityDataStruct data) {
+            return Externs.CreateEntity(entityName, ref data);
         }
 
-        public string? EditEntity(string entityName, ref Externs.EntityDataStruct data) {
-            IntPtr result = Externs.EditEntity(entityName, ref data);
-            return result == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(result);
+        public bool EditEntity(string entityName, ref Externs.EntityDataStruct data) {
+            return Externs.EditEntity(entityName, ref data);
         }
         
-        public string? GetEntity(string entityName, out Externs.EntityDataStruct outData) {
-            var result = Externs.GetEntity(entityName, out outData);
-            return result == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(result);
+        public Boolean GetEntity(string entityName, out Externs.EntityDataStruct outData) {
+            return Externs.GetEntity(entityName, out outData);
         }
         
-        public string? GetEntityAt(int index, out Externs.EntityDataStruct outData) {
-            var result = Externs.GetEntityAt(index, out outData);
-            return result == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(result);
+        public Boolean GetEntityAt(int index, out Externs.EntityDataStruct outData) {
+            return Externs.GetEntityAt(index, out outData);
         }
         
         public int GetEntityCount() {
             return Externs.GetEntityCount();
         }
         
-        public int RemoveEntity(string entityName) {
-            return Externs.RemoveEntity(entityName);
+        public bool DeleteEntityDef(string entityName) {
+            return Externs.DeleteEntityDef(entityName);
         }
         
-        /// <summary>Deletes an entity definition. Returns null on success, or an error message on failure.</summary>
-        public string? DeleteEntityDef(string entityName) {
-            IntPtr result = Externs.DeleteEntityDef(entityName);
-            return result == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(result);
-        }
-        
-        public int SetActiveEntity(string entityName) {
+        public bool SetActiveEntity(string entityName) {
             return Externs.SetActiveEntity(entityName);
-        }
-        
-        public int PlaceEntity(int x, int y) {
-            return Externs.PlaceEntity(x, y);
         }
 
         public int GetEntitySelectionCount() {
             return Externs.GetEntitySelectionCount();
         }
 
-        public int GetEntitySelectionInfo(int index, out Externs.EntityStruct outData) {
+        public bool GetEntitySelectionInfo(int index, out Externs.EntityStruct outData) {
             return Externs.GetEntitySelectionInfo(index, out outData);
         }
 
@@ -501,22 +491,22 @@ namespace csharp_editor.UserControls {
         }
 
         // movement helpers -------------------------------------------------------
-        public int MoveEntityLayerBatchUp(string layerName, int batchIndex) {
+        public bool MoveEntityLayerBatchUp(string layerName, int batchIndex) {
             return Externs.MoveEntityLayerBatchUp(layerName, batchIndex);
         }
-        public int MoveEntityLayerBatchDown(string layerName, int batchIndex) {
+        public bool MoveEntityLayerBatchDown(string layerName, int batchIndex) {
             return Externs.MoveEntityLayerBatchDown(layerName, batchIndex);
         }
-        public int MoveEntityLayerBatchTo(string layerName, int batchIndex, int newIndex) {
+        public bool MoveEntityLayerBatchTo(string layerName, int batchIndex, int newIndex) {
             return Externs.MoveEntityLayerBatchTo(layerName, batchIndex, newIndex);
         }
-        public int MoveEntityLayerBatchUpByIndex(int layerIndex, int batchIndex) {
+        public bool MoveEntityLayerBatchUpByIndex(int layerIndex, int batchIndex) {
             return Externs.MoveEntityLayerBatchUpByIndex(layerIndex, batchIndex);
         }
-        public int MoveEntityLayerBatchDownByIndex(int layerIndex, int batchIndex) {
+        public bool MoveEntityLayerBatchDownByIndex(int layerIndex, int batchIndex) {
             return Externs.MoveEntityLayerBatchDownByIndex(layerIndex, batchIndex);
         }
-        public int MoveEntityLayerBatchToByIndex(int layerIndex, int batchIndex, int newIndex) {
+        public bool MoveEntityLayerBatchToByIndex(int layerIndex, int batchIndex, int newIndex) {
             return Externs.MoveEntityLayerBatchToByIndex(layerIndex, batchIndex, newIndex);
         }
         

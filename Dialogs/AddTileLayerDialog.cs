@@ -21,7 +21,7 @@ namespace csharp_editor.Dialogs {
             int count = _externView.GetTilesetCount();
             for (int i = 0; i < count; i++) {
                 Externs.TilesetInfoStruct info = new Externs.TilesetInfoStruct();
-                if (_externView.GetTilesetAt(i, out info) != 0) {
+                if (_externView.GetTilesetAt(i, out info)) {
                     string name = Marshal.PtrToStringAnsi(info.name) ?? "";
                     if (!string.IsNullOrEmpty(name))
                         comboBoxTileset.Items.Add(name);

@@ -130,7 +130,7 @@ namespace csharp_editor.UserControls {
             int count = _externView.GetTilesetCount();
             for (int i = 0; i < count; i++) {
                 Externs.TilesetInfoStruct info = new Externs.TilesetInfoStruct();
-                if (_externView.GetTilesetAt(i, out info) != 0) {
+                if (_externView.GetTilesetAt(i, out info)) {
                     string name = Marshal.PtrToStringAnsi(info.name) ?? "";
                     if (!string.IsNullOrEmpty(name)) comboBoxTilemap.Items.Add(name);
                 }
@@ -166,7 +166,7 @@ namespace csharp_editor.UserControls {
             int count = _externView.GetTilesetCount();
             for (int i = 0; i < count; i++) {
                 Externs.TilesetInfoStruct info = new Externs.TilesetInfoStruct();
-                if (_externView.GetTilesetAt(i, out info) == 0) continue;
+                if (!_externView.GetTilesetAt(i, out info)) continue;
                 string name = Marshal.PtrToStringAnsi(info.name) ?? "";
                 if (name != selectedTilemap) continue;
 
@@ -305,11 +305,12 @@ namespace csharp_editor.UserControls {
                     pivotY       = _pivotYActual
                 };
 
-                string? error = _isEditMode
+                bool success = _isEditMode
                     ? _externView.EditEntity(textBoxName.Text.Trim(), ref data)
                     : _externView.CreateEntity(textBoxName.Text.Trim(), ref data);
 
-                if (error != null) {
+                if (!success) {
+                    string error = _externView.GetLastErrorMessage();
                     MessageBox.Show(error, _isEditMode ? "Entity Edit Error" : "Entity Creation Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning); return;
                 }

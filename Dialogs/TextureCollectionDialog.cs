@@ -40,9 +40,9 @@ namespace csharp_editor.Dialogs {
             // Loop through and get each tileset info
             for (int i = 0; i < count; i++) {
                 Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
-                int result = _externView.GetTilesetAt(i, out tilesetInfo);
+                bool result = _externView.GetTilesetAt(i, out tilesetInfo);
                 
-                if (result != 0) {
+                if (result) {
                     string tilesetName = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "";
                     
                     if (!string.IsNullOrEmpty(tilesetName)) {
@@ -64,9 +64,9 @@ namespace csharp_editor.Dialogs {
         private void listBoxTilesets_SelectedIndexChanged(object sender, EventArgs e) {
             if (listBoxTilesets.SelectedItem is TilesetEntry entry) {
                 Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
-                int result = _externView.GetTileset(entry.Name, out tilesetInfo);
+                bool result = _externView.GetTileset(entry.Name, out tilesetInfo);
 
-                if (result != 0 && !string.IsNullOrEmpty(entry.ImagePath)) {
+                if (result && !string.IsNullOrEmpty(entry.ImagePath)) {
                     Externs.TextureDataStruct textureData = new Externs.TextureDataStruct();
                     _externView.GetTextureData(entry.ImagePath, out textureData);
                     textureViewer.SetTextureData(textureData, 0);
@@ -97,9 +97,10 @@ namespace csharp_editor.Dialogs {
                 string imagePath = dialog.FileName;
                 string name = Path.GetFileNameWithoutExtension(imagePath);
 
-                var error = _externView.CreateTileset(imagePath, name);
-                if (error != null) {
-                    MessageBox.Show(error, "Import Error",
+                bool success = _externView.CreateTileset(imagePath, name);
+                if (!success) {
+                    string error = _externView.GetLastErrorMessage();
+                    MessageBox.Show($"Failed to import tileset '{name}':\n{error}", "Import Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
@@ -176,9 +177,10 @@ namespace csharp_editor.Dialogs {
             }
 
             // C++ has no rename API — recreate under the new name then update local entry
-            string? err = _externView.CreateTileset(old.ImagePath, newName);
-            if (err != null) {
-                MessageBox.Show($"Rename failed: {err}", "Error",
+            bool success = _externView.CreateTileset(old.ImagePath, newName);
+            if (!success) {
+                string error = _externView.GetLastErrorMessage();
+                MessageBox.Show($"Rename failed: {error}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -217,10 +219,11 @@ namespace csharp_editor.Dialogs {
 
             if (confirm != DialogResult.Yes) return;
 
-            string? error = _externView.DeleteTileset(entry.Name);
-            if (error != null) {
-                MessageBox.Show($"Failed to delete tileset '{entry.Name}': {error}",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            bool success = _externView.DeleteTileset(entry.Name);
+            if (!success) {
+                string error = _externView.GetLastErrorMessage();
+                MessageBox.Show($"Failed to delete tileset '{entry.Name}':\n{error}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 

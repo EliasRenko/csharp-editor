@@ -174,7 +174,11 @@ namespace csharp_editor.UserControls {
             }
 
             // Select the new layer as active in the backend
-            _externView?.SetActiveLayer(name);
+            bool activeOK = _externView?.SetActiveLayer(name) ?? false;
+            if (!activeOK) {
+                string error = _externView?.GetLastErrorMessage() ?? "Unknown error.";
+                MessageBox.Show($"Failed to activate layer '{name}':\n{error}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
             LayersChanged?.Invoke(this, EventArgs.Empty);
             UpdateButtonStates();
@@ -189,7 +193,11 @@ namespace csharp_editor.UserControls {
                     _layers.Remove(layer);
                     
                     // Notify backend
-                    _externView?.RemoveLayer(layer.Name);
+                    bool removeOk = _externView?.RemoveLayer(layer.Name) ?? false;
+                    if (!removeOk) {
+                        string error = _externView?.GetLastErrorMessage() ?? "Unknown error.";
+                        MessageBox.Show($"Failed to remove layer '{layer.Name}':\n{error}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
 
                 treeViewLayers.Nodes.Remove(selectedNode);
@@ -228,7 +236,12 @@ namespace csharp_editor.UserControls {
                     }
                     
                     // Notify backend
-                    _externView?.MoveLayerUpByIndex(index);
+                    bool moved = _externView?.MoveLayerUpByIndex(index) ?? false;
+                    if (!moved) {
+                        string error = _externView?.GetLastErrorMessage() ?? "Unknown error.";
+                        MessageBox.Show($"Failed to move layer up: {error}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                 }
 
                 LayersChanged?.Invoke(this, EventArgs.Empty);
@@ -250,7 +263,12 @@ namespace csharp_editor.UserControls {
 
             // notify backend: use layer name from parent
             if (parent.Tag is LayerNode layer) {
-                _externView?.MoveEntityLayerBatchUp(layer.Name, currentIndex);
+                bool moved = _externView?.MoveEntityLayerBatchUp(layer.Name, currentIndex) ?? false;
+                if (!moved) {
+                    string error = _externView?.GetLastErrorMessage() ?? "Unknown error.";
+                    MessageBox.Show($"Failed to move batch up on layer '{layer.Name}': {error}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
             }
         }
 
@@ -266,7 +284,12 @@ namespace csharp_editor.UserControls {
                 treeViewLayers.SelectedNode = node;
 
                 if (parent.Tag is LayerNode layer) {
-                    _externView?.MoveEntityLayerBatchDown(layer.Name, currentIndex);
+                    bool moved = _externView?.MoveEntityLayerBatchDown(layer.Name, currentIndex) ?? false;
+                    if (!moved) {
+                        string error = _externView?.GetLastErrorMessage() ?? "Unknown error.";
+                        MessageBox.Show($"Failed to move batch down on layer '{layer.Name}': {error}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                 }
             }
         }
@@ -298,7 +321,12 @@ namespace csharp_editor.UserControls {
                     }
                     
                     // Notify backend
-                    _externView?.MoveLayerDownByIndex(index);
+                    bool moved = _externView?.MoveLayerDownByIndex(index) ?? false;
+                    if (!moved) {
+                        string error = _externView?.GetLastErrorMessage() ?? "Unknown error.";
+                        MessageBox.Show($"Failed to move layer down: {error}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                 }
 
                 LayersChanged?.Invoke(this, EventArgs.Empty);
@@ -423,10 +451,10 @@ namespace csharp_editor.UserControls {
             treeViewLayers.BeginUpdate();
             for (int i = 0; i < count; i++) {
                 Externs.LayerInfoStruct layerInfo = new Externs.LayerInfoStruct();
-                int result = _externView.GetLayerInfoAt(i, out layerInfo);
+                bool result = _externView.GetLayerInfoAt(i, out layerInfo);
                 System.Diagnostics.Debug.WriteLine($"[LoadLayersFromBackend] Layer[{i}]: GetLayerInfoAt result={result}");
                 
-                if (result != 0) {
+                if (result) {
                     string layerName = Marshal.PtrToStringAnsi(layerInfo.name) ?? "";
                     string tilesetName = Marshal.PtrToStringAnsi(layerInfo.tilesetName) ?? "";
                     System.Diagnostics.Debug.WriteLine($"[LoadLayersFromBackend] Layer[{i}]: name='{layerName}', type={layerInfo.type}, tilesetName='{tilesetName}'");
@@ -550,13 +578,25 @@ namespace csharp_editor.UserControls {
 
                         // Apply tileset change first (uses original layer name)
                         if (newTileset != layer.TilesetName) {
-                            _externView?.ReplaceLayerTileset(layer.Name, newTileset);
+                            bool replaceOk = _externView?.ReplaceLayerTileset(layer.Name, newTileset) ?? false;
+                            if (!replaceOk) {
+                                string error = _externView?.GetLastErrorMessage() ?? "Unknown error.";
+                                MessageBox.Show($"Failed to replace tileset for layer '{layer.Name}':\n{error}",
+                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
                             layer.TilesetName = newTileset;
                         }
 
                         // Apply name change
                         if (!string.IsNullOrWhiteSpace(newName) && newName != layer.Name) {
-                            _externView?.SetLayerProperties(layer.Name, newName, layer.Visible, layer.TilesetName);
+                            bool propsOk = _externView?.SetLayerProperties(layer.Name, newName, layer.Visible, layer.TilesetName) ?? false;
+                            if (!propsOk) {
+                                string error = _externView?.GetLastErrorMessage() ?? "Unknown error.";
+                                MessageBox.Show($"Failed to set layer properties for '{layer.Name}':\n{error}",
+                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
                             RenameLayer(layer.Name, newName);
                         }
 
@@ -597,7 +637,11 @@ namespace csharp_editor.UserControls {
             
             if (e.Node?.Tag is LayerNode layer) {
                 // Notify backend that this layer is now active
-                _externView?.SetActiveLayer(layer.Name);
+                bool activeOK = _externView?.SetActiveLayer(layer.Name) ?? false;
+                if (!activeOK) {
+                    string error = _externView?.GetLastErrorMessage() ?? "Unknown error.";
+                    MessageBox.Show($"Failed to activate layer '{layer.Name}':\n{error}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
 
                 // If the entity layer is already expanded, refresh its batch children
                 if (layer.Type == LayerType.EntityLayer && layer.TreeNodeRef.IsExpanded) {
@@ -966,7 +1010,11 @@ namespace csharp_editor.UserControls {
                     _layers.RemoveAt(fromIndex);
                     _layers.Insert(toIndex, layer);
                 }
-                _externView?.MoveLayerTo(layer?.Name ?? "", toIndex);
+                bool moved = _externView?.MoveLayerTo(layer?.Name ?? "", toIndex) ?? false;
+                if (!moved) {
+                    string error = _externView?.GetLastErrorMessage() ?? "Unknown error.";
+                    MessageBox.Show($"Failed to move layer '{layer?.Name}' to index {toIndex}: {error}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 LayersChanged?.Invoke(this, EventArgs.Empty);
             } else if (dragged.Tag is BatchInfo) {
                 TreeNode parent = dragged.Parent!;
@@ -986,7 +1034,12 @@ namespace csharp_editor.UserControls {
                 parent.Nodes.Insert(toIndex, dragged);
                 treeViewLayers.SelectedNode = dragged;
                 if (parent.Tag is LayerNode layer) {
-                    _externView?.MoveEntityLayerBatchTo(layer.Name, fromIndex, toIndex);
+                    bool moved = _externView?.MoveEntityLayerBatchTo(layer.Name, fromIndex, toIndex) ?? false;
+                    if (!moved) {
+                        string error = _externView?.GetLastErrorMessage() ?? "Unknown error.";
+                        MessageBox.Show($"Failed to move batch to index {toIndex} on layer '{layer.Name}': {error}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                 }
             }
         }

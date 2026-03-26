@@ -26,7 +26,9 @@ namespace csharp_editor {
 
             Externs.CallbackDelegate callback = (priority, category, message) => {
                 lastError.SetError(priority, category, message);
-                Log(priority + " - " + category + " - " + message);
+                string fullMessage = $"{priority} - {category} - {message}";
+                view_extern.SetLastErrorMessage(fullMessage);
+                Log(fullMessage);
             };
 
             view_extern.Init(callback);
@@ -514,19 +516,23 @@ namespace csharp_editor {
             // Single selection – show details directly
             if (count == 1) {
                 Externs.EntityStruct data = new Externs.EntityStruct();
-                if (view_extern.GetEntitySelectionInfo(0, out data) != 0) {
-                    var display = new EntityInstanceDisplay {
-                        Uid     = Marshal.PtrToStringAnsi(data.uid)    ?? "",
-                        DefName = Marshal.PtrToStringAnsi(data.name)   ?? "",
-                        X       = data.x,
-                        Y       = data.y,
-                        Width   = data.width,
-                        Height  = data.height
-                    };
-                    propertyGridPanel1.PropertyGrid.SelectedObject = display;
-                    Log($"Entity selected: {display.DefName} at ({display.X}, {display.Y})");
-                    entitySelector.SelectInstanceByUid(display.Uid);
+                if (!view_extern.GetEntitySelectionInfo(0, out data)) {
+                    string error = view_extern.GetLastErrorMessage();
+                    MessageBox.Show($"Failed to retrieve selected entity info:\n{error}",
+                        "Entity Selection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
+                var display = new EntityInstanceDisplay {
+                    Uid     = Marshal.PtrToStringAnsi(data.uid)    ?? "",
+                    DefName = Marshal.PtrToStringAnsi(data.name)   ?? "",
+                    X       = data.x,
+                    Y       = data.y,
+                    Width   = data.width,
+                    Height  = data.height
+                };
+                propertyGridPanel1.PropertyGrid.SelectedObject = display;
+                Log($"Entity selected: {display.DefName} at ({display.X}, {display.Y})");
+                entitySelector.SelectInstanceByUid(display.Uid);
                 return;
             }
 
@@ -534,16 +540,19 @@ namespace csharp_editor {
             var items = new List<EntityInstanceDisplay>(count);
             for (int i = 0; i < count; i++) {
                 Externs.EntityStruct data = new Externs.EntityStruct();
-                if (view_extern.GetEntitySelectionInfo(i, out data) != 0) {
-                    items.Add(new EntityInstanceDisplay {
-                        Uid     = Marshal.PtrToStringAnsi(data.uid)    ?? "",
-                        DefName = Marshal.PtrToStringAnsi(data.name)   ?? "",
-                        X       = data.x,
-                        Y       = data.y,
-                        Width   = data.width,
-                        Height  = data.height
-                    });
+                if (!view_extern.GetEntitySelectionInfo(i, out data)) {
+                    string error = view_extern.GetLastErrorMessage();
+                    Log($"Failed to retrieve entity selection info at index {i}: {error}");
+                    continue;
                 }
+                items.Add(new EntityInstanceDisplay {
+                    Uid     = Marshal.PtrToStringAnsi(data.uid)    ?? "",
+                    DefName = Marshal.PtrToStringAnsi(data.name)   ?? "",
+                    X       = data.x,
+                    Y       = data.y,
+                    Width   = data.width,
+                    Height  = data.height
+                });
             }
             propertyGridPanel1.PropertyGrid.SelectedObjects = items.Cast<object>().ToArray();
             Log($"{items.Count} entities selected");
@@ -603,9 +612,11 @@ namespace csharp_editor {
 
             // Retrieve layer info from backend
             Externs.LayerInfoStruct layerInfo = new Externs.LayerInfoStruct();
-            int infoResult = view_extern.GetLayerInfo(layer.Name, out layerInfo);
-            if (infoResult == 0) {
-                Log($"Failed to retrieve layer info for '{layer.Name}'");
+            bool infoResult = view_extern.GetLayerInfo(layer.Name, out layerInfo);
+            if (!infoResult) {
+                string error = GetLastErrorMessage();
+                Log($"Failed to retrieve layer info for '{layer.Name}': {error}");
+                MessageBox.Show($"Failed to retrieve layer info for '{layer.Name}':\n{error}", "Layer Info Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 propertyGridPanel1.PropertyGrid.SelectedObject = null;
             }
             else {
@@ -624,7 +635,12 @@ namespace csharp_editor {
                     if (s is not LayerInfoDisplay display) return;
 
                     // Push updated properties to the backend using the original name as ID
-                    view_extern.SetLayerProperties(display.OriginalName, display.Name, display.Visible, display.TilesetName, display.Type, display.Silhouette, display.SilhouetteColor);
+                    bool propsOk = view_extern.SetLayerProperties(display.OriginalName, display.Name, display.Visible, display.TilesetName, display.Type, display.Silhouette, display.SilhouetteColor);
+                    if (!propsOk) {
+                        string error = view_extern.GetLastErrorMessage();
+                        MessageBox.Show($"Failed to set layer properties for '{display.OriginalName}':\n{error}", "Layer Update Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
 
                     // If name changed, update the hierarchy tree and refresh the original name
                     if (e.PropertyName == nameof(LayerInfoDisplay.Name) && display.OriginalName != display.Name) {
@@ -749,9 +765,9 @@ namespace csharp_editor {
             Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
 
             // Get tileset info from C++ using the layer's tileset
-            int result = view_extern.GetTileset(layer.TilesetName, out tilesetInfo);
+            bool result = view_extern.GetTileset(layer.TilesetName, out tilesetInfo);
 
-            if (result == 0) {
+            if (!result) {
                 Log($"Failed to load tileset '{layer.TilesetName}' for texture viewer");
                 textureViewer.Clear();
                 return;
@@ -794,7 +810,13 @@ namespace csharp_editor {
             _currentEntityName = entityName;
 
             // Set active entity in backend
-            view_extern.SetActiveEntity(entityName);
+            bool activeEntityOk = view_extern.SetActiveEntity(entityName);
+            if (!activeEntityOk) {
+                string error = view_extern.GetLastErrorMessage();
+                MessageBox.Show($"Failed to activate entity '{entityName}':\n{error}",
+                    "Entity Activation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             var selectedLayer = hierarchyTree.GetSelectedLayer();
             if (selectedLayer != null) {
@@ -993,8 +1015,8 @@ namespace csharp_editor {
                 int count = view_extern?.GetTilesetCount() ?? 0;
                 for (int i = 0; i < count; i++) {
                     Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
-                    int result = view_extern?.GetTilesetAt(i, out tilesetInfo) ?? 0;
-                    if (result != 0) {
+                    bool result = view_extern?.GetTilesetAt(i, out tilesetInfo) ?? false;
+                    if (result) {
                         string tilesetName = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "";
                         if (!string.IsNullOrEmpty(tilesetName))
                             listBox.Items.Add(tilesetName);
