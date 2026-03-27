@@ -116,7 +116,7 @@ namespace csharp_editor.UserControls {
             node.Nodes.Clear();
             int batchCount = CExternsEditor.GetEntityLayerBatchCount(layer.Name);
             for (int i = 0; i < batchCount; i++) {
-                string? tilesetName = _externView.GetEntityLayerBatchTilesetName(layer.Name, i);
+                string? tilesetName = CExternsEditor.GetEntityLayerBatchTilesetName(layer.Name, i);
                 int entityCount = CExternsEditor.GetEntityLayerBatchCountAt(i);
                 string display = tilesetName ?? "<unknown>";
                 // create node with BatchInfo tag so we can style it later
@@ -590,7 +590,7 @@ namespace csharp_editor.UserControls {
 
                         // Apply name change
                         if (!string.IsNullOrWhiteSpace(newName) && newName != layer.Name) {
-                            bool propsOk = _externView?.SetLayerProperties(layer.Name, newName, layer.Visible, layer.TilesetName) ?? false;
+                            bool propsOk = CExternsEditor.SetLayerProperties(layer.Name, newName, layer.Visible, layer.TilesetName);
                             if (!propsOk) {
                                 string error = _externView?.GetLastErrorMessage() ?? "Unknown error.";
                                 MessageBox.Show($"Failed to set layer properties for '{layer.Name}':\n{error}",
@@ -611,7 +611,7 @@ namespace csharp_editor.UserControls {
                     if (dialog.ShowDialog(this) == DialogResult.OK) {
                         string newName = dialog.LayerName;
                         if (!string.IsNullOrWhiteSpace(newName) && newName != layer.Name) {
-                            _externView?.SetLayerProperties(layer.Name, newName, layer.Visible);
+                            CExternsEditor.SetLayerProperties(layer.Name, newName, layer.Visible);
                             RenameLayer(layer.Name, newName);
                         }
                         LayerSelected?.Invoke(this, layer);

@@ -33,4 +33,147 @@ public class CExterns {
     public static extern void SwapBuffers();
 
     #endregion
+    
+    #region State managment
+
+    [DllImport(DLL, EntryPoint = "newEditorState")]
+    public static extern int NewEditorState();
+
+    [DllImport(DLL, EntryPoint = "setActiveState")]
+    public static extern int SetActiveState(int index);
+
+    [DllImport(DLL, EntryPoint = "releaseState")]
+    public static extern int ReleaseState(int index);
+
+    #endregion
+
+    #region Window
+
+    [DllImport(DLL, EntryPoint = "getWindowHandle")]
+    public static extern IntPtr GetWindowHandle();
+
+    [DllImport(DLL, EntryPoint = "setWindowPosition")]
+    public static extern void SetWindowPosition(int x, int y);
+
+    [DllImport(DLL, EntryPoint = "setWindowSize")]
+    public static extern void SetWindowSize(int width, int height);
+
+    #endregion
+
+    #region Input
+
+    [DllImport(DLL, EntryPoint = "onMouseMotion")]
+    public static extern void OnMouseMotion(int x, int y);
+
+    [DllImport(DLL, EntryPoint = "onMouseButtonDown")]
+    public static extern void OnMouseButtonDown(int x, int y, int button);
+
+    [DllImport(DLL, EntryPoint = "onMouseButtonUp")]
+    public static extern void OnMouseButtonUp(int x, int y, int button);
+
+    [DllImport(DLL, EntryPoint = "onKeyboardDown")]
+    public static extern void OnKeyboardDown(int keyCode);
+
+    [DllImport(DLL, EntryPoint = "onKeyboardUp")]
+    public static extern void OnKeyboardUp(int keyCode);
+
+    [DllImport(DLL, EntryPoint = "onMouseWheel")]
+    public static extern void OnMouseWheel(float x, float y, float delta);
+
+    #endregion
+    
+     #region WinAPI Entry Points
+
+        public static void ApplyChildWindowStyle(IntPtr windowHandle) {
+            if (windowHandle == IntPtr.Zero) return;
+
+            const long RemoveFlags =
+                WS_CAPTION |
+                WS_THICKFRAME |
+                WS_MINIMIZE |
+                WS_MAXIMIZE |
+                WS_SYSMENU |
+                WS_BORDER |
+                WS_DLGFRAME;
+
+            const long AddFlags = WS_CHILD | WS_VISIBLE;
+
+            long style = GetWindowLong(windowHandle, GWL_STYLE);
+            style = (style & ~RemoveFlags) | AddFlags;
+            SetWindowLong(windowHandle, GWL_STYLE, style);
+            SetWindowPos(windowHandle, IntPtr.Zero, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+        }
+
+        [DllImport("user32.dll") ]
+        public static extern IntPtr SetWindowPos(
+            IntPtr handle,
+            IntPtr handleAfter,
+            int x,
+            int y,
+            int cx,
+            int cy,
+            uint flags
+        );
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr SetParent(IntPtr child, IntPtr newParent);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr ShowWindow(IntPtr handle, int command);
+
+        [DllImport("user32.dll")]
+        public static extern bool MoveWindow(IntPtr hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint);
+
+        [DllImport("user32.dll")]
+        public static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr SetFocus(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public static extern bool BringWindowToTop(IntPtr hWnd);
+
+        [DllImport("user32.dll", EntryPoint = "GetWindowLongA")]
+        public static extern long GetWindowLong(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowLongA")]
+        public static extern long SetWindowLong(IntPtr hWnd, int nIndex, long dwNewLong);
+
+        [DllImport("user32.dll")]
+        public static extern long SetWindowLongA(IntPtr hWnd, int nIndex, long dwNewLong);
+
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+
+        // DWM constants
+        public const int DWMWA_WINDOW_CORNER_PREFERENCE = 33;
+        public const int DWMWCP_DONOTROUND = 1;
+
+        // Window style constants
+        public const int GWL_STYLE = -16;
+        public const int GWL_EXSTYLE = -20;
+        public const long WS_CAPTION = 0x00C00000L;
+        public const long WS_THICKFRAME = 0x00040000L;
+        public const long WS_MINIMIZE = 0x20000000L;
+        public const long WS_MAXIMIZE = 0x01000000L;
+        public const long WS_SYSMENU = 0x00080000L;
+        public const long WS_BORDER = 0x00800000L;
+        public const long WS_DLGFRAME = 0x00400000L;
+        public const long WS_CHILD = 0x40000000L;
+        public const long WS_VISIBLE = 0x10000000L;
+        
+        // Extended window styles
+        public const long WS_EX_CLIENTEDGE = 0x00000200L;
+        public const long WS_EX_WINDOWEDGE = 0x00000100L;
+        public const long WS_EX_STATICEDGE = 0x00020000L;
+        public const long WS_EX_DLGMODALFRAME = 0x00000001L;
+        
+        // SetWindowPos flags
+        public const uint SWP_FRAMECHANGED = 0x0020;
+        public const uint SWP_NOMOVE = 0x0002;
+        public const uint SWP_NOSIZE = 0x0001;
+        public const uint SWP_NOZORDER = 0x0004;
+        public const uint SWP_NOACTIVATE = 0x0010;
+
+        #endregion
 }

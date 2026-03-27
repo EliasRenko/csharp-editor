@@ -23,6 +23,9 @@
       <Compile Update="UserControls\LogView.cs">
         <SubType>UserControl</SubType>
       </Compile>
+      <Compile Update="UserControls\ExternView.cs">
+        <SubType>UserControl</SubType>
+      </Compile>
     </ItemGroup>
 
 </Project>

@@ -10,6 +10,9 @@ namespace csharp_editor {
 
         public bool active = false;
         
+        private CExternsEditor.EntitySelectionChangedCallback? _entitySelectionChangedCallback;
+        public event EventHandler? EntitySelectionChanged;
+        
         private string _currentTilesetName = "";
         private string _currentEntityName = "";
         private bool _suppressStateSwitch = false;
@@ -30,6 +33,11 @@ namespace csharp_editor {
                 string fullMessage = $"{priority} - {category} - {message}";
                 view_extern.SetLastErrorMessage(fullMessage);
                 Log(fullMessage);
+            };
+            
+            _entitySelectionChangedCallback = () => {
+                // Marshal back to the UI thread
+                BeginInvoke(() => EntitySelectionChanged?.Invoke(this, EventArgs.Empty));
             };
 
             view_extern.Init(callback);
@@ -65,7 +73,7 @@ namespace csharp_editor {
             view_extern.MouseDown += view_extern_MouseDown;
             view_extern.MouseUp += view_extern_MouseUp;
             view_extern.MouseWheel += view_extern_MouseWheel;
-            view_extern.EntitySelectionChanged += ExternView_EntitySelectionChanged;
+            EntitySelectionChanged += ExternView_EntitySelectionChanged;
 
             // Debug 
 
@@ -244,7 +252,7 @@ namespace csharp_editor {
                 return;
             }
 
-            CExternsEditor.SetActiveState(stateId);
+            CExterns.SetActiveState(stateId);
 
             // Create a tab for this state
             string tabLabel = Path.GetFileNameWithoutExtension(path);
@@ -274,14 +282,14 @@ namespace csharp_editor {
         }
 
         private void ToolStripButton_newMap_Click(object? sender, MouseEventArgs e) {
-            int stateId = CExternsEditor.NewEditorState();
+            int stateId = CExterns.NewEditorState();
             TabPage tab = new TabPage($"New Map {stateId}") { Tag = new TabState(stateId, "") };
             _suppressStateSwitch = true;
             tabControl1.TabPages.Add(tab);
             UpdateTabItemSize();
             tabControl1.SelectedTab = tab;
             _suppressStateSwitch = false;
-            CExternsEditor.SetActiveState(stateId);
+            CExterns.SetActiveState(stateId);
             panelMain.Visible = true;
             _welcomePanel.Visible = false;
             hierarchyTree.LoadLayersFromBackend();
@@ -292,7 +300,7 @@ namespace csharp_editor {
         private void TabControl1_SelectedIndexChanged(object? sender, EventArgs e) {
             if (_suppressStateSwitch) return;
             if (tabControl1.SelectedTab?.Tag is TabState ts) {
-                CExternsEditor.SetActiveState(ts.StateId);
+                CExterns.SetActiveState(ts.StateId);
                 hierarchyTree.LoadLayersFromBackend();
                 entitySelector.LoadEntities();
                 entitySelector.LoadInstances();
@@ -379,7 +387,7 @@ namespace csharp_editor {
 
         private void CloseStateTab(int index) {
             if (tabControl1.TabPages[index].Tag is TabState ts) {
-                CExternsEditor.ReleaseState(ts.StateId);
+                CExterns.ReleaseState(ts.StateId);
             }
             tabControl1.TabPages.RemoveAt(index);
             UpdateTabItemSize();
@@ -403,14 +411,14 @@ namespace csharp_editor {
         #endregion
 
         private void UpdateProjectStatus() {
-            if (view_extern.GetProjectProps(out ProjectInfoStruct info))
+            if (CExternsEditor.GetProjectProps(out ProjectInfoStruct info))
                 statusLabel_project.Text = $"Project: {info.ProjectName}";
             else
                 statusLabel_project.Text = "No project loaded";
         }
 
         private void EditProject_Click(object? sender, EventArgs e) {
-            if (!view_extern.GetProjectProps(out ProjectInfoStruct existingProps)) {
+            if (!CExternsEditor.GetProjectProps(out ProjectInfoStruct existingProps)) {
                 MessageBox.Show(this,
                     "No project is loaded. Open or create a project first.",
                     "Edit Project",
@@ -424,7 +432,7 @@ namespace csharp_editor {
                 return;
 
             ProjectInfoStruct updated = dialog.UpdatedProjectInfo;
-            bool edited = view_extern.EditProject(updated);
+            bool edited = CExternsEditor.EditProject(updated);
             if (!edited) {
                 MessageBox.Show(this,
                     "Failed to apply project settings to engine.",
@@ -467,7 +475,7 @@ namespace csharp_editor {
             }
 
             // Convert C# KeyCode to SDL Scancode and pass to SDL
-            CExternsEditor.OnKeyboardDown(KeyMapper.ToSDLScancode(e.KeyCode));
+            CExterns.OnKeyboardDown(KeyMapper.ToSDLScancode(e.KeyCode));
         }
 
         private void Editor_KeyUp(object? sender, KeyEventArgs e) {
@@ -478,23 +486,23 @@ namespace csharp_editor {
             }
 
             // Convert C# KeyCode to SDL Scancode and pass to SDL
-            CExternsEditor.OnKeyboardUp(KeyMapper.ToSDLScancode(e.KeyCode));
+            CExterns.OnKeyboardUp(KeyMapper.ToSDLScancode(e.KeyCode));
         }
 
         #endregion
 
         private void view_extern_MouseDown(object? sender, MouseEventArgs e) {
             int button = MouseButtonMapper.ToSDLMouseButton(e.Button);
-            CExternsEditor.OnMouseButtonDown(e.X, e.Y, button);
+            CExterns.OnMouseButtonDown(e.X, e.Y, button);
         }
 
         private void view_extern_MouseWheel(object? sender, MouseEventArgs e) {
-            CExternsEditor.OnMouseWheel(e.X, e.Y, e.Delta / 120.0f);
+            CExterns.OnMouseWheel(e.X, e.Y, e.Delta / 120.0f);
         }
 
         private void view_extern_MouseUp(object? sender, MouseEventArgs e) {
             int button = MouseButtonMapper.ToSDLMouseButton(e.Button);
-            CExternsEditor.OnMouseButtonUp(e.X, e.Y, button);
+            CExterns.OnMouseButtonUp(e.X, e.Y, button);
 
             // clicking in the extern view may have placed an entity – if the active layer
             // is an entity layer, refresh its batch groups and instance list so everything stays current.
@@ -636,7 +644,7 @@ namespace csharp_editor {
                     if (s is not LayerInfoDisplay display) return;
 
                     // Push updated properties to the backend using the original name as ID
-                    bool propsOk = view_extern.SetLayerProperties(display.OriginalName, display.Name, display.Visible, display.TilesetName, display.Type, display.Silhouette, display.SilhouetteColor);
+                    bool propsOk = CExternsEditor.SetLayerProperties(display.OriginalName, display.Name, display.Visible, display.TilesetName, display.Type, display.Silhouette, display.SilhouetteColor);
                     if (!propsOk) {
                         string error = view_extern.GetLastErrorMessage();
                         MessageBox.Show($"Failed to set layer properties for '{display.OriginalName}':\n{error}", "Layer Update Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -682,7 +690,7 @@ namespace csharp_editor {
             CExternsEditor.DeselectEntity();
             try {
                 if (view_extern != null) {
-                    bool gotInfo = view_extern.GetMapProps(out MapInfoStruct info);
+                    bool gotInfo = CExternsEditor.GetMapProps(out MapInfoStruct info);
 
                     if (!gotInfo) {
                         MessageBox.Show($"Failed to retrieve map info:\n{GetLastErrorMessage()}", "Map Info Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -722,7 +730,7 @@ namespace csharp_editor {
                                     projectFilePath = m.ProjectFilePath,
                                     projectName = m.ProjectName
                                 };
-                                bool setOk = view_extern.SetMapProps(native);
+                                bool setOk = CExternsEditor.SetMapProps(native);
                                 if (!setOk) {
                                     MessageBox.Show($"Failed to set map info:\n{GetLastErrorMessage()}", "Set Map Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
@@ -826,7 +834,7 @@ namespace csharp_editor {
         }
 
         private void WelcomePanel_NewProjectRequested(object? sender, string path) {
-            int stateId = CExternsEditor.NewEditorState();
+            int stateId = CExterns.NewEditorState();
             string normalizedPath = Path.GetFullPath(path);
             string tabLabel = Path.GetFileNameWithoutExtension(path);
             TabPage tab = new TabPage(tabLabel) { Tag = new TabState(stateId, normalizedPath) };
@@ -835,7 +843,7 @@ namespace csharp_editor {
             UpdateTabItemSize();
             tabControl1.SelectedTab = tab;
             _suppressStateSwitch = false;
-            CExternsEditor.SetActiveState(stateId);
+            CExterns.SetActiveState(stateId);
             panelMain.Visible = true;
             _welcomePanel.Visible = false;
             hierarchyTree.LoadLayersFromBackend();
@@ -853,7 +861,7 @@ namespace csharp_editor {
 
         private void WelcomePanel_OpenProjectRequested(object? sender, string path) {
             // Check if a project is already loaded — warn the user before overwriting
-            if (view_extern.GetProjectProps(out ProjectInfoStruct existing)) {
+            if (CExternsEditor.GetProjectProps(out ProjectInfoStruct existing)) {
                 var action = ShowProjectLoadConflictDialog(existing.ProjectName ?? "Unknown");
                 switch (action) {
                     case ProjectLoadAction.Abort:
@@ -875,17 +883,17 @@ namespace csharp_editor {
             bool result = CExternsEditor.ImportProject(normalizedPath);
             if (result != false) {
                 // Project imported successfully — resolve name from backend
-                view_extern.GetProjectProps(out ProjectInfoStruct importedProps);
+                CExternsEditor.GetProjectProps(out ProjectInfoStruct importedProps);
                 string tabLabel = importedProps.ProjectName ?? Path.GetFileNameWithoutExtension(path);
                 _welcomePanel.Visible = false;
-                int stateId = CExternsEditor.NewEditorState();
+                int stateId = CExterns.NewEditorState();
                 TabPage tab = new TabPage(tabLabel) { Tag = new TabState(stateId, normalizedPath) };
                 _suppressStateSwitch = true;
                 tabControl1.TabPages.Add(tab);
                 UpdateTabItemSize();
                 tabControl1.SelectedTab = tab;
                 _suppressStateSwitch = false;
-                CExternsEditor.SetActiveState(stateId);
+                CExterns.SetActiveState(stateId);
                 panelMain.Visible = true;
                 _welcomePanel.Visible = false;
                 hierarchyTree.LoadLayersFromBackend();
@@ -957,7 +965,7 @@ namespace csharp_editor {
                 if (tab.Tag is TabState ts) {
                     if (saveFirst && !string.IsNullOrEmpty(ts.FilePath) &&
                         ts.FilePath.EndsWith(".json", StringComparison.OrdinalIgnoreCase)) {
-                        CExternsEditor.SetActiveState(ts.StateId);
+                        CExterns.SetActiveState(ts.StateId);
                         bool ok = CExternsEditor.ExportMap(ts.FilePath);
                         if (!ok) {
                             MessageBox.Show($"Failed to save map '{ts.FilePath}':\n{GetLastErrorMessage()}", "Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -965,7 +973,7 @@ namespace csharp_editor {
                             Log($"Saved map: {ts.FilePath}");
                         }
                     }
-                    CExternsEditor.ReleaseState(ts.StateId);
+                    CExterns.ReleaseState(ts.StateId);
                 }
             }
             tabControl1.TabPages.Clear();

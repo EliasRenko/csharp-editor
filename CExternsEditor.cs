@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using csharp_editor.Models;
 using NativeHaxeRuntime;
 
     public static class CExternsEditor {
@@ -84,54 +85,6 @@ using NativeHaxeRuntime;
             public int defaultTileSizeY;
         }
 
-        #region State managment
-
-        [DllImport(CExterns.DLL, EntryPoint = "newEditorState")]
-        public static extern int NewEditorState();
-
-        [DllImport(CExterns.DLL, EntryPoint = "setActiveState")]
-        public static extern int SetActiveState(int index);
-
-        [DllImport(CExterns.DLL, EntryPoint = "releaseState")]
-        public static extern int ReleaseState(int index);
-
-        #endregion
-
-        #region Window
-
-        [DllImport(CExterns.DLL, EntryPoint = "getWindowHandle")]
-        public static extern IntPtr GetWindowHandle();
-
-        [DllImport(CExterns.DLL, EntryPoint = "setWindowPosition")]
-        public static extern void SetWindowPosition(int x, int y);
-
-        [DllImport(CExterns.DLL, EntryPoint = "setWindowSize")]
-        public static extern void SetWindowSize(int width, int height);
-
-        #endregion
-
-        #region Input
-
-        [DllImport(CExterns.DLL, EntryPoint = "onMouseMotion")]
-        public static extern void OnMouseMotion(int x, int y);
-
-        [DllImport(CExterns.DLL, EntryPoint = "onMouseButtonDown")]
-        public static extern void OnMouseButtonDown(int x, int y, int button);
-
-        [DllImport(CExterns.DLL, EntryPoint = "onMouseButtonUp")]
-        public static extern void OnMouseButtonUp(int x, int y, int button);
-
-        [DllImport(CExterns.DLL, EntryPoint = "onKeyboardDown")]
-        public static extern void OnKeyboardDown(int keyCode);
-
-        [DllImport(CExterns.DLL, EntryPoint = "onKeyboardUp")]
-        public static extern void OnKeyboardUp(int keyCode);
-
-        [DllImport(CExterns.DLL, EntryPoint = "onMouseWheel")]
-        public static extern void OnMouseWheel(float x, float y, float delta);
-
-        #endregion
-
         #region Project management
 
         [DllImport(CExterns.DLL, EntryPoint = "exportProject", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
@@ -141,11 +94,44 @@ using NativeHaxeRuntime;
         public static extern bool ImportProject(string filePath);
 
         [DllImport(CExterns.DLL, EntryPoint = "getProjectProps", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool GetProjectProps(out ProjectProps outProps);
+        private static extern bool _GetProjectProps(out ProjectProps outProps);
+        
+        public static bool GetProjectProps(out ProjectInfoStruct outInfo) {
+            bool result = _GetProjectProps(out ProjectProps temp);
+            if (result) {
+                outInfo = new ProjectInfoStruct {
+                    FilePath = Marshal.PtrToStringAnsi(temp.filePath),
+                    ProjectName = Marshal.PtrToStringAnsi(temp.projectName),
+                    DefaultTileSizeX = temp.defaultTileSizeX,
+                    DefaultTileSizeY = temp.defaultTileSizeY
+                };
+            } else {
+                outInfo = default;
+            }
+            return result;
+        }
 
         [DllImport(CExterns.DLL, EntryPoint = "editProject", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool EditProject(ref ProjectProps inProps);
+        public static extern bool _EditProject(ref ProjectProps inProps);
 
+        public static bool EditProject(ProjectInfoStruct info) {
+            IntPtr filePathPtr = Marshal.StringToHGlobalAnsi(info.FilePath ?? "");
+            IntPtr projectNamePtr = Marshal.StringToHGlobalAnsi(info.ProjectName ?? "");
+            try {
+                var native = new ProjectProps {
+                    filePath = filePathPtr,
+                    projectName = projectNamePtr,
+                    defaultTileSizeX = info.DefaultTileSizeX,
+                    defaultTileSizeY = info.DefaultTileSizeY
+                };
+
+                return CExternsEditor._EditProject(ref native);
+            } finally {
+                Marshal.FreeHGlobal(filePathPtr);
+                Marshal.FreeHGlobal(projectNamePtr);
+            }
+        }
+        
         #endregion
 
         #region Map management
@@ -157,10 +143,66 @@ using NativeHaxeRuntime;
         public static extern int ImportMap(string path);
         
         [DllImport(CExterns.DLL, EntryPoint = "getMapProps", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern bool GetMapProps(out MapProps outInfo);
+        public static extern bool _GetMapProps(out MapProps outInfo);
+        
+        public static bool GetMapProps(out MapInfoStruct outInfo) {
+            MapProps temp;
+            bool success = _GetMapProps(out temp);
+
+            if (!success) {
+                outInfo = default;
+                return false;
+            }
+
+            outInfo = new MapInfoStruct {
+                idd = Marshal.PtrToStringAnsi(temp.idd),
+                name = Marshal.PtrToStringAnsi(temp.name),
+                worldx = temp.worldx,
+                worldy = temp.worldy,
+                width = temp.width,
+                height = temp.height,
+                tileSizeX = temp.tileSizeX,
+                tileSizeY = temp.tileSizeY,
+                bgColor = temp.bgColor,
+                gridColor = temp.gridColor,
+                projectFilePath = Marshal.PtrToStringAnsi(temp.projectFilePath),
+                projectName = Marshal.PtrToStringAnsi(temp.projectName)
+            };
+
+            return true;
+        }
         
         [DllImport(CExterns.DLL, EntryPoint = "setMapProps", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern bool SetMapProps(ref MapProps info);
+        public static extern bool _SetMapProps(ref MapProps info);
+        
+        public static bool SetMapProps(MapInfoStruct info) {
+            IntPtr projectFilePathPtr = Marshal.StringToHGlobalAnsi(info.projectFilePath ?? "");
+            IntPtr projectNamePtr = Marshal.StringToHGlobalAnsi(info.projectName ?? "");
+
+            MapProps temp = new CExternsEditor.MapProps {
+                idd = Marshal.StringToHGlobalAnsi(info.idd ?? ""),
+                name = Marshal.StringToHGlobalAnsi(info.name ?? ""),
+                worldx = info.worldx,
+                worldy = info.worldy,
+                width = info.width,
+                height = info.height,
+                tileSizeX = info.tileSizeX,
+                tileSizeY = info.tileSizeY,
+                bgColor = info.bgColor,
+                gridColor = info.gridColor,
+                projectFilePath = projectFilePathPtr,
+                projectName = projectNamePtr
+            };
+
+            try {
+                return _SetMapProps(ref temp);
+            } finally {
+                Marshal.FreeHGlobal(temp.idd);
+                Marshal.FreeHGlobal(temp.name);
+                Marshal.FreeHGlobal(temp.projectFilePath);
+                Marshal.FreeHGlobal(temp.projectName);
+            }
+        }
 
         #endregion
 
@@ -276,7 +318,30 @@ using NativeHaxeRuntime;
         public static extern bool SetActiveLayerAt(int index);
         
         [DllImport(CExterns.DLL, EntryPoint = "setLayerProperties", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern bool SetLayerProperties(string layerName, ref LayerInfoStruct properties);
+        private static extern bool _SetLayerProperties(string layerName, ref LayerInfoStruct properties);
+        
+        public static bool SetLayerProperties(string originalName, string newName, bool visible, string? tilesetName = null, int type = 0, bool silhouette = false, System.Drawing.Color silhouetteColor = default) {
+            IntPtr namePtr = Marshal.StringToHGlobalAnsi(newName);
+            IntPtr tilesetNamePtr = tilesetName != null ? Marshal.StringToHGlobalAnsi(tilesetName) : IntPtr.Zero;
+            try {
+                // Convert Color to RGBA (0xRRGGBBAA)
+                int rgba = (silhouetteColor.R << 24) | (silhouetteColor.G << 16) | (silhouetteColor.B << 8) | silhouetteColor.A;
+                var info = new CExternsEditor.LayerInfoStruct {
+                    name = namePtr,
+                    tilesetName = tilesetNamePtr,
+                    type = type,
+                    visible = visible ? 1 : 0,
+                    silhouette = silhouette,
+                    silhouetteColor = rgba
+                };
+                return _SetLayerProperties(originalName, ref info);
+            } finally {
+                Marshal.FreeHGlobal(namePtr);
+                if (tilesetNamePtr != IntPtr.Zero) {
+                    Marshal.FreeHGlobal(tilesetNamePtr);
+                }
+            }
+        }
 
         [DllImport(CExterns.DLL, EntryPoint = "setLayerPropertiesAt", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool SetLayerPropertiesAt(int index, ref LayerInfoStruct properties);
@@ -319,7 +384,12 @@ using NativeHaxeRuntime;
         public static extern int GetEntityLayerBatchCountAt(int index);
 
         [DllImport(CExterns.DLL, EntryPoint = "getEntityLayerBatchTilesetName", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr GetEntityLayerBatchTilesetName(string layerName, int batchIndex);
+        private static extern IntPtr _GetEntityLayerBatchTilesetName(string layerName, int batchIndex);
+        
+        public static string? GetEntityLayerBatchTilesetName(string layerName, int batchIndex) {
+            IntPtr ptr = _GetEntityLayerBatchTilesetName(layerName, batchIndex);
+            return ptr == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(ptr);
+        }
 
         [DllImport(CExterns.DLL, EntryPoint = "getEntityLayerInstanceCount", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int GetEntityLayerInstanceCount(string layerName, int batchIndex);
@@ -347,98 +417,4 @@ using NativeHaxeRuntime;
 
         #endregion
         
-        #region WinAPI Entry Points
-
-        public static void ApplyChildWindowStyle(IntPtr windowHandle) {
-            if (windowHandle == IntPtr.Zero) return;
-
-            const long RemoveFlags =
-                WS_CAPTION |
-                WS_THICKFRAME |
-                WS_MINIMIZE |
-                WS_MAXIMIZE |
-                WS_SYSMENU |
-                WS_BORDER |
-                WS_DLGFRAME;
-
-            const long AddFlags = WS_CHILD | WS_VISIBLE;
-
-            long style = GetWindowLong(windowHandle, GWL_STYLE);
-            style = (style & ~RemoveFlags) | AddFlags;
-            SetWindowLong(windowHandle, GWL_STYLE, style);
-            SetWindowPos(windowHandle, IntPtr.Zero, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-        }
-
-        [DllImport("user32.dll") ]
-        public static extern IntPtr SetWindowPos(
-            IntPtr handle,
-            IntPtr handleAfter,
-            int x,
-            int y,
-            int cx,
-            int cy,
-            uint flags
-        );
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr SetParent(IntPtr child, IntPtr newParent);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr ShowWindow(IntPtr handle, int command);
-
-        [DllImport("user32.dll")]
-        public static extern bool MoveWindow(IntPtr hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint);
-
-        [DllImport("user32.dll")]
-        public static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr SetFocus(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        public static extern bool BringWindowToTop(IntPtr hWnd);
-
-        [DllImport("user32.dll", EntryPoint = "GetWindowLongA")]
-        public static extern long GetWindowLong(IntPtr hWnd, int nIndex);
-
-        [DllImport("user32.dll", EntryPoint = "SetWindowLongA")]
-        public static extern long SetWindowLong(IntPtr hWnd, int nIndex, long dwNewLong);
-
-        [DllImport("user32.dll")]
-        public static extern long SetWindowLongA(IntPtr hWnd, int nIndex, long dwNewLong);
-
-        [DllImport("dwmapi.dll")]
-        public static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
-
-        // DWM constants
-        public const int DWMWA_WINDOW_CORNER_PREFERENCE = 33;
-        public const int DWMWCP_DONOTROUND = 1;
-
-        // Window style constants
-        public const int GWL_STYLE = -16;
-        public const int GWL_EXSTYLE = -20;
-        public const long WS_CAPTION = 0x00C00000L;
-        public const long WS_THICKFRAME = 0x00040000L;
-        public const long WS_MINIMIZE = 0x20000000L;
-        public const long WS_MAXIMIZE = 0x01000000L;
-        public const long WS_SYSMENU = 0x00080000L;
-        public const long WS_BORDER = 0x00800000L;
-        public const long WS_DLGFRAME = 0x00400000L;
-        public const long WS_CHILD = 0x40000000L;
-        public const long WS_VISIBLE = 0x10000000L;
-        
-        // Extended window styles
-        public const long WS_EX_CLIENTEDGE = 0x00000200L;
-        public const long WS_EX_WINDOWEDGE = 0x00000100L;
-        public const long WS_EX_STATICEDGE = 0x00020000L;
-        public const long WS_EX_DLGMODALFRAME = 0x00000001L;
-        
-        // SetWindowPos flags
-        public const uint SWP_FRAMECHANGED = 0x0020;
-        public const uint SWP_NOMOVE = 0x0002;
-        public const uint SWP_NOSIZE = 0x0001;
-        public const uint SWP_NOZORDER = 0x0004;
-        public const uint SWP_NOACTIVATE = 0x0010;
-
-        #endregion
     }
