@@ -1,6 +1,4 @@
-﻿namespace csharp_editor.Helpers;
-
-public struct ExternError {
+﻿public struct ExternError {
     
     public string priority;
     public string category;

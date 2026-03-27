@@ -6,9 +6,9 @@ using csharp_editor.Helpers;
 using NativeHaxeRuntime;
 
 namespace csharp_editor {
-    public partial class Editor : Form {
+    public partial class Editor : Runtime {
 
-        public bool active = false;
+        //public bool active = false;
         
         private CExternsEditor.EntitySelectionChangedCallback? _entitySelectionChangedCallback;
         public event EventHandler? EntitySelectionChanged;
@@ -28,19 +28,19 @@ namespace csharp_editor {
             active = true;
             KeyPreview = true;
 
-            CExterns.CallbackDelegate callback = (priority, category, message) => {
-                lastError.SetError(priority, category, message);
-                string fullMessage = $"{priority} - {category} - {message}";
-                view_extern.SetLastErrorMessage(fullMessage);
-                Log(fullMessage);
-            };
+            // CExterns.CallbackDelegate callback = (priority, category, message) => {
+            //     lastError.SetError(priority, category, message);
+            //     string fullMessage = $"{priority} - {category} - {message}";
+            //     view_extern.SetLastErrorMessage(fullMessage);
+            //     Log(fullMessage);
+            // };
             
             _entitySelectionChangedCallback = () => {
                 // Marshal back to the UI thread
                 BeginInvoke(() => EntitySelectionChanged?.Invoke(this, EventArgs.Empty));
             };
 
-            view_extern.Init(callback);
+            view_extern.Init(logHandler);
 
             // Toolstrip Events
             toolStripMenuItem_open.MouseUp += toolStripButton_openFile;
@@ -99,6 +99,10 @@ namespace csharp_editor {
             _welcomePanel.NewProjectRequested  += WelcomePanel_NewProjectRequested;
             _welcomePanel.OpenProjectRequested += WelcomePanel_OpenProjectRequested;
             Controls.Add(_welcomePanel);
+        }
+
+        protected override void Log(string text) {
+            console.Log(text);
         }
 
         private void ShowTimelineDialog(object? sender, MouseEventArgs e) {
@@ -400,15 +404,15 @@ namespace csharp_editor {
 
         #endregion
 
-        #region Log
-        public void Log(string text) {
-            // Check if form and console are not disposed
-            if (!IsDisposed && console != null && !console.IsDisposed) {
-                console.Log(text);
-            }
-        }
-
-        #endregion
+        // #region Log
+        // public void Log(string text) {
+        //     // Check if form and console are not disposed
+        //     if (!IsDisposed && console != null && !console.IsDisposed) {
+        //         console.Log(text);
+        //     }
+        // }
+        //
+        // #endregion
 
         private void UpdateProjectStatus() {
             if (CExternsEditor.GetProjectProps(out ProjectInfoStruct info))

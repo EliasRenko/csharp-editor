@@ -19,7 +19,7 @@ namespace csharp_editor {
             Stopwatch stopwatch = Stopwatch.StartNew();
             double lastTime = 0.0;
 
-            while (editor.active == true) {
+            while (editor.Active == true) {
                 Application.DoEvents();
 
                 double currentTime = stopwatch.Elapsed.TotalSeconds;

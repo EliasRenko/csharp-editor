@@ -1,27 +1,26 @@
 using System.Windows.Forms;
+
+namespace NativeHaxeRuntime.UserControls;
+
 public partial class LogView : UserControl {
-    private Panel panel_border;
-    private RichTextBox richTextBox_log;
+    private Panel _panelBorder;
+    private RichTextBox _richTextBoxLog;
 
     public LogView() {
         InitializeComponent();
     }
 
     public string? CopyText() {
-        return richTextBox_log.SelectedText;
+        return _richTextBoxLog.SelectedText;
     }
 
     public void Log(string text) {
-        if (!IsDisposed && richTextBox_log != null && !richTextBox_log.IsDisposed) {
-            richTextBox_log.AppendText(text + Environment.NewLine);
-            richTextBox_log.ScrollToCaret();
-        }
+        _richTextBoxLog.AppendText(Environment.NewLine + text);
+        _richTextBoxLog.ScrollToCaret();
     }
 
     public void Clear() {
-        if (!IsDisposed && richTextBox_log != null && !richTextBox_log.IsDisposed) {
-            richTextBox_log.Clear();
-        }
+        _richTextBoxLog.Clear();
     }
 
     /// <summary>
@@ -29,38 +28,38 @@ public partial class LogView : UserControl {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-        panel_border = new System.Windows.Forms.Panel();
-        richTextBox_log = new System.Windows.Forms.RichTextBox();
-        panel_border.SuspendLayout();
+        _panelBorder = new System.Windows.Forms.Panel();
+        _richTextBoxLog = new System.Windows.Forms.RichTextBox();
+        _panelBorder.SuspendLayout();
         SuspendLayout();
         // 
         // panel_border
         // 
-        panel_border.BackColor = System.Drawing.Color.Gray;
-        panel_border.Controls.Add(richTextBox_log);
-        panel_border.Dock = System.Windows.Forms.DockStyle.Fill;
-        panel_border.Location = new System.Drawing.Point(0, 0);
-        panel_border.Name = "panel_border";
-        panel_border.Padding = new System.Windows.Forms.Padding(1);
-        panel_border.Size = new System.Drawing.Size(300, 200);
-        panel_border.TabIndex = 0;
+        _panelBorder.BackColor = System.Drawing.Color.Gray;
+        _panelBorder.Controls.Add(_richTextBoxLog);
+        _panelBorder.Dock = System.Windows.Forms.DockStyle.Fill;
+        _panelBorder.Location = new System.Drawing.Point(0, 0);
+        _panelBorder.Name = "_panelBorder";
+        _panelBorder.Padding = new System.Windows.Forms.Padding(1);
+        _panelBorder.Size = new System.Drawing.Size(300, 200);
+        _panelBorder.TabIndex = 0;
         // 
         // richTextBox_log
         // 
-        richTextBox_log.BorderStyle = System.Windows.Forms.BorderStyle.None;
-        richTextBox_log.Dock = System.Windows.Forms.DockStyle.Fill;
-        richTextBox_log.Location = new System.Drawing.Point(1, 1);
-        richTextBox_log.Name = "richTextBox_log";
-        richTextBox_log.ReadOnly = true;
-        richTextBox_log.Size = new System.Drawing.Size(298, 198);
-        richTextBox_log.TabIndex = 0;
-        richTextBox_log.Text = "";
+        _richTextBoxLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
+        _richTextBoxLog.Dock = System.Windows.Forms.DockStyle.Fill;
+        _richTextBoxLog.Location = new System.Drawing.Point(1, 1);
+        _richTextBoxLog.Name = "_richTextBoxLog";
+        _richTextBoxLog.ReadOnly = true;
+        _richTextBoxLog.Size = new System.Drawing.Size(298, 198);
+        _richTextBoxLog.TabIndex = 0;
+        _richTextBoxLog.Text = "";
         // 
         // LogView
         // 
-        Controls.Add(panel_border);
+        Controls.Add(_panelBorder);
         Size = new System.Drawing.Size(300, 200);
-        panel_border.ResumeLayout(false);
+        _panelBorder.ResumeLayout(false);
         ResumeLayout(false);
     }
 }

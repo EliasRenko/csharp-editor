@@ -1,4 +1,4 @@
-﻿using static LogView;
+﻿using NativeHaxeRuntime.UserControls;
 
 partial class DebugConsole {
         /// <summary> 

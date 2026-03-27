@@ -9,6 +9,8 @@ public class CExterns {
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate void CallbackDelegate([MarshalAs(UnmanagedType.LPStr)] string priority, [MarshalAs(UnmanagedType.LPStr)] string category, [MarshalAs(UnmanagedType.LPStr)] string message);
     
+    // ---
+    
     #region Lifecycle functions
 
     [DllImport(DLL, EntryPoint = "init")]
