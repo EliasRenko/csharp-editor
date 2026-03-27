@@ -1,5 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-using static csharp_editor.Externs;
+using NativeHaxeRuntime;
 
 namespace csharp_editor.UserControls {
     public struct MapInfoStruct {
@@ -26,7 +26,7 @@ namespace csharp_editor.UserControls {
 
     public partial class ExternView : UserControl {
 
-        public CallbackDelegate logCallback = null!; // initialized in Init()
+        public CExterns.CallbackDelegate logCallback = null!; // initialized in Init()
         public bool active = false;
 
         private string _lastErrorMessage = "Unknown native error.";
@@ -43,7 +43,7 @@ namespace csharp_editor.UserControls {
         }
 
         // Keep a strong reference so the delegate isn't GC'd while the C++ side holds a pointer
-        private Externs.EntitySelectionChangedCallback? _entitySelectionChangedCallback;
+        private CExternsEditor.EntitySelectionChangedCallback? _entitySelectionChangedCallback;
 
         private IntPtr sdlWindowHandle = IntPtr.Zero;
 
@@ -58,11 +58,11 @@ namespace csharp_editor.UserControls {
         }
 
         // CallbackDelegate callback
-        public void Init(CallbackDelegate callback) {
+        public void Init(CExterns.CallbackDelegate callback) {
 
             logCallback = callback;
 
-            if (!Externs.InitWithCallback(callback)) {
+            if (!CExterns.InitWithCallback(callback)) {
                 MessageBox.Show("Failed to initialize engine", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -73,10 +73,10 @@ namespace csharp_editor.UserControls {
                 // Marshal back to the UI thread
                 BeginInvoke(() => EntitySelectionChanged?.Invoke(this, EventArgs.Empty));
             };
-            Externs.SetEntitySelectionChangedCallback(_entitySelectionChangedCallback);
+            CExternsEditor.SetEntitySelectionChangedCallback(_entitySelectionChangedCallback);
 
             // Get the SDL window handle
-            sdlWindowHandle = Externs.GetWindowHandle();
+            sdlWindowHandle = CExternsEditor.GetWindowHandle();
             if (sdlWindowHandle == IntPtr.Zero) {
                 MessageBox.Show("Failed to get SDL window handle", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -84,21 +84,21 @@ namespace csharp_editor.UserControls {
             }
 
             // Make the SDL window a plain child window (no chrome/borders).
-            Externs.ApplyChildWindowStyle(sdlWindowHandle);
+            CExternsEditor.ApplyChildWindowStyle(sdlWindowHandle);
 
             // Disable rounded corners (Windows 11) - must be done before SetParent
-            int preference = Externs.DWMWCP_DONOTROUND;
-            Externs.DwmSetWindowAttribute(sdlWindowHandle, Externs.DWMWA_WINDOW_CORNER_PREFERENCE, ref preference, sizeof(int));
+            int preference = CExternsEditor.DWMWCP_DONOTROUND;
+            CExternsEditor.DwmSetWindowAttribute(sdlWindowHandle, CExternsEditor.DWMWA_WINDOW_CORNER_PREFERENCE, ref preference, sizeof(int));
 
             // Set SDL window as child of panel
-            SetParent(sdlWindowHandle, panel_extern.Handle);
-            Externs.SetWindowPosition(0, 0);
+            CExternsEditor.SetParent(sdlWindowHandle, panel_extern.Handle);
+            CExternsEditor.SetWindowPosition(0, 0);
 
             // Size the SDL window to match the panel
-            Externs.MoveWindow(sdlWindowHandle, 0, 0, panel_extern.Width, panel_extern.Height, true);
+            CExternsEditor.MoveWindow(sdlWindowHandle, 0, 0, panel_extern.Width, panel_extern.Height, true);
 
             // Load default state (CollisionTestState)
-            //Externs.LoadState(0);
+            //CExternsEditor.LoadState(0);
 
             active = true;
         }
@@ -106,7 +106,7 @@ namespace csharp_editor.UserControls {
         public void Release() {
             if (active) {
                 active = false;
-                Externs.Release();
+                CExterns.Release();
                 
                 if (sdlWindowHandle != IntPtr.Zero) {
                     sdlWindowHandle = IntPtr.Zero;
@@ -115,130 +115,130 @@ namespace csharp_editor.UserControls {
         }
 
         public void Render() {
-            Externs.Render();
+            CExterns.Render();
         }
 
         public void SwapBuffers() {
-            Externs.SwapBuffers();
+            CExterns.SwapBuffers();
         }
 
         public void UpdateFrame(float deltaTime) {
-            Externs.UpdateFrame(deltaTime);
+            CExterns.UpdateFrame(deltaTime);
         }
         
         private void OnMouseMotion(object? sender, MouseEventArgs e) {
-            Externs.OnMouseMotion(e.X, e.Y);
+            CExternsEditor.OnMouseMotion(e.X, e.Y);
         }
 
         public void OnMouseButtonDown(int x, int y, int button) {
-            Externs.OnMouseButtonDown(x, y, button);
+            CExternsEditor.OnMouseButtonDown(x, y, button);
         }
 
         public void OnMouseButtonUp(int x, int y, int button) {
-            Externs.OnMouseButtonUp(x, y, button);
+            CExternsEditor.OnMouseButtonUp(x, y, button);
         }
 
         public void OnMouseWheel(float x, float y, float delta) {
-            Externs.OnMouseWheel(x, y, delta);
+            CExternsEditor.OnMouseWheel(x, y, delta);
         }
 
         public void OnKeyboardDown(int keyCode) {
-            Externs.OnKeyboardDown(keyCode);
+            CExternsEditor.OnKeyboardDown(keyCode);
         }
 
         public void OnKeyboardUp(int keyCode) {
-            Externs.OnKeyboardUp(keyCode);
+            CExternsEditor.OnKeyboardUp(keyCode);
         }
 
         private void ExternView_Resize(object? sender, EventArgs e) {
             if (sdlWindowHandle != IntPtr.Zero && active && panel_extern != null) {
-                Externs.MoveWindow(sdlWindowHandle, 0, 0, panel_extern.Width, panel_extern.Height, true);
-                //Externs.SetWindowSize(panel_extern.Width, panel_extern.Height);
+                CExternsEditor.MoveWindow(sdlWindowHandle, 0, 0, panel_extern.Width, panel_extern.Height, true);
+                //CExternsEditor.SetWindowSize(panel_extern.Width, panel_extern.Height);
             }
         }
 
 #region Texture
 
-        public void GetTextureData(string path, out TextureDataStruct outData) {
-            Externs.GetTextureData(path, out outData);
+        public void GetTextureData(string path, out CExternsEditor.TextureDataStruct outData) {
+            CExternsEditor.GetTextureData(path, out outData);
         }
         
         
-        public bool GetTileset(string tilesetName, out TilesetInfoStruct outInfo) {
-            return Externs.GetTileset(tilesetName, out outInfo);
+        public bool GetTileset(string tilesetName, out CExternsEditor.TilesetInfoStruct outInfo) {
+            return CExternsEditor.GetTileset(tilesetName, out outInfo);
         }
         
-        public bool GetTilesetAt(int index, out TilesetInfoStruct outInfo) {
-            return Externs.GetTilesetAt(index, out outInfo);
+        public bool GetTilesetAt(int index, out CExternsEditor.TilesetInfoStruct outInfo) {
+            return CExternsEditor.GetTilesetAt(index, out outInfo);
         }
 
         public int GetTilesetCount() {
-            return Externs.GetTilesetCount();
+            return CExternsEditor.GetTilesetCount();
         }
 
         public bool SetActiveTileset(string tilesetName) {
-            return Externs.SetActiveTileset(tilesetName);
+            return CExternsEditor.SetActiveTileset(tilesetName);
         }
 
         public bool CreateTileset(string texturePath, string name) {
-            return Externs.CreateTileset(texturePath, name);
+            return CExternsEditor.CreateTileset(texturePath, name);
         }
 
         public bool DeleteTileset(string name) {
-            return Externs.DeleteTileset(name);
+            return CExternsEditor.DeleteTileset(name);
         }
 
         public int GetActiveTile() {
-            return Externs.GetActiveTile();
+            return CExternsEditor.GetActiveTile();
         }
         
         public void SetActiveTile(int tileRegionId) {
-            Externs.SetActiveTile(tileRegionId);
+            CExternsEditor.SetActiveTile(tileRegionId);
         }
 
         public void SetToolType(ToolType toolType) {
-            Externs.SetToolType(toolType);
+            CExternsEditor.SetToolType(toolType);
         }
 
         public ToolType GetToolType() {
-            return Externs.GetToolType();
+            return CExternsEditor.GetToolType();
         }
 
         public int ImportMap(string path) {
-            return Externs.ImportMap(path);
+            return CExternsEditor.ImportMap(path);
         }
 
         public int SetActiveState(int stateId) {
-            return Externs.SetActiveState(stateId);
+            return CExternsEditor.SetActiveState(stateId);
         }
 
         public int ReleaseState(int stateId) {
-            return Externs.ReleaseState(stateId);
+            return CExternsEditor.ReleaseState(stateId);
         }
 
         public int NewEditorState() {
-            return Externs.NewEditorState();
+            return CExternsEditor.NewEditorState();
         }
         
         public bool ExportMap(string path) {
-            return Externs.ExportMap(path);
+            return CExternsEditor.ExportMap(path);
         }
 
         /// <summary>Saves the current project state to <paramref name="filePath"/>.</summary>
         /// <returns>Non-zero on success.</returns>
         public bool ExportProject(string filePath, string projectName) {
-            return Externs.ExportProject(filePath, projectName);
+            return CExternsEditor.ExportProject(filePath, projectName);
         }
 
         /// <summary>Loads a project from <paramref name="filePath"/> into the engine.</summary>
         /// <returns>Non-zero on success.</returns>
         public bool ImportProject(string filePath) {
-            return Externs.ImportProject(filePath);
+            return CExternsEditor.ImportProject(filePath);
         }
 
         /// <summary>Returns project properties if a project is loaded. Returns false and default outInfo if no project is loaded.</summary>
         public bool GetProjectProps(out ProjectInfoStruct outInfo) {
-            bool result = Externs.GetProjectProps(out Externs.ProjectProps temp);
+            bool result = CExternsEditor.GetProjectProps(out CExternsEditor.ProjectProps temp);
             if (result) {
                 outInfo = new ProjectInfoStruct {
                     FilePath = Marshal.PtrToStringAnsi(temp.filePath),
@@ -256,14 +256,14 @@ namespace csharp_editor.UserControls {
             IntPtr filePathPtr = Marshal.StringToHGlobalAnsi(info.FilePath ?? "");
             IntPtr projectNamePtr = Marshal.StringToHGlobalAnsi(info.ProjectName ?? "");
             try {
-                var native = new Externs.ProjectProps {
+                var native = new CExternsEditor.ProjectProps {
                     filePath = filePathPtr,
                     projectName = projectNamePtr,
                     defaultTileSizeX = info.DefaultTileSizeX,
                     defaultTileSizeY = info.DefaultTileSizeY
                 };
 
-                return Externs.EditProject(ref native);
+                return CExternsEditor.EditProject(ref native);
             } finally {
                 Marshal.FreeHGlobal(filePathPtr);
                 Marshal.FreeHGlobal(projectNamePtr);
@@ -275,41 +275,41 @@ namespace csharp_editor.UserControls {
         #region Layer Management
         
         public void CreateTilemapLayer(string layerName, string tilesetName, int tileSize, int index) {
-            Externs.CreateTilemapLayer(layerName, tilesetName, tileSize, index);
+            CExternsEditor.CreateTilemapLayer(layerName, tilesetName, tileSize, index);
         }
         
         // layerName is used by backend; tileset selection is no longer part of the API.
         public void CreateEntityLayer(string layerName) {
-            Externs.CreateEntityLayer(layerName);
+            CExternsEditor.CreateEntityLayer(layerName);
         }
         
         public void CreateFolderLayer(string layerName) {
-            Externs.CreateFolderLayer(layerName);
+            CExternsEditor.CreateFolderLayer(layerName);
         }
         
         public bool SetActiveLayer(string layerName) {
-            return Externs.SetActiveLayer(layerName);
+            return CExternsEditor.SetActiveLayer(layerName);
         }
 
         public bool SetActiveLayerAt(int index) {
-            return Externs.SetActiveLayerAt(index);
+            return CExternsEditor.SetActiveLayerAt(index);
         }
 
 public bool RemoveLayer(string layerName) {
-            return Externs.RemoveLayer(layerName);
+            return CExternsEditor.RemoveLayer(layerName);
         }
 
         public bool RemoveLayerByIndex(int index) {
-            return Externs.RemoveLayerByIndex(index);
+            return CExternsEditor.RemoveLayerByIndex(index);
         }
         
         public int GetLayerCount() {
-            return Externs.GetLayerCount();
+            return CExternsEditor.GetLayerCount();
         }
 
         public bool GetMapProps(out MapInfoStruct outInfo) {
-            MapProps temp;
-            bool success = Externs.GetMapProps(out temp);
+            CExternsEditor.MapProps temp;
+            bool success = CExternsEditor.GetMapProps(out temp);
 
             if (!success) {
                 outInfo = default;
@@ -338,7 +338,7 @@ public bool RemoveLayer(string layerName) {
             IntPtr projectFilePathPtr = Marshal.StringToHGlobalAnsi(info.projectFilePath ?? "");
             IntPtr projectNamePtr = Marshal.StringToHGlobalAnsi(info.projectName ?? "");
 
-            MapProps temp = new MapProps {
+            CExternsEditor.MapProps temp = new CExternsEditor.MapProps {
                 idd = Marshal.StringToHGlobalAnsi(info.idd ?? ""),
                 name = Marshal.StringToHGlobalAnsi(info.name ?? ""),
                 worldx = info.worldx,
@@ -354,7 +354,7 @@ public bool RemoveLayer(string layerName) {
             };
 
             try {
-                return Externs.SetMapProps(ref temp);
+                return CExternsEditor.SetMapProps(ref temp);
             } finally {
                 Marshal.FreeHGlobal(temp.idd);
                 Marshal.FreeHGlobal(temp.name);
@@ -363,16 +363,16 @@ public bool RemoveLayer(string layerName) {
             }
         }
         
-        public bool GetLayerInfoAt(int index, out Externs.LayerInfoStruct outInfo) {
-            return Externs.GetLayerInfoAt(index, out outInfo);
+        public bool GetLayerInfoAt(int index, out CExternsEditor.LayerInfoStruct outInfo) {
+            return CExternsEditor.GetLayerInfoAt(index, out outInfo);
         }
         
-        public bool GetLayerInfo(string layerName, out Externs.LayerInfoStruct outInfo) {
-            return Externs.GetLayerInfo(layerName, out outInfo);
+        public bool GetLayerInfo(string layerName, out CExternsEditor.LayerInfoStruct outInfo) {
+            return CExternsEditor.GetLayerInfo(layerName, out outInfo);
         }
 
         public bool ReplaceLayerTileset(string layerName, string tilesetName) {
-            return Externs.ReplaceLayerTileset(layerName, tilesetName);
+            return CExternsEditor.ReplaceLayerTileset(layerName, tilesetName);
         }
 
         public bool SetLayerProperties(string originalName, string newName, bool visible, string? tilesetName = null, int type = 0, bool silhouette = false, System.Drawing.Color silhouetteColor = default) {
@@ -381,7 +381,7 @@ public bool RemoveLayer(string layerName) {
             try {
                 // Convert Color to RGBA (0xRRGGBBAA)
                 int rgba = (silhouetteColor.R << 24) | (silhouetteColor.G << 16) | (silhouetteColor.B << 8) | silhouetteColor.A;
-                var info = new Externs.LayerInfoStruct {
+                var info = new CExternsEditor.LayerInfoStruct {
                     name = namePtr,
                     tilesetName = tilesetNamePtr,
                     type = type,
@@ -389,7 +389,7 @@ public bool RemoveLayer(string layerName) {
                     silhouette = silhouette,
                     silhouetteColor = rgba
                 };
-                return Externs.SetLayerProperties(originalName, ref info);
+                return CExternsEditor.SetLayerProperties(originalName, ref info);
             } finally {
                 Marshal.FreeHGlobal(namePtr);
                 if (tilesetNamePtr != IntPtr.Zero) {
@@ -399,115 +399,115 @@ public bool RemoveLayer(string layerName) {
         }
         
 public bool MoveLayerUp(string layerName) {
-            return Externs.MoveLayerUp(layerName);
+            return CExternsEditor.MoveLayerUp(layerName);
         }
 
         public bool MoveLayerDown(string layerName) {
-            return Externs.MoveLayerDown(layerName);
+            return CExternsEditor.MoveLayerDown(layerName);
         }
 
         public bool MoveLayerTo(string layerName, int newIndex) {
-            return Externs.MoveLayerTo(layerName, newIndex);
+            return CExternsEditor.MoveLayerTo(layerName, newIndex);
         }
 
         public bool MoveLayerUpByIndex(int index) {
-            return Externs.MoveLayerUpByIndex(index);
+            return CExternsEditor.MoveLayerUpByIndex(index);
         }
 
         public bool MoveLayerDownByIndex(int index) {
-            return Externs.MoveLayerDownByIndex(index);
+            return CExternsEditor.MoveLayerDownByIndex(index);
         }
         
         // Entity Management
         
-        public bool CreateEntity(string entityName, ref Externs.EntityDataStruct data) {
-            return Externs.CreateEntity(entityName, ref data);
+        public bool CreateEntity(string entityName, ref CExternsEditor.EntityDataStruct data) {
+            return CExternsEditor.CreateEntity(entityName, ref data);
         }
 
-        public bool EditEntity(string entityName, ref Externs.EntityDataStruct data) {
-            return Externs.EditEntity(entityName, ref data);
+        public bool EditEntity(string entityName, ref CExternsEditor.EntityDataStruct data) {
+            return CExternsEditor.EditEntity(entityName, ref data);
         }
         
-        public Boolean GetEntity(string entityName, out Externs.EntityDataStruct outData) {
-            return Externs.GetEntity(entityName, out outData);
+        public Boolean GetEntity(string entityName, out CExternsEditor.EntityDataStruct outData) {
+            return CExternsEditor.GetEntity(entityName, out outData);
         }
         
-        public Boolean GetEntityAt(int index, out Externs.EntityDataStruct outData) {
-            return Externs.GetEntityAt(index, out outData);
+        public Boolean GetEntityAt(int index, out CExternsEditor.EntityDataStruct outData) {
+            return CExternsEditor.GetEntityAt(index, out outData);
         }
         
         public int GetEntityCount() {
-            return Externs.GetEntityCount();
+            return CExternsEditor.GetEntityCount();
         }
         
         public bool DeleteEntityDef(string entityName) {
-            return Externs.DeleteEntityDef(entityName);
+            return CExternsEditor.DeleteEntityDef(entityName);
         }
         
         public bool SetActiveEntity(string entityName) {
-            return Externs.SetActiveEntity(entityName);
+            return CExternsEditor.SetActiveEntity(entityName);
         }
 
         public int GetEntitySelectionCount() {
-            return Externs.GetEntitySelectionCount();
+            return CExternsEditor.GetEntitySelectionCount();
         }
 
-        public bool GetEntitySelectionInfo(int index, out Externs.EntityStruct outData) {
-            return Externs.GetEntitySelectionInfo(index, out outData);
+        public bool GetEntitySelectionInfo(int index, out CExternsEditor.EntityStruct outData) {
+            return CExternsEditor.GetEntitySelectionInfo(index, out outData);
         }
 
         public bool SelectEntityByUID(string uid) {
-            return Externs.SelectEntityByUID(uid);
+            return CExternsEditor.SelectEntityByUID(uid);
         }
 
         public bool SelectEntityInLayerByUID(string layerName, string uid) {
-            return Externs.SelectEntityInLayerByUID(layerName, uid);
+            return CExternsEditor.SelectEntityInLayerByUID(layerName, uid);
         }
 
         public void DeselectEntity() {
-            Externs.DeselectEntity();
+            CExternsEditor.DeselectEntity();
         }
 
         public int GetEntityLayerInstanceCount(string layerName, int batchIndex = -1) {
-            return Externs.GetEntityLayerInstanceCount(layerName, batchIndex);
+            return CExternsEditor.GetEntityLayerInstanceCount(layerName, batchIndex);
         }
 
-        public int GetEntityLayerInstanceAt(string layerName, int batchIndex, int instanceIndex, out Externs.EntityStruct outData) {
-            return Externs.GetEntityLayerInstanceAt(layerName, batchIndex, instanceIndex, out outData);
+        public int GetEntityLayerInstanceAt(string layerName, int batchIndex, int instanceIndex, out CExternsEditor.EntityStruct outData) {
+            return CExternsEditor.GetEntityLayerInstanceAt(layerName, batchIndex, instanceIndex, out outData);
         }
 
         // --- batch group helpers ------------------------------------------------
         public int GetEntityLayerBatchCount(string layerName) {
-            return Externs.GetEntityLayerBatchCount(layerName);
+            return CExternsEditor.GetEntityLayerBatchCount(layerName);
         }
 
         public int GetEntityLayerBatchCountAt(int index) {
-            return Externs.GetEntityLayerBatchCountAt(index);
+            return CExternsEditor.GetEntityLayerBatchCountAt(index);
         }
 
         public string? GetEntityLayerBatchTilesetName(string layerName, int batchIndex) {
-            IntPtr ptr = Externs.GetEntityLayerBatchTilesetName(layerName, batchIndex);
+            IntPtr ptr = CExternsEditor.GetEntityLayerBatchTilesetName(layerName, batchIndex);
             return ptr == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(ptr);
         }
 
         // movement helpers -------------------------------------------------------
         public bool MoveEntityLayerBatchUp(string layerName, int batchIndex) {
-            return Externs.MoveEntityLayerBatchUp(layerName, batchIndex);
+            return CExternsEditor.MoveEntityLayerBatchUp(layerName, batchIndex);
         }
         public bool MoveEntityLayerBatchDown(string layerName, int batchIndex) {
-            return Externs.MoveEntityLayerBatchDown(layerName, batchIndex);
+            return CExternsEditor.MoveEntityLayerBatchDown(layerName, batchIndex);
         }
         public bool MoveEntityLayerBatchTo(string layerName, int batchIndex, int newIndex) {
-            return Externs.MoveEntityLayerBatchTo(layerName, batchIndex, newIndex);
+            return CExternsEditor.MoveEntityLayerBatchTo(layerName, batchIndex, newIndex);
         }
         public bool MoveEntityLayerBatchUpByIndex(int layerIndex, int batchIndex) {
-            return Externs.MoveEntityLayerBatchUpByIndex(layerIndex, batchIndex);
+            return CExternsEditor.MoveEntityLayerBatchUpByIndex(layerIndex, batchIndex);
         }
         public bool MoveEntityLayerBatchDownByIndex(int layerIndex, int batchIndex) {
-            return Externs.MoveEntityLayerBatchDownByIndex(layerIndex, batchIndex);
+            return CExternsEditor.MoveEntityLayerBatchDownByIndex(layerIndex, batchIndex);
         }
         public bool MoveEntityLayerBatchToByIndex(int layerIndex, int batchIndex, int newIndex) {
-            return Externs.MoveEntityLayerBatchToByIndex(layerIndex, batchIndex, newIndex);
+            return CExternsEditor.MoveEntityLayerBatchToByIndex(layerIndex, batchIndex, newIndex);
         }
         
         #endregion
