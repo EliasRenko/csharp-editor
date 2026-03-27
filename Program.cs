@@ -30,7 +30,6 @@ namespace csharp_editor {
                 editor.UpdateFrame(deltaTime);
 
                 // Rendering
-                editor.PreRender();
                 editor.Render();
                 editor.SwapBuffers();
             }

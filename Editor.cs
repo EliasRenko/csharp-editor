@@ -18,7 +18,7 @@ namespace csharp_editor {
         private bool _suppressStateSwitch = false;
         private bool _isEntityLayerActive = false;
         
-        private ExternError lastError;
+        //private ExternError lastError;
         private int _hoveredTabIndex = -1;
         private WelcomePanel _welcomePanel = null!;
 
@@ -27,13 +27,6 @@ namespace csharp_editor {
 
             active = true;
             KeyPreview = true;
-
-            // CExterns.CallbackDelegate callback = (priority, category, message) => {
-            //     lastError.SetError(priority, category, message);
-            //     string fullMessage = $"{priority} - {category} - {message}";
-            //     view_extern.SetLastErrorMessage(fullMessage);
-            //     Log(fullMessage);
-            // };
             
             _entitySelectionChangedCallback = () => {
                 // Marshal back to the UI thread
@@ -142,24 +135,6 @@ namespace csharp_editor {
             entitySelector.LoadEntities();
         }
 
-        public void UpdateFrame(float deltaTime) {
-            view_extern.UpdateFrame(deltaTime);
-        }
-
-        public void PreRender() {
-            //view_extern.PreRender();
-        }
-
-        public void Render() {
-            view_extern.Render();
-        }
-
-        public void SwapBuffers() {
-            view_extern.SwapBuffers();
-        }
-
-        #region Core
-
         private void SaveProject_Click(object? sender, EventArgs e) {
             if (tabControl1.SelectedTab?.Tag is TabState ts && !string.IsNullOrEmpty(ts.FilePath)) {
                 string projectName = Path.GetFileNameWithoutExtension(ts.FilePath);
@@ -223,13 +198,6 @@ namespace csharp_editor {
 
             if (tabControl1.ItemSize.Width != widest)
                 tabControl1.ItemSize = new Size(widest, tabControl1.ItemSize.Height);
-        }
-
-        private string GetLastErrorMessage() {
-            if (!string.IsNullOrWhiteSpace(lastError.message)) {
-                return $"{lastError.priority} - {lastError.category} - {lastError.message}";
-            }
-            return "Unknown native error.";
         }
 
         private void LoadMap(string path) {
@@ -401,18 +369,6 @@ namespace csharp_editor {
                 _welcomePanel.Visible = true;
             }
         }
-
-        #endregion
-
-        // #region Log
-        // public void Log(string text) {
-        //     // Check if form and console are not disposed
-        //     if (!IsDisposed && console != null && !console.IsDisposed) {
-        //         console.Log(text);
-        //     }
-        // }
-        //
-        // #endregion
 
         private void UpdateProjectStatus() {
             if (CExternsEditor.GetProjectProps(out ProjectInfoStruct info))
