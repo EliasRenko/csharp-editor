@@ -28,7 +28,6 @@ namespace csharp_editor.UserControls {
             label_log = new System.Windows.Forms.Label();
             logView = new csharp_editor.UserControls.LogView();
             inputView1 = new csharp_editor.UserControls.InputView();
-            inputView2 = new csharp_editor.UserControls.InputView();
             panel1 = new System.Windows.Forms.Panel();
             button_clear = new System.Windows.Forms.Button();
             button_copy = new System.Windows.Forms.Button();
@@ -54,7 +53,7 @@ namespace csharp_editor.UserControls {
             logView.Margin = new System.Windows.Forms.Padding(0);
             logView.Name = "logView";
             logView.Padding = new System.Windows.Forms.Padding(0, 4, 0, 4);
-            logView.Size = new System.Drawing.Size(272, 197);
+            logView.Size = new System.Drawing.Size(272, 215);
             logView.TabIndex = 1;
             // 
             // inputView1
@@ -63,15 +62,6 @@ namespace csharp_editor.UserControls {
             inputView1.Name = "inputView1";
             inputView1.Size = new System.Drawing.Size(258, 18);
             inputView1.TabIndex = 0;
-            // 
-            // inputView2
-            // 
-            inputView2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            inputView2.Location = new System.Drawing.Point(4, 234);
-            inputView2.Margin = new System.Windows.Forms.Padding(0);
-            inputView2.Name = "inputView2";
-            inputView2.Size = new System.Drawing.Size(272, 18);
-            inputView2.TabIndex = 2;
             // 
             // panel1
             // 
@@ -109,7 +99,6 @@ namespace csharp_editor.UserControls {
             BackColor = System.Drawing.SystemColors.Control;
             Controls.Add(logView);
             Controls.Add(panel1);
-            Controls.Add(inputView2);
             Margin = new System.Windows.Forms.Padding(4);
             Padding = new System.Windows.Forms.Padding(4);
             Size = new System.Drawing.Size(280, 256);
@@ -123,8 +112,6 @@ namespace csharp_editor.UserControls {
         private System.Windows.Forms.Button button_copy;
 
         private System.Windows.Forms.Panel panel1;
-
-        private csharp_editor.UserControls.InputView inputView2;
 
         private InputView inputView1;
 
