@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace csharp_editor.UserControls {
     public partial class TextureViewer : UserControl {
-        private Externs.TextureDataStruct _textureData;
+        private CExternsEditor.TextureDataStruct _textureData;
         private int _tileSize;
         private int _tilesPerRow;
         private int _tilesPerCol;
@@ -171,7 +171,7 @@ namespace csharp_editor.UserControls {
             }
         }
 
-        public void SetTextureData(Externs.TextureDataStruct textureData, int tileSize = 0) {
+        public void SetTextureData(CExternsEditor.TextureDataStruct textureData, int tileSize = 0) {
             _textureData = textureData;
             _tileSize = tileSize;
             _tilesPerRow = tileSize > 0 ? textureData.Width / tileSize : 0;
@@ -261,7 +261,7 @@ namespace csharp_editor.UserControls {
         /// can dim everything outside it, leaving only the region at full brightness.
         /// Coordinates are in PIXELS (as stored by the C++ engine).
         /// </summary>
-        public void SetRegionPreview(Externs.TextureDataStruct textureData, int tileSize, int pixelX, int pixelY, int pixelW, int pixelH) {
+        public void SetRegionPreview(CExternsEditor.TextureDataStruct textureData, int tileSize, int pixelX, int pixelY, int pixelW, int pixelH) {
             _textureData = textureData;
             _tileSize = tileSize;
             _tilesPerRow = tileSize > 0 ? textureData.Width / tileSize : 0;
@@ -511,7 +511,7 @@ namespace csharp_editor.UserControls {
             }
         }
 
-        private Bitmap CreateBitmapFromTextureData(Externs.TextureDataStruct textureData) {
+        private Bitmap CreateBitmapFromTextureData(CExternsEditor.TextureDataStruct textureData) {
             // Create bitmap based on bytes per pixel
             PixelFormat format = textureData.BytesPerPixel switch {
                 1 => PixelFormat.Format8bppIndexed,

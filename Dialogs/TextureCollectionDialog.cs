@@ -35,12 +35,12 @@ namespace csharp_editor.Dialogs {
             labelTilesetPath.Text = "";
             
             // Get count of tilesets from C++
-            int count = _externView.GetTilesetCount();
+            int count = CExternsEditor.GetTilesetCount();
             
             // Loop through and get each tileset info
             for (int i = 0; i < count; i++) {
-                Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
-                bool result = _externView.GetTilesetAt(i, out tilesetInfo);
+                CExternsEditor.TilesetInfoStruct tilesetInfo = new CExternsEditor.TilesetInfoStruct();
+                bool result = CExternsEditor.GetTilesetAt(i, out tilesetInfo);
                 
                 if (result) {
                     string tilesetName = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "";
@@ -63,12 +63,12 @@ namespace csharp_editor.Dialogs {
 
         private void listBoxTilesets_SelectedIndexChanged(object sender, EventArgs e) {
             if (listBoxTilesets.SelectedItem is TilesetEntry entry) {
-                Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
-                bool result = _externView.GetTileset(entry.Name, out tilesetInfo);
+                CExternsEditor.TilesetInfoStruct tilesetInfo = new CExternsEditor.TilesetInfoStruct();
+                bool result = CExternsEditor.GetTileset(entry.Name, out tilesetInfo);
 
                 if (result && !string.IsNullOrEmpty(entry.ImagePath)) {
-                    Externs.TextureDataStruct textureData = new Externs.TextureDataStruct();
-                    _externView.GetTextureData(entry.ImagePath, out textureData);
+                    CExternsEditor.TextureDataStruct textureData = new CExternsEditor.TextureDataStruct();
+                    CExternsEditor.GetTextureData(entry.ImagePath, out textureData);
                     textureViewer.SetTextureData(textureData, 0);
 
                     labelTilesetMeta.Text =
@@ -97,7 +97,7 @@ namespace csharp_editor.Dialogs {
                 string imagePath = dialog.FileName;
                 string name = Path.GetFileNameWithoutExtension(imagePath);
 
-                bool success = _externView.CreateTileset(imagePath, name);
+                bool success = CExternsEditor.CreateTileset(imagePath, name);
                 if (!success) {
                     string error = _externView.GetLastErrorMessage();
                     MessageBox.Show($"Failed to import tileset '{name}':\n{error}", "Import Error",
@@ -177,7 +177,7 @@ namespace csharp_editor.Dialogs {
             }
 
             // C++ has no rename API — recreate under the new name then update local entry
-            bool success = _externView.CreateTileset(old.ImagePath, newName);
+            bool success = CExternsEditor.CreateTileset(old.ImagePath, newName);
             if (!success) {
                 string error = _externView.GetLastErrorMessage();
                 MessageBox.Show($"Rename failed: {error}", "Error",
@@ -219,7 +219,7 @@ namespace csharp_editor.Dialogs {
 
             if (confirm != DialogResult.Yes) return;
 
-            bool success = _externView.DeleteTileset(entry.Name);
+            bool success = CExternsEditor.DeleteTileset(entry.Name);
             if (!success) {
                 string error = _externView.GetLastErrorMessage();
                 MessageBox.Show($"Failed to delete tileset '{entry.Name}':\n{error}", "Error",
@@ -239,7 +239,7 @@ namespace csharp_editor.Dialogs {
             if (listBoxTilesets.SelectedItem is TilesetEntry selectedTileset) {
                 
                 try {
-                    bool result = _externView.SetActiveTileset(selectedTileset.Name);
+                    bool result = CExternsEditor.SetActiveTileset(selectedTileset.Name);
                     
                     if (result) {
                         SelectedTilesetName = selectedTileset.Name;

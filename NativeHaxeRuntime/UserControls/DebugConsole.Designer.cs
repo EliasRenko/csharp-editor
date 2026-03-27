@@ -1,6 +1,6 @@
-﻿using csharp_editor.UserControls;
-namespace csharp_editor.UserControls {
-    partial class DebugConsole {
+﻿using static LogView;
+
+partial class DebugConsole {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
@@ -26,8 +26,7 @@ namespace csharp_editor.UserControls {
         private void InitializeComponent()
         {
             label_log = new System.Windows.Forms.Label();
-            logView = new csharp_editor.UserControls.LogView();
-            inputView1 = new csharp_editor.UserControls.InputView();
+            logView = new LogView();
             panel1 = new System.Windows.Forms.Panel();
             button_clear = new System.Windows.Forms.Button();
             button_copy = new System.Windows.Forms.Button();
@@ -55,13 +54,6 @@ namespace csharp_editor.UserControls {
             logView.Padding = new System.Windows.Forms.Padding(0, 4, 0, 4);
             logView.Size = new System.Drawing.Size(272, 215);
             logView.TabIndex = 1;
-            // 
-            // inputView1
-            // 
-            inputView1.Location = new System.Drawing.Point(0, 0);
-            inputView1.Name = "inputView1";
-            inputView1.Size = new System.Drawing.Size(258, 18);
-            inputView1.TabIndex = 0;
             // 
             // panel1
             // 
@@ -113,12 +105,9 @@ namespace csharp_editor.UserControls {
 
         private System.Windows.Forms.Panel panel1;
 
-        private InputView inputView1;
-
-        private csharp_editor.UserControls.LogView logView;
+        private LogView logView;
 
         #endregion
 
         private System.Windows.Forms.Label label_log;
     }
-}

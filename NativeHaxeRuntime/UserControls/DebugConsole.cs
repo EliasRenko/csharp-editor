@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-namespace csharp_editor.UserControls {
-    public partial class DebugConsole : UserControl {
+using System.Windows.Forms;
+
+public partial class DebugConsole : UserControl {
 
         public DebugConsole() {
             InitializeComponent();
@@ -23,4 +22,3 @@ namespace csharp_editor.UserControls {
             }
         }
     }
-}

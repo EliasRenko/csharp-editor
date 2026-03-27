@@ -45,7 +45,7 @@ namespace csharp_editor {
             helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             statusStrip1 = new System.Windows.Forms.StatusStrip();
             statusLabel_project = new System.Windows.Forms.ToolStripStatusLabel();
-            console = new csharp_editor.UserControls.DebugConsole();
+            console = new DebugConsole();
             toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             panelRight = new System.Windows.Forms.Panel();
             entitySelector = new csharp_editor.UserControls.EntitySelector();
@@ -505,7 +505,7 @@ namespace csharp_editor {
         private ToolStripMenuItem toolStripMenuItem_export;
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel statusLabel_project;
-        private csharp_editor.UserControls.DebugConsole console;
+        private DebugConsole console;
         private System.Windows.Forms.Panel panelRight;
         private csharp_editor.UserControls.HierarchyTree hierarchyTree;
         private csharp_editor.UserControls.TextureViewer textureViewer;

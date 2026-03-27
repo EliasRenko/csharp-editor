@@ -2,4 +2,7 @@
 
 public class Runtime {
     
+    public Runtime() {
+        
+    }
 }

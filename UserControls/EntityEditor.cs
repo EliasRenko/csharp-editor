@@ -127,10 +127,10 @@ namespace csharp_editor.UserControls {
             comboBoxTilemap.Items.Clear();
             comboBoxTilemap.Items.Add(NoTextureOption);
             if (_externView == null) { comboBoxTilemap.SelectedIndex = 0; return; }
-            int count = _externView.GetTilesetCount();
+            int count = CExternsEditor.GetTilesetCount();
             for (int i = 0; i < count; i++) {
-                Externs.TilesetInfoStruct info = new Externs.TilesetInfoStruct();
-                if (_externView.GetTilesetAt(i, out info)) {
+                CExternsEditor.TilesetInfoStruct info = new CExternsEditor.TilesetInfoStruct();
+                if (CExternsEditor.GetTilesetAt(i, out info)) {
                     string name = Marshal.PtrToStringAnsi(info.name) ?? "";
                     if (!string.IsNullOrEmpty(name)) comboBoxTilemap.Items.Add(name);
                 }
@@ -163,17 +163,17 @@ namespace csharp_editor.UserControls {
                 return;
             }
 
-            int count = _externView.GetTilesetCount();
+            int count = CExternsEditor.GetTilesetCount();
             for (int i = 0; i < count; i++) {
-                Externs.TilesetInfoStruct info = new Externs.TilesetInfoStruct();
-                if (!_externView.GetTilesetAt(i, out info)) continue;
+                CExternsEditor.TilesetInfoStruct info = new CExternsEditor.TilesetInfoStruct();
+                if (!CExternsEditor.GetTilesetAt(i, out info)) continue;
                 string name = Marshal.PtrToStringAnsi(info.name) ?? "";
                 if (name != selectedTilemap) continue;
 
                 string texturePath = Marshal.PtrToStringAnsi(info.texturePath) ?? "";
                 if (string.IsNullOrEmpty(texturePath)) break;
 
-                _externView.GetTextureData(texturePath, out Externs.TextureDataStruct textureData);
+                CExternsEditor.GetTextureData(texturePath, out CExternsEditor.TextureDataStruct textureData);
                 entityPreviewPanel.SetPreview(textureData, _currentRegion, _pivotXActual, _pivotYActual);
                 return;
             }
@@ -293,7 +293,7 @@ namespace csharp_editor.UserControls {
                 : Marshal.StringToHGlobalAnsi(comboBoxTilemap.SelectedItem?.ToString() ?? "");
 
             try {
-                var data = new Externs.EntityDataStruct {
+                var data = new CExternsEditor.EntityDataStruct {
                     width        = width,
                     height       = height,
                     tilesetName  = tilesetPtr,
@@ -306,8 +306,8 @@ namespace csharp_editor.UserControls {
                 };
 
                 bool success = _isEditMode
-                    ? _externView.EditEntity(textBoxName.Text.Trim(), ref data)
-                    : _externView.CreateEntity(textBoxName.Text.Trim(), ref data);
+                    ? CExternsEditor.EditEntity(textBoxName.Text.Trim(), ref data)
+                    : CExternsEditor.CreateEntity(textBoxName.Text.Trim(), ref data);
 
                 if (!success) {
                     string error = _externView.GetLastErrorMessage();

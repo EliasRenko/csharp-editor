@@ -35,7 +35,7 @@ namespace csharp_editor.UserControls {
         /// Sets the active entity layer and reloads both tabs.
         /// </summary>
         public void SetLayer(string layerName) {
-            _externView?.DeselectEntity();
+            CExternsEditor.DeselectEntity();
             _currentLayerName = layerName;
             _tilesetFilter = null;
             _currentBatchIndex = -1;
@@ -62,12 +62,12 @@ namespace csharp_editor.UserControls {
 
             if (_externView == null) return;
 
-            int count = _externView.GetEntityCount();
+            int count = CExternsEditor.GetEntityCount();
             int visibleCount = 0;
 
             for (int i = 0; i < count; i++) {
-                Externs.EntityDataStruct entityData = new Externs.EntityDataStruct();
-                _externView.GetEntityAt(i, out entityData);
+                CExternsEditor.EntityDataStruct entityData = new CExternsEditor.EntityDataStruct();
+                CExternsEditor.GetEntityAt(i, out entityData);
 
                 string name = Marshal.PtrToStringAnsi(entityData.name) ?? "";
                 string tilesetName = Marshal.PtrToStringAnsi(entityData.tilesetName) ?? "";
@@ -109,19 +109,19 @@ namespace csharp_editor.UserControls {
                 return;
             }
 
-            int count = _externView.GetEntityLayerInstanceCount(_currentLayerName);
+            int count = CExternsEditor.GetEntityLayerInstanceCount(_currentLayerName, -1);
             int visible = 0;
 
             for (int i = 0; i < count; i++) {
-                Externs.EntityStruct data = new Externs.EntityStruct();
-                if (_externView.GetEntityLayerInstanceAt(_currentLayerName, _currentBatchIndex, i, out data) == 0) continue;
+                CExternsEditor.EntityStruct data = new CExternsEditor.EntityStruct();
+                if (CExternsEditor.GetEntityLayerInstanceAt(_currentLayerName, _currentBatchIndex, i, out data) == 0) continue;
 
                 string defName = Marshal.PtrToStringAnsi(data.name) ?? "";
 
                 // Tileset filter: cross-reference the entity def's tileset
                 if (!string.IsNullOrEmpty(_tilesetFilter)) {
-                    Externs.EntityDataStruct defData = new Externs.EntityDataStruct();
-                    _externView.GetEntity(defName, out defData);
+                    CExternsEditor.EntityDataStruct defData = new CExternsEditor.EntityDataStruct();
+                    CExternsEditor.GetEntity(defName, out defData);
                     string defTileset = Marshal.PtrToStringAnsi(defData.tilesetName) ?? "";
                     if (defTileset != _tilesetFilter) continue;
                 }
@@ -196,9 +196,9 @@ namespace csharp_editor.UserControls {
             if (_externView == null) return;
             if (listBoxInstances.SelectedItem is not InstanceListItem item) return;
             if (!string.IsNullOrEmpty(_currentLayerName))
-                _externView.SelectEntityInLayerByUID(_currentLayerName, item.Uid);
+                CExternsEditor.SelectEntityInLayerByUID(_currentLayerName, item.Uid);
             else
-                _externView.SelectEntityByUID(item.Uid);
+                CExternsEditor.SelectEntityByUID(item.Uid);
         }
 
         private void ListBoxEntities_SelectedIndexChanged(object? sender, EventArgs e) {

@@ -3,6 +3,7 @@ using csharp_editor.UserControls;
 using csharp_editor.Models;
 using csharp_editor.Dialogs;
 using csharp_editor.Helpers;
+using NativeHaxeRuntime;
 
 namespace csharp_editor {
     public partial class Editor : Form {
@@ -24,7 +25,7 @@ namespace csharp_editor {
             active = true;
             KeyPreview = true;
 
-            Externs.CallbackDelegate callback = (priority, category, message) => {
+            CExterns.CallbackDelegate callback = (priority, category, message) => {
                 lastError.SetError(priority, category, message);
                 string fullMessage = $"{priority} - {category} - {message}";
                 view_extern.SetLastErrorMessage(fullMessage);
@@ -98,19 +99,19 @@ namespace csharp_editor {
         }
 
         private void SelectTileDraw(object? sender, MouseEventArgs e) {
-            view_extern.SetToolType(ToolType.TileDraw);
+            CExternsEditor.SetToolType(ToolType.TileDraw);
         }
 
         private void SelectTileErase(object? sender, MouseEventArgs e) {
-            view_extern.SetToolType(ToolType.TileErase);
+            CExternsEditor.SetToolType(ToolType.TileErase);
         }
 
         private void SelectEntityAdd(object? sender, MouseEventArgs e) {
-            view_extern.SetToolType(ToolType.EntityAdd);
+            CExternsEditor.SetToolType(ToolType.EntityAdd);
         }
 
         private void SelectEntitySelect(object? sender, MouseEventArgs e) {
-            view_extern.SetToolType(ToolType.EntitySelect);
+            CExternsEditor.SetToolType(ToolType.EntitySelect);
         }
 
         private void ShowEntitiesDefDialog(object? sender, MouseEventArgs e) {
@@ -150,7 +151,7 @@ namespace csharp_editor {
         private void SaveProject_Click(object? sender, EventArgs e) {
             if (tabControl1.SelectedTab?.Tag is TabState ts && !string.IsNullOrEmpty(ts.FilePath)) {
                 string projectName = Path.GetFileNameWithoutExtension(ts.FilePath);
-                bool result = view_extern.ExportProject(ts.FilePath, projectName);
+                bool result = CExternsEditor.ExportProject(ts.FilePath, projectName);
                 if (result == false)
                     Log($"Warning: ExportProject returned 0 for '{ts.FilePath}'");
                 else
@@ -172,7 +173,7 @@ namespace csharp_editor {
             if (dlg.ShowDialog(this) != DialogResult.OK) return;
             string newPath = Path.GetFullPath(dlg.FileName);
             string projectName = Path.GetFileNameWithoutExtension(newPath);
-            bool result = view_extern.ExportProject(newPath, projectName);
+            bool result = CExternsEditor.ExportProject(newPath, projectName);
             if (result == false) {
                 Log($"Warning: ExportProject returned 0 for '{newPath}'");
             } else {
@@ -233,7 +234,7 @@ namespace csharp_editor {
             }
 
             _suppressStateSwitch = true;
-            int stateId = view_extern.ImportMap(path);
+            int stateId = CExternsEditor.ImportMap(path);
             System.Diagnostics.Debug.WriteLine($"[LoadMap] ImportMap('{path}') returned state={stateId}");
             Log($"[DEBUG] ImportMap returned state={stateId}");
 
@@ -243,7 +244,7 @@ namespace csharp_editor {
                 return;
             }
 
-            view_extern.SetActiveState(stateId);
+            CExternsEditor.SetActiveState(stateId);
 
             // Create a tab for this state
             string tabLabel = Path.GetFileNameWithoutExtension(path);
@@ -273,14 +274,14 @@ namespace csharp_editor {
         }
 
         private void ToolStripButton_newMap_Click(object? sender, MouseEventArgs e) {
-            int stateId = view_extern.NewEditorState();
+            int stateId = CExternsEditor.NewEditorState();
             TabPage tab = new TabPage($"New Map {stateId}") { Tag = new TabState(stateId, "") };
             _suppressStateSwitch = true;
             tabControl1.TabPages.Add(tab);
             UpdateTabItemSize();
             tabControl1.SelectedTab = tab;
             _suppressStateSwitch = false;
-            view_extern.SetActiveState(stateId);
+            CExternsEditor.SetActiveState(stateId);
             panelMain.Visible = true;
             _welcomePanel.Visible = false;
             hierarchyTree.LoadLayersFromBackend();
@@ -291,7 +292,7 @@ namespace csharp_editor {
         private void TabControl1_SelectedIndexChanged(object? sender, EventArgs e) {
             if (_suppressStateSwitch) return;
             if (tabControl1.SelectedTab?.Tag is TabState ts) {
-                view_extern.SetActiveState(ts.StateId);
+                CExternsEditor.SetActiveState(ts.StateId);
                 hierarchyTree.LoadLayersFromBackend();
                 entitySelector.LoadEntities();
                 entitySelector.LoadInstances();
@@ -378,7 +379,7 @@ namespace csharp_editor {
 
         private void CloseStateTab(int index) {
             if (tabControl1.TabPages[index].Tag is TabState ts) {
-                view_extern.ReleaseState(ts.StateId);
+                CExternsEditor.ReleaseState(ts.StateId);
             }
             tabControl1.TabPages.RemoveAt(index);
             UpdateTabItemSize();
@@ -466,7 +467,7 @@ namespace csharp_editor {
             }
 
             // Convert C# KeyCode to SDL Scancode and pass to SDL
-            view_extern.OnKeyboardDown(KeyMapper.ToSDLScancode(e.KeyCode));
+            CExternsEditor.OnKeyboardDown(KeyMapper.ToSDLScancode(e.KeyCode));
         }
 
         private void Editor_KeyUp(object? sender, KeyEventArgs e) {
@@ -477,23 +478,23 @@ namespace csharp_editor {
             }
 
             // Convert C# KeyCode to SDL Scancode and pass to SDL
-            view_extern.OnKeyboardUp(KeyMapper.ToSDLScancode(e.KeyCode));
+            CExternsEditor.OnKeyboardUp(KeyMapper.ToSDLScancode(e.KeyCode));
         }
 
         #endregion
 
         private void view_extern_MouseDown(object? sender, MouseEventArgs e) {
             int button = MouseButtonMapper.ToSDLMouseButton(e.Button);
-            view_extern.OnMouseButtonDown(e.X, e.Y, button);
+            CExternsEditor.OnMouseButtonDown(e.X, e.Y, button);
         }
 
         private void view_extern_MouseWheel(object? sender, MouseEventArgs e) {
-            view_extern.OnMouseWheel(e.X, e.Y, e.Delta / 120.0f);
+            CExternsEditor.OnMouseWheel(e.X, e.Y, e.Delta / 120.0f);
         }
 
         private void view_extern_MouseUp(object? sender, MouseEventArgs e) {
             int button = MouseButtonMapper.ToSDLMouseButton(e.Button);
-            view_extern.OnMouseButtonUp(e.X, e.Y, button);
+            CExternsEditor.OnMouseButtonUp(e.X, e.Y, button);
 
             // clicking in the extern view may have placed an entity – if the active layer
             // is an entity layer, refresh its batch groups and instance list so everything stays current.
@@ -504,7 +505,7 @@ namespace csharp_editor {
         private void ExternView_EntitySelectionChanged(object? sender, EventArgs e) {
             if (!_isEntityLayerActive) return;
 
-            int count = view_extern.GetEntitySelectionCount();
+            int count = CExternsEditor.GetEntitySelectionCount();
 
             if (count <= 0) {
                 // Only wipe entity-specific info; preserve layer/state info if no entity was shown
@@ -515,8 +516,8 @@ namespace csharp_editor {
 
             // Single selection – show details directly
             if (count == 1) {
-                Externs.EntityStruct data = new Externs.EntityStruct();
-                if (!view_extern.GetEntitySelectionInfo(0, out data)) {
+                CExternsEditor.EntityStruct data = new CExternsEditor.EntityStruct();
+                if (!CExternsEditor.GetEntitySelectionInfo(0, out data)) {
                     string error = view_extern.GetLastErrorMessage();
                     MessageBox.Show($"Failed to retrieve selected entity info:\n{error}",
                         "Entity Selection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -539,8 +540,8 @@ namespace csharp_editor {
             // Multi-selection – show an array so all entries are visible
             var items = new List<EntityInstanceDisplay>(count);
             for (int i = 0; i < count; i++) {
-                Externs.EntityStruct data = new Externs.EntityStruct();
-                if (!view_extern.GetEntitySelectionInfo(i, out data)) {
+                CExternsEditor.EntityStruct data = new CExternsEditor.EntityStruct();
+                if (!CExternsEditor.GetEntitySelectionInfo(i, out data)) {
                     string error = view_extern.GetLastErrorMessage();
                     Log($"Failed to retrieve entity selection info at index {i}: {error}");
                     continue;
@@ -595,7 +596,7 @@ namespace csharp_editor {
                     dialog.AddExtension = true;
 
                     if (dialog.ShowDialog() == DialogResult.OK) {
-                        bool ok = view_extern.ExportMap(dialog.FileName);
+                        bool ok = CExternsEditor.ExportMap(dialog.FileName);
                         if (!ok) {
                             MessageBox.Show($"Failed to export map:\n{GetLastErrorMessage()}", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
@@ -611,8 +612,8 @@ namespace csharp_editor {
             Log($"Layer selected: {layer.Name} ({layer.Type})");
 
             // Retrieve layer info from backend
-            Externs.LayerInfoStruct layerInfo = new Externs.LayerInfoStruct();
-            bool infoResult = view_extern.GetLayerInfo(layer.Name, out layerInfo);
+            CExternsEditor.LayerInfoStruct layerInfo = new CExternsEditor.LayerInfoStruct();
+            bool infoResult = CExternsEditor.GetLayerInfo(layer.Name, out layerInfo);
             if (!infoResult) {
                 string error = GetLastErrorMessage();
                 Log($"Failed to retrieve layer info for '{layer.Name}': {error}");
@@ -657,7 +658,7 @@ namespace csharp_editor {
                 _isEntityLayerActive = false;
                 textureViewer.Visible = true;
                 entitySelector.Visible = false;
-                view_extern?.DeselectEntity();
+                CExternsEditor.DeselectEntity();
                 UpdateTextureInfo(layer);
             }
             else if (layer.Type == LayerType.EntityLayer) {
@@ -671,14 +672,14 @@ namespace csharp_editor {
                 _isEntityLayerActive = false;
                 textureViewer.Visible = false;
                 entitySelector.Visible = false;
-                view_extern?.DeselectEntity();
+                CExternsEditor.DeselectEntity();
             }
         }
 
         private void HierarchyTree_StateSelected(object? sender, EventArgs e) {
             Log("State row selected");
             _isEntityLayerActive = false;
-            view_extern?.DeselectEntity();
+            CExternsEditor.DeselectEntity();
             try {
                 if (view_extern != null) {
                     bool gotInfo = view_extern.GetMapProps(out MapInfoStruct info);
@@ -762,10 +763,10 @@ namespace csharp_editor {
                 return;
             }
 
-            Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
+            CExternsEditor.TilesetInfoStruct tilesetInfo = new CExternsEditor.TilesetInfoStruct();
 
             // Get tileset info from C++ using the layer's tileset
-            bool result = view_extern.GetTileset(layer.TilesetName, out tilesetInfo);
+            bool result = CExternsEditor.GetTileset(layer.TilesetName, out tilesetInfo);
 
             if (!result) {
                 Log($"Failed to load tileset '{layer.TilesetName}' for texture viewer");
@@ -783,14 +784,14 @@ namespace csharp_editor {
             }
 
             // Get texture data
-            Externs.TextureDataStruct textureData;
-            view_extern.GetTextureData(texturePath, out textureData);
+            CExternsEditor.TextureDataStruct textureData;
+            CExternsEditor.GetTextureData(texturePath, out textureData);
 
             // Update tileset viewer
             textureViewer.SetTextureData(textureData, layer.TileSize);
 
             // Get and select the active tile from backend
-            int activeTile = view_extern.GetActiveTile();
+            int activeTile = CExternsEditor.GetActiveTile();
             textureViewer.SetSelectedTile(activeTile);
 
             Log($"Texture viewer updated with tileset: {layer.TilesetName}");
@@ -798,7 +799,7 @@ namespace csharp_editor {
 
         private void TextureViewer_SelectionChanged(object? sender, int regionId) {
             // Update the selected tile in the backend
-            view_extern.SetActiveTile(regionId);
+            CExternsEditor.SetActiveTile(regionId);
 
             var selectedLayer = hierarchyTree.GetSelectedLayer();
             if (selectedLayer != null) {
@@ -810,7 +811,7 @@ namespace csharp_editor {
             _currentEntityName = entityName;
 
             // Set active entity in backend
-            bool activeEntityOk = view_extern.SetActiveEntity(entityName);
+            bool activeEntityOk = CExternsEditor.SetActiveEntity(entityName);
             if (!activeEntityOk) {
                 string error = view_extern.GetLastErrorMessage();
                 MessageBox.Show($"Failed to activate entity '{entityName}':\n{error}",
@@ -825,7 +826,7 @@ namespace csharp_editor {
         }
 
         private void WelcomePanel_NewProjectRequested(object? sender, string path) {
-            int stateId = view_extern.NewEditorState();
+            int stateId = CExternsEditor.NewEditorState();
             string normalizedPath = Path.GetFullPath(path);
             string tabLabel = Path.GetFileNameWithoutExtension(path);
             TabPage tab = new TabPage(tabLabel) { Tag = new TabState(stateId, normalizedPath) };
@@ -834,7 +835,7 @@ namespace csharp_editor {
             UpdateTabItemSize();
             tabControl1.SelectedTab = tab;
             _suppressStateSwitch = false;
-            view_extern.SetActiveState(stateId);
+            CExternsEditor.SetActiveState(stateId);
             panelMain.Visible = true;
             _welcomePanel.Visible = false;
             hierarchyTree.LoadLayersFromBackend();
@@ -843,7 +844,7 @@ namespace csharp_editor {
             _welcomePanel.RefreshRecent();
             // Save/initialise the project file via the backend
             string projectName = Path.GetFileNameWithoutExtension(normalizedPath);
-            bool saveResult = view_extern.ExportProject(normalizedPath, projectName);
+            bool saveResult = CExternsEditor.ExportProject(normalizedPath, projectName);
             if (saveResult == false)
                 Log($"Warning: ExportProject returned 0 for '{normalizedPath}'");
             Log($"New project created: {tabLabel} (state {stateId})");
@@ -871,20 +872,20 @@ namespace csharp_editor {
 
             // Try to load as a project first; fall back to plain map import
             string normalizedPath = Path.GetFullPath(path);
-            bool result = view_extern.ImportProject(normalizedPath);
+            bool result = CExternsEditor.ImportProject(normalizedPath);
             if (result != false) {
                 // Project imported successfully — resolve name from backend
                 view_extern.GetProjectProps(out ProjectInfoStruct importedProps);
                 string tabLabel = importedProps.ProjectName ?? Path.GetFileNameWithoutExtension(path);
                 _welcomePanel.Visible = false;
-                int stateId = view_extern.NewEditorState();
+                int stateId = CExternsEditor.NewEditorState();
                 TabPage tab = new TabPage(tabLabel) { Tag = new TabState(stateId, normalizedPath) };
                 _suppressStateSwitch = true;
                 tabControl1.TabPages.Add(tab);
                 UpdateTabItemSize();
                 tabControl1.SelectedTab = tab;
                 _suppressStateSwitch = false;
-                view_extern.SetActiveState(stateId);
+                CExternsEditor.SetActiveState(stateId);
                 panelMain.Visible = true;
                 _welcomePanel.Visible = false;
                 hierarchyTree.LoadLayersFromBackend();
@@ -956,15 +957,15 @@ namespace csharp_editor {
                 if (tab.Tag is TabState ts) {
                     if (saveFirst && !string.IsNullOrEmpty(ts.FilePath) &&
                         ts.FilePath.EndsWith(".json", StringComparison.OrdinalIgnoreCase)) {
-                        view_extern.SetActiveState(ts.StateId);
-                        bool ok = view_extern.ExportMap(ts.FilePath);
+                        CExternsEditor.SetActiveState(ts.StateId);
+                        bool ok = CExternsEditor.ExportMap(ts.FilePath);
                         if (!ok) {
                             MessageBox.Show($"Failed to save map '{ts.FilePath}':\n{GetLastErrorMessage()}", "Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         } else {
                             Log($"Saved map: {ts.FilePath}");
                         }
                     }
-                    view_extern.ReleaseState(ts.StateId);
+                    CExternsEditor.ReleaseState(ts.StateId);
                 }
             }
             tabControl1.TabPages.Clear();
@@ -1012,10 +1013,10 @@ namespace csharp_editor {
                     Size = new Size(320, 120)
                 };
 
-                int count = view_extern?.GetTilesetCount() ?? 0;
+                int count = CExternsEditor.GetTilesetCount();
                 for (int i = 0; i < count; i++) {
-                    Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
-                    bool result = view_extern?.GetTilesetAt(i, out tilesetInfo) ?? false;
+                    CExternsEditor.TilesetInfoStruct tilesetInfo = new CExternsEditor.TilesetInfoStruct();
+                    bool result = CExternsEditor.GetTilesetAt(i, out tilesetInfo);
                     if (result) {
                         string tilesetName = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "";
                         if (!string.IsNullOrEmpty(tilesetName))

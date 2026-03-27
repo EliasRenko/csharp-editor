@@ -18,10 +18,10 @@ namespace csharp_editor.Dialogs {
 
         private void LoadTilesets() {
             comboBoxTileset.Items.Clear();
-            int count = _externView.GetTilesetCount();
+            int count = CExternsEditor.GetTilesetCount();
             for (int i = 0; i < count; i++) {
-                Externs.TilesetInfoStruct info = new Externs.TilesetInfoStruct();
-                if (_externView.GetTilesetAt(i, out info)) {
+                CExternsEditor.TilesetInfoStruct info = new CExternsEditor.TilesetInfoStruct();
+                if (CExternsEditor.GetTilesetAt(i, out info)) {
                     string name = Marshal.PtrToStringAnsi(info.name) ?? "";
                     if (!string.IsNullOrEmpty(name))
                         comboBoxTileset.Items.Add(name);

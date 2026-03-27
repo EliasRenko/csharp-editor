@@ -26,10 +26,10 @@ namespace csharp_editor.Dialogs {
             listBoxEntities.Items.Clear();
             _entities.Clear();
 
-            int count = _externView.GetEntityCount();
+            int count = CExternsEditor.GetEntityCount();
             for (int i = 0; i < count; i++) {
-                Externs.EntityDataStruct entityData = new Externs.EntityDataStruct();
-                _externView.GetEntityAt(i, out entityData);
+                CExternsEditor.EntityDataStruct entityData = new CExternsEditor.EntityDataStruct();
+                CExternsEditor.GetEntityAt(i, out entityData);
 
                 string name = Marshal.PtrToStringAnsi(entityData.name) ?? "";
                 string tilesetName = Marshal.PtrToStringAnsi(entityData.tilesetName) ?? "";
@@ -88,7 +88,7 @@ namespace csharp_editor.Dialogs {
 
             int index = listBoxEntities.SelectedIndex;
             try {
-                bool success = _externView.DeleteEntityDef(entity.Name);
+                bool success = CExternsEditor.DeleteEntityDef(entity.Name);
                 if (success) {
                     _entities.RemoveAt(index);
                     listBoxEntities.Items.RemoveAt(index);

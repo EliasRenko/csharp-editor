@@ -62,12 +62,12 @@ namespace csharp_editor.Dialogs {
         
         private void LoadTilesetTexture() {
             // Find tileset index
-            int count = _externView.GetTilesetCount();
+            int count = CExternsEditor.GetTilesetCount();
             int tilesetIndex = -1;
             
             for (int i = 0; i < count; i++) {
-                Externs.TilesetInfoStruct tilesetInfo = new Externs.TilesetInfoStruct();
-                bool result = _externView.GetTilesetAt(i, out tilesetInfo);
+                CExternsEditor.TilesetInfoStruct tilesetInfo = new CExternsEditor.TilesetInfoStruct();
+                bool result = CExternsEditor.GetTilesetAt(i, out tilesetInfo);
                 
                 if (result) {
                     string name = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "";
@@ -87,13 +87,13 @@ namespace csharp_editor.Dialogs {
             }
             
             // Load texture data
-            Externs.TextureDataStruct textureData = new Externs.TextureDataStruct();
-            Externs.TilesetInfoStruct tileset = new Externs.TilesetInfoStruct();
+            CExternsEditor.TextureDataStruct textureData = new CExternsEditor.TextureDataStruct();
+            CExternsEditor.TilesetInfoStruct tileset = new CExternsEditor.TilesetInfoStruct();
             
-            bool loadResult = _externView.GetTilesetAt(tilesetIndex, out tileset);
+            bool loadResult = CExternsEditor.GetTilesetAt(tilesetIndex, out tileset);
             if (loadResult) {
                 string texturePath = Marshal.PtrToStringAnsi(tileset.texturePath) ?? "";
-                _externView.GetTextureData(texturePath, out textureData);
+                CExternsEditor.GetTextureData(texturePath, out textureData);
                 
                 textureViewer.SetTextureData(textureData, _tileSize);
                 UpdateSuggestion();

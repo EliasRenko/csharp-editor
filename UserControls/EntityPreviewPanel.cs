@@ -24,7 +24,7 @@ namespace csharp_editor.UserControls {
         /// Crops <paramref name="region"/> from <paramref name="textureData"/>,
         /// stores the result and redraws at the current pivot position.
         /// </summary>
-        public void SetPreview(Externs.TextureDataStruct textureData,
+        public void SetPreview(CExternsEditor.TextureDataStruct textureData,
                                Rectangle region, float pivotX, float pivotY) {
             _pivotX = pivotX;
             _pivotY = pivotY;
@@ -116,7 +116,7 @@ namespace csharp_editor.UserControls {
                                     x, y, size, size);
         }
 
-        private static Bitmap CreateBitmapFromTextureData(Externs.TextureDataStruct td) {
+        private static Bitmap CreateBitmapFromTextureData(CExternsEditor.TextureDataStruct td) {
             PixelFormat fmt = td.BytesPerPixel switch {
                 1 => PixelFormat.Format8bppIndexed,
                 3 => PixelFormat.Format24bppRgb,
