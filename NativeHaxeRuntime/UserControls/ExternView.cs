@@ -69,17 +69,17 @@ namespace csharp_editor.UserControls {
             sdlWindowHandle = IntPtr.Zero;
         }
 
-        public void Render() {
-            CExterns.Render();
-        }
+        // public void Render() {
+        //     CExterns.Render();
+        // }
 
-        public void SwapBuffers() {
-            CExterns.SwapBuffers();
-        }
+        // public void SwapBuffers() {
+        //     CExterns.SwapBuffers();
+        // }
 
-        public void UpdateFrame(float deltaTime) {
-            CExterns.UpdateFrame(deltaTime);
-        }
+        // public void UpdateFrame(float deltaTime) {
+        //     CExterns.UpdateFrame(deltaTime);
+        // }
 
         private void OnMouseMotion(object? sender, MouseEventArgs e) {
             CExterns.OnMouseMotion(e.X, e.Y);
