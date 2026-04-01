@@ -1,5 +1,6 @@
 ﻿using csharp_editor.UserControls;
 using csharp_editor;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace csharp_editor {
     partial class Editor {
@@ -45,9 +46,7 @@ namespace csharp_editor {
             helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             statusStrip1 = new System.Windows.Forms.StatusStrip();
             statusLabel_project = new System.Windows.Forms.ToolStripStatusLabel();
-            console = new DebugConsole();
             toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            panelRight = new System.Windows.Forms.Panel();
             entitySelector = new csharp_editor.UserControls.EntitySelector();
             textureViewer = new csharp_editor.UserControls.TextureViewer();
             hierarchyTree = new csharp_editor.UserControls.HierarchyTree();
@@ -65,27 +64,22 @@ namespace csharp_editor {
             toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             toolStripButton7 = new System.Windows.Forms.ToolStripButton();
             propertyGridPanel1 = new csharp_editor.UserControls.PropertyGridPanel();
-            tabControl1 = new System.Windows.Forms.TabControl();
-            panelMain = new System.Windows.Forms.Panel();
             button_cursor = new System.Windows.Forms.Button();
             button_entity = new System.Windows.Forms.Button();
             button_brush = new System.Windows.Forms.Button();
-            splitterLeft = new System.Windows.Forms.Splitter();
-            splitterRight = new System.Windows.Forms.Splitter();
+            dockPanel = new DockPanel();
             menuStrip1.SuspendLayout();
             statusStrip1.SuspendLayout();
-            panelRight.SuspendLayout();
             toolStrip1.SuspendLayout();
-            panelMain.SuspendLayout();
             SuspendLayout();
             // 
             // view_extern
             // 
             view_extern.BackColor = System.Drawing.SystemColors.ControlDark;
             view_extern.Dock = System.Windows.Forms.DockStyle.Fill;
-            view_extern.Location = new System.Drawing.Point(269, 34);
+            view_extern.Location = new System.Drawing.Point(269, 0);
             view_extern.Name = "view_extern";
-            view_extern.Size = new System.Drawing.Size(522, 512);
+            view_extern.Size = new System.Drawing.Size(522, 463);
             view_extern.TabIndex = 0;
             // 
             // menuStrip1
@@ -201,40 +195,17 @@ namespace csharp_editor {
             statusLabel_project.Size = new System.Drawing.Size(102, 17);
             statusLabel_project.Text = "No project loaded";
             // 
-            // console
-            // 
-            console.BackColor = System.Drawing.SystemColors.Control;
-            console.Dock = System.Windows.Forms.DockStyle.Bottom;
-            console.Location = new System.Drawing.Point(0, 595);
-            console.Margin = new System.Windows.Forms.Padding(4);
-            console.Name = "console";
-            console.Padding = new System.Windows.Forms.Padding(4);
-            console.Size = new System.Drawing.Size(1058, 151);
-            console.TabIndex = 3;
-            // 
             // toolStripMenuItem1
             // 
             toolStripMenuItem1.Name = "toolStripMenuItem1";
             toolStripMenuItem1.Size = new System.Drawing.Size(32, 19);
-            // 
-            // panelRight
-            // 
-            panelRight.BackColor = System.Drawing.SystemColors.ControlDark;
-            panelRight.Controls.Add(entitySelector);
-            panelRight.Controls.Add(textureViewer);
-            panelRight.Controls.Add(hierarchyTree);
-            panelRight.Dock = System.Windows.Forms.DockStyle.Right;
-            panelRight.Location = new System.Drawing.Point(795, 34);
-            panelRight.Name = "panelRight";
-            panelRight.Size = new System.Drawing.Size(263, 512);
-            panelRight.TabIndex = 7;
             // 
             // entitySelector
             // 
             entitySelector.Dock = System.Windows.Forms.DockStyle.Fill;
             entitySelector.Location = new System.Drawing.Point(0, 344);
             entitySelector.Name = "entitySelector";
-            entitySelector.Size = new System.Drawing.Size(263, 168);
+            entitySelector.Size = new System.Drawing.Size(263, 119);
             entitySelector.TabIndex = 2;
             entitySelector.Visible = false;
             // 
@@ -246,7 +217,7 @@ namespace csharp_editor {
             textureViewer.Name = "textureViewer";
             textureViewer.RegionSelectionMode = false;
             textureViewer.ShowGrid = false;
-            textureViewer.Size = new System.Drawing.Size(263, 168);
+            textureViewer.Size = new System.Drawing.Size(263, 119);
             textureViewer.SnapToGrid = true;
             textureViewer.TabIndex = 1;
             textureViewer.TileSize = 0;
@@ -369,39 +340,10 @@ namespace csharp_editor {
             // propertyGridPanel1
             // 
             propertyGridPanel1.Dock = System.Windows.Forms.DockStyle.Left;
-            propertyGridPanel1.Location = new System.Drawing.Point(0, 34);
+            propertyGridPanel1.Location = new System.Drawing.Point(0, 0);
             propertyGridPanel1.Name = "propertyGridPanel1";
-            propertyGridPanel1.Size = new System.Drawing.Size(265, 512);
+            propertyGridPanel1.Size = new System.Drawing.Size(265, 463);
             propertyGridPanel1.TabIndex = 9;
-            // 
-            // tabControl1
-            // 
-            tabControl1.Dock = System.Windows.Forms.DockStyle.Top;
-            tabControl1.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
-            tabControl1.ItemSize = new System.Drawing.Size(160, 28);
-            tabControl1.Location = new System.Drawing.Point(0, 0);
-            tabControl1.Name = "tabControl1";
-            tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new System.Drawing.Size(1058, 34);
-            tabControl1.TabIndex = 12;
-            tabControl1.Visible = true;
-            // 
-            // panelMain
-            // 
-            panelMain.Controls.Add(button_cursor);
-            panelMain.Controls.Add(button_entity);
-            panelMain.Controls.Add(button_brush);
-            panelMain.Controls.Add(view_extern);
-            panelMain.Controls.Add(splitterLeft);
-            panelMain.Controls.Add(propertyGridPanel1);
-            panelMain.Controls.Add(splitterRight);
-            panelMain.Controls.Add(panelRight);
-            panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            panelMain.Location = new System.Drawing.Point(0, 49);
-            panelMain.Name = "panelMain";
-            panelMain.Size = new System.Drawing.Size(1058, 546);
-            panelMain.TabIndex = 11;
-            panelMain.Visible = false;
             // 
             // button_cursor
             // 
@@ -433,36 +375,22 @@ namespace csharp_editor {
             button_brush.TabIndex = 15;
             button_brush.UseVisualStyleBackColor = false;
             // 
-            // splitterLeft
+            // dockPanel
             // 
-            splitterLeft.Location = new System.Drawing.Point(265, 34);
-            splitterLeft.MinExtra = 200;
-            splitterLeft.MinSize = 120;
-            splitterLeft.Name = "splitterLeft";
-            splitterLeft.Size = new System.Drawing.Size(4, 512);
-            splitterLeft.TabIndex = 13;
-            splitterLeft.TabStop = false;
-            // 
-            // splitterRight
-            // 
-            splitterRight.Dock = System.Windows.Forms.DockStyle.Right;
-            splitterRight.Location = new System.Drawing.Point(791, 34);
-            splitterRight.MinExtra = 200;
-            splitterRight.MinSize = 150;
-            splitterRight.Name = "splitterRight";
-            splitterRight.Size = new System.Drawing.Size(4, 512);
-            splitterRight.TabIndex = 14;
-            splitterRight.TabStop = false;
+            dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            dockPanel.DocumentStyle = DocumentStyle.DockingWindow;
+            dockPanel.Location = new System.Drawing.Point(0, 49);
+            dockPanel.Name = "dockPanel";
+            dockPanel.Size = new System.Drawing.Size(1058, 695);
+            dockPanel.TabIndex = 3;
             // 
             // Editor
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(1058, 768);
-            Controls.Add(panelMain);
-            Controls.Add(tabControl1);
+            Controls.Add(dockPanel);
             Controls.Add(toolStrip1);
-            Controls.Add(console);
             Controls.Add(statusStrip1);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
@@ -471,13 +399,13 @@ namespace csharp_editor {
             menuStrip1.PerformLayout();
             statusStrip1.ResumeLayout(false);
             statusStrip1.PerformLayout();
-            panelRight.ResumeLayout(false);
             toolStrip1.ResumeLayout(false);
             toolStrip1.PerformLayout();
-            panelMain.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
+
+        private DockPanel dockPanel;
 
         private System.Windows.Forms.Button button_cursor;
 
@@ -491,10 +419,6 @@ namespace csharp_editor {
 
         #endregion
 
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.Panel panelMain;
-        private System.Windows.Forms.Splitter splitterLeft;
-        private System.Windows.Forms.Splitter splitterRight;
         private csharp_editor.UserControls.ExternView view_extern;
         private MenuStrip menuStrip1;
         private ToolStripMenuItem fileToolStripMenuItem;
@@ -505,8 +429,7 @@ namespace csharp_editor {
         private ToolStripMenuItem toolStripMenuItem_export;
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel statusLabel_project;
-        private DebugConsole console;
-        private System.Windows.Forms.Panel panelRight;
+
         private csharp_editor.UserControls.HierarchyTree hierarchyTree;
         private csharp_editor.UserControls.TextureViewer textureViewer;
         private csharp_editor.UserControls.EntitySelector entitySelector;

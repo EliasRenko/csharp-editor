@@ -23,3 +23,7 @@ C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\refint
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp-editor.pdb
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp-editor.genruntimeconfig.cache
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\ref\csharp-editor.dll
+C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\bin\x64\Debug\WeifenLuo.WinFormsUI.Docking.dll
+C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\bin\x64\Debug\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll
+C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp-editor.csproj.AssemblyReference.cache
+C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp-e.F7CD08EE.Up2Date

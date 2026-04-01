@@ -4,6 +4,7 @@ using csharp_editor.Models;
 using csharp_editor.Dialogs;
 using csharp_editor.Helpers;
 using NativeHaxeRuntime;
+using WeifenLuo.WinFormsUI.Docking;
 using ToolStripRenderer = csharp_editor.Styles.ToolStripRenderer;
 
 namespace csharp_editor {
@@ -14,15 +15,34 @@ namespace csharp_editor {
         
         private string _currentTilesetName = "";
         private string _currentEntityName = "";
-        private bool _suppressStateSwitch = false;
         private bool _isEntityLayerActive = false;
         
         //private ExternError lastError;
-        private int _hoveredTabIndex = -1;
         private WelcomePanel _welcomePanel = null!;
+        private DebugConsoleDockContent _consoleDock = null!;
+        private PropertyGridDockContent _propertyGridDock = null!;
+        private HierarchyTreeDockContent _hierarchyDock = null!;
+        private ViewportDockContent _viewportDock = null!;  // off-screen holder for ExternView
+        private WelcomeDockContent _welcomeDock = null!;
+        private readonly List<MapDocContent> _openMaps = new();
 
         public Editor() {
             InitializeComponent();
+
+            // DockPanel Suite requires a theme before any DockContent is shown
+            dockPanel.Theme = new CustomDockTheme();
+            _propertyGridDock = new PropertyGridDockContent(propertyGridPanel1);
+            _propertyGridDock.Show(dockPanel, DockState.DockLeft);
+            _hierarchyDock = new HierarchyTreeDockContent(hierarchyTree, textureViewer, entitySelector);
+            _hierarchyDock.Show(dockPanel, DockState.DockRight);
+            _consoleDock = new DebugConsoleDockContent();
+            _consoleDock.Show(dockPanel, DockState.DockBottom);
+            // ViewportDockContent is an off-screen holder; CreateControl gives ExternView a valid HWND.
+            _viewportDock = new ViewportDockContent(view_extern);
+            _viewportDock.Controls.Add(button_brush);
+            _viewportDock.Controls.Add(button_entity);
+            _viewportDock.Controls.Add(button_cursor);
+            _viewportDock.CreateControl();
 
             active = true;
             KeyPreview = true;
@@ -75,12 +95,7 @@ namespace csharp_editor {
             toolStripButton_tilesets.MouseDown += ShowTilesetDefDialog;
             toolStripButton_entitiesDefs.MouseDown += ShowEntitiesDefDialog;
 
-            // Tab / state switching
-            tabControl1.SelectedIndexChanged += TabControl1_SelectedIndexChanged;
-            tabControl1.DrawItem += TabControl1_DrawItem;
-            tabControl1.MouseClick += TabControl1_MouseClick;
-            tabControl1.MouseMove += TabControl1_MouseMove;
-            tabControl1.MouseLeave += TabControl1_MouseLeave;
+
 
             // Tools
 
@@ -93,14 +108,13 @@ namespace csharp_editor {
             _welcomePanel.NewProjectRequested  += WelcomePanel_NewProjectRequested;
             _welcomePanel.OpenProjectRequested += WelcomePanel_OpenProjectRequested;
             _welcomePanel.OpenMapRequested     += WelcomePanel_OpenMapRequested;
-            Controls.Add(_welcomePanel);
-            // Permanent Welcome tab — always first, never closeable
-            tabControl1.TabPages.Insert(0, new TabPage("Welcome") { Tag = "welcome" });
-            UpdateTabItemSize();
+            _welcomeDock = new WelcomeDockContent(_welcomePanel);
+            _welcomeDock.Show(dockPanel, DockState.Document);
+            dockPanel.ActiveDocumentChanged += DockPanel_ActiveDocumentChanged;
         }
 
         protected override void Log(string text) {
-            console.Log(text);
+            _consoleDock.Log(text);
         }
 
         private void ShowTimelineDialog(object? sender, MouseEventArgs e) {
@@ -142,26 +156,26 @@ namespace csharp_editor {
         }
 
         private void SaveProject_Click(object? sender, EventArgs e) {
-            if (tabControl1.SelectedTab?.Tag is TabState ts && !string.IsNullOrEmpty(ts.FilePath)) {
-                string projectName = Path.GetFileNameWithoutExtension(ts.FilePath);
-                bool result = CExternsEditor.ExportProject(ts.FilePath, projectName);
+            if (dockPanel.ActiveDocument is MapDocContent mapDoc && !string.IsNullOrEmpty(mapDoc.FilePath)) {
+                string projectName = Path.GetFileNameWithoutExtension(mapDoc.FilePath);
+                bool result = CExternsEditor.ExportProject(mapDoc.FilePath, projectName);
                 if (result == false)
-                    Log($"Warning: ExportProject returned 0 for '{ts.FilePath}'");
+                    Log($"Warning: ExportProject returned 0 for '{mapDoc.FilePath}'");
                 else
-                    Log($"Project saved: {ts.FilePath}");
+                    Log($"Project saved: {mapDoc.FilePath}");
             } else {
                 Log("Save: no project path available for the current tab.");
             }
         }
 
         private void SaveAsProject_Click(object? sender, EventArgs e) {
-            if (tabControl1.SelectedTab?.Tag is not TabState ts) return;
+            if (dockPanel.ActiveDocument is not MapDocContent mapDoc) return;
             using SaveFileDialog dlg = new SaveFileDialog {
                 Title = "Save Project As",
                 Filter = "Project files (*.proj)|*.proj|All files (*.*)|*.*",
-                FileName = string.IsNullOrEmpty(ts.FilePath)
+                FileName = string.IsNullOrEmpty(mapDoc.FilePath)
                     ? ""
-                    : Path.GetFileName(ts.FilePath)
+                    : Path.GetFileName(mapDoc.FilePath)
             };
             if (dlg.ShowDialog(this) != DialogResult.OK) return;
             string newPath = Path.GetFullPath(dlg.FileName);
@@ -170,216 +184,134 @@ namespace csharp_editor {
             if (result == false) {
                 Log($"Warning: ExportProject returned 0 for '{newPath}'");
             } else {
-                tabControl1.SelectedTab!.Tag = new TabState(ts.StateId, newPath);
-                tabControl1.SelectedTab.Text = projectName;
-                UpdateTabItemSize();
+                mapDoc.UpdateFilePath(newPath);
                 Log($"Project saved as: {newPath}");
             }
         }
 
-        private record TabState(int StateId, string FilePath);
-
-        /// <summary>
-        /// Measures the widest tab label and updates ItemSize so no text is ever clipped.
-        /// Also shows/hides the tab strip depending on whether any tabs exist.
-        /// </summary>
-        private void UpdateTabItemSize() {
-            // tabControl1 is always visible — it always has at least the Welcome tab
-            // Leave room for the close × button + horizontal padding
-            const int extraPadding = 50;
-            const int minWidth = 120;
-            const int maxWidth = 300;
-
-            int widest = minWidth;
-            foreach (TabPage page in tabControl1.TabPages) {
-                int w = TextRenderer.MeasureText(page.Text, tabControl1.Font).Width + extraPadding;
-                if (w > widest) widest = w;
-            }
-            widest = Math.Min(widest, maxWidth);
-
-            if (tabControl1.ItemSize.Width != widest)
-                tabControl1.ItemSize = new Size(widest, tabControl1.ItemSize.Height);
-        }
-
         private void LoadMap(string path) {
-            _welcomePanel.Visible = false;
-
             // Prevent loading the same file twice
             string normalizedPath = Path.GetFullPath(path);
-            foreach (TabPage existing in tabControl1.TabPages) {
-                if (existing.Tag is TabState ts && string.Equals(ts.FilePath, normalizedPath, StringComparison.OrdinalIgnoreCase)) {
-                    tabControl1.SelectedTab = existing;
+            foreach (var existing in _openMaps) {
+                if (string.Equals(existing.FilePath, normalizedPath, StringComparison.OrdinalIgnoreCase)) {
+                    existing.Activate();
                     Log($"Map already open: {normalizedPath}");
                     return;
                 }
             }
 
-            _suppressStateSwitch = true;
             int stateId = CExternsEditor.ImportMap(path);
             System.Diagnostics.Debug.WriteLine($"[LoadMap] ImportMap('{path}') returned state={stateId}");
             Log($"[DEBUG] ImportMap returned state={stateId}");
 
             if (stateId < 0) {
-                _suppressStateSwitch = false;
                 MessageBox.Show($"Failed to import map:\n{GetLastErrorMessage()}", "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            CExterns.SetActiveState(stateId);
-
-            // Create a tab for this state
             string tabLabel = Path.GetFileNameWithoutExtension(path);
-            TabPage tab = new TabPage(tabLabel) { Tag = new TabState(stateId, normalizedPath) };
-            tabControl1.TabPages.Add(tab);
-            UpdateTabItemSize();
-            tabControl1.SelectedTab = tab;
-            _suppressStateSwitch = false;
+            var mapDoc = new MapDocContent(stateId, tabLabel, normalizedPath);
+            mapDoc.FormClosing += MapDoc_FormClosing;
+            _openMaps.Add(mapDoc);
+            mapDoc.Show(dockPanel, DockState.Document);
+            // ActiveDocumentChanged fires synchronously and handles: AttachViewport, SetActiveState, hierarchy, entities
 
-            // Show the editor panel if it was hidden
-            panelMain.Visible = true;
-
-            // Track in recent maps
             RecentMapsManager.Add(normalizedPath);
             _welcomePanel.RefreshRecentMaps();
-
-            // Refresh the hierarchy tree to show loaded layers
-            hierarchyTree.LoadLayersFromBackend();
-
-            // Reload entity definitions so selector is up-to-date (useful after import)
-            entitySelector.LoadEntities();
-
-            // Ensure project status is accurate after the first-map load path
             UpdateProjectStatus();
-
             Log($"Map loaded: {tabLabel} (state {stateId})");
         }
 
         private void ToolStripButton_newMap_Click(object? sender, MouseEventArgs e) {
             int stateId = CExterns.NewEditorState();
-            TabPage tab = new TabPage($"New Map {stateId}") { Tag = new TabState(stateId, "") };
-            _suppressStateSwitch = true;
-            tabControl1.TabPages.Add(tab);
-            UpdateTabItemSize();
-            tabControl1.SelectedTab = tab;
-            _suppressStateSwitch = false;
-            CExterns.SetActiveState(stateId);
-            panelMain.Visible = true;
-            _welcomePanel.Visible = false;
-            hierarchyTree.LoadLayersFromBackend();
-            entitySelector.LoadEntities();
+            var mapDoc = new MapDocContent(stateId, $"New Map {stateId}", "");
+            mapDoc.FormClosing += MapDoc_FormClosing;
+            _openMaps.Add(mapDoc);
+            mapDoc.Show(dockPanel, DockState.Document);
+            // ActiveDocumentChanged handles: AttachViewport, SetActiveState, hierarchy, entities
             Log($"New state created (id {stateId})");
         }
 
-        private void TabControl1_SelectedIndexChanged(object? sender, EventArgs e) {
-            if (_suppressStateSwitch) return;
-            if (tabControl1.SelectedTab?.Tag is string tag && tag == "welcome") {
-                panelMain.Visible = false;
-                _welcomePanel.RefreshRecent();
-                _welcomePanel.RefreshRecentMaps();
-                _welcomePanel.Visible = true;
-                return;
-            }
-            if (tabControl1.SelectedTab?.Tag is TabState ts) {
-                _welcomePanel.Visible = false;
-                panelMain.Visible = true;
-                CExterns.SetActiveState(ts.StateId);
+        // ── DockPanel document-tab management ─────────────────────────────────────
+
+        /// <summary>
+        /// Called whenever the active document tab changes.  Attaches the shared
+        /// ExternView + tool buttons to the newly active MapDocContent and switches
+        /// the native engine to its state.  When Welcome becomes active the recent
+        /// lists are refreshed.
+        /// </summary>
+        private void DockPanel_ActiveDocumentChanged(object? sender, EventArgs e) {
+            if (dockPanel.ActiveDocument is MapDocContent mapDoc) {
+                if (view_extern.Parent != mapDoc)
+                    AttachViewportToContent(mapDoc);
+                CExterns.SetActiveState(mapDoc.StateId);
                 hierarchyTree.LoadLayersFromBackend();
                 entitySelector.LoadEntities();
                 entitySelector.LoadInstances();
-                Log($"Switched to state {ts.StateId}");
+                Log($"Switched to state {mapDoc.StateId}");
+            } else if (dockPanel.ActiveDocument is WelcomeDockContent) {
+                _welcomePanel.RefreshRecent();
+                _welcomePanel.RefreshRecentMaps();
             }
         }
 
-        private Rectangle GetTabCloseRect(Rectangle tabRect) {
-            const int size = 14;
-            return new Rectangle(tabRect.Right - size - 5, tabRect.Top + (tabRect.Height - size) / 2, size, size);
+        /// <summary>
+        /// Physically moves view_extern and the three tool buttons from their current
+        /// parent into <paramref name="target"/> so the native SDL window always has
+        /// the correct parent HWND.
+        /// </summary>
+        private void AttachViewportToContent(MapDocContent target) {
+            view_extern.Parent?.Controls.Remove(view_extern);
+            button_brush.Parent?.Controls.Remove(button_brush);
+            button_entity.Parent?.Controls.Remove(button_entity);
+            button_cursor.Parent?.Controls.Remove(button_cursor);
+
+            button_brush.Location  = new Point(6, 40);
+            button_entity.Location = new Point(6, 88);
+            button_cursor.Location = new Point(6, 136);
+            target.Controls.Add(button_brush);
+            target.Controls.Add(button_entity);
+            target.Controls.Add(button_cursor);
+
+            view_extern.Dock = DockStyle.Fill;
+            target.Controls.Add(view_extern);
         }
 
-        private void TabControl1_MouseMove(object? sender, MouseEventArgs e) {
-            int hovered = -1;
-            for (int i = 0; i < tabControl1.TabPages.Count; i++) {
-                if (tabControl1.GetTabRect(i).Contains(e.Location)) {
-                    hovered = i;
-                    break;
-                }
-            }
-            if (hovered != _hoveredTabIndex) {
-                _hoveredTabIndex = hovered;
-                tabControl1.Invalidate();
-            }
-        }
-
-        private void TabControl1_MouseLeave(object? sender, EventArgs e) {
-            if (_hoveredTabIndex != -1) {
-                _hoveredTabIndex = -1;
-                tabControl1.Invalidate();
-            }
-        }
-
-        private void TabControl1_DrawItem(object? sender, DrawItemEventArgs e) {
-            TabPage tab = tabControl1.TabPages[e.Index];
-            Rectangle tabRect = tabControl1.GetTabRect(e.Index);
-            bool isSelected = tabControl1.SelectedIndex == e.Index;
-            bool isHovered = !isSelected && _hoveredTabIndex == e.Index;
-
-            // Background
-            Color bgColor = isSelected ? SystemColors.Window
-                          : isHovered  ? SystemColors.ControlLightLight
-                                       : SystemColors.ControlLight;
-            using Brush bgBrush = new SolidBrush(bgColor);
-            e.Graphics.FillRectangle(bgBrush, tabRect);
-
-            // Blue accent line along the bottom of the selected tab
-            if (isSelected) {
-                using Pen accent = new Pen(Color.FromArgb(0, 120, 215), 2);
-                e.Graphics.DrawLine(accent, tabRect.Left + 1, tabRect.Bottom - 1,
-                                            tabRect.Right - 1, tabRect.Bottom - 1);
-            }
-
-            // Subtle right-edge separator between inactive tabs
-            if (!isSelected && e.Index < tabControl1.TabPages.Count - 1) {
-                using Pen sep = new Pen(SystemColors.ControlDark, 1);
-                e.Graphics.DrawLine(sep, tabRect.Right - 1, tabRect.Top + 5,
-                                        tabRect.Right - 1, tabRect.Bottom - 5);
-            }
-
-            // Tab text — welcome tab (index 0) uses full width; map tabs leave room for ×
-            Rectangle textRect;
-            if (e.Index == 0) {
-                textRect = new Rectangle(tabRect.Left + 8, tabRect.Top, tabRect.Width - 16, tabRect.Height);
-            } else {
-                Rectangle closeRect = GetTabCloseRect(tabRect);
-                textRect = new Rectangle(tabRect.Left + 8, tabRect.Top,
-                                         tabRect.Width - closeRect.Width - 16, tabRect.Height);
-                // × button — more visible on active/hovered tabs
-                Color closeColor = isSelected || isHovered ? SystemColors.ControlDarkDark : SystemColors.ControlDark;
-                using Font closeFont = new Font(tabControl1.Font.FontFamily, 8f, FontStyle.Bold);
-                TextRenderer.DrawText(e.Graphics, "×", closeFont, closeRect, closeColor,
-                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
-            }
-            Color textColor = isSelected ? SystemColors.ControlText : Color.FromArgb(80, 80, 80);
-            TextRenderer.DrawText(e.Graphics, tab.Text, tabControl1.Font, textRect, textColor,
-                TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
-        }
-
-        private void TabControl1_MouseClick(object? sender, MouseEventArgs e) {
-            for (int i = 1; i < tabControl1.TabPages.Count; i++) { // i=1: skip the permanent Welcome tab
-                if (GetTabCloseRect(tabControl1.GetTabRect(i)).Contains(e.Location)) {
-                    CloseStateTab(i);
-                    return;
-                }
+        /// <summary>
+        /// Rescues view_extern (and buttons) back into the off-screen holder before
+        /// a MapDocContent is disposed, so they are never owned by a dead form.
+        /// </summary>
+        private void RescueViewport() {
+            if (view_extern.Parent is MapDocContent) {
+                view_extern.Parent.Controls.Remove(view_extern);
+                button_brush.Parent?.Controls.Remove(button_brush);
+                button_entity.Parent?.Controls.Remove(button_entity);
+                button_cursor.Parent?.Controls.Remove(button_cursor);
+                _viewportDock.Controls.Add(view_extern);
             }
         }
 
-        private void CloseStateTab(int index) {
-            if (tabControl1.TabPages[index].Tag is TabState ts) {
-                CExterns.ReleaseState(ts.StateId);
-            }
-            tabControl1.TabPages.RemoveAt(index);
-            UpdateTabItemSize();
-            // If only the Welcome tab remains, navigate back to it
-            if (tabControl1.TabPages.Count == 1)
-                tabControl1.SelectedIndex = 0; // triggers SelectedIndexChanged → shows welcome panel
+        /// <summary>Fired when the user closes a map tab.</summary>
+        private void MapDoc_FormClosing(object? sender, FormClosingEventArgs e) {
+            if (sender is not MapDocContent mapDoc) return;
+
+            // Move ExternView to the safe holder BEFORE the form is disposed
+            if (view_extern.Parent == mapDoc)
+                RescueViewport();
+
+            CExterns.ReleaseState(mapDoc.StateId);
+            _openMaps.Remove(mapDoc);
+
+            // If this was the last map, show Welcome on the next message-pump tick
+            // (cannot activate another DockContent while one is in the middle of closing)
+            if (_openMaps.Count == 0)
+                BeginInvoke(() => {
+                    _welcomeDock.Show(dockPanel, DockState.Document);
+                    _welcomePanel.RefreshRecent();
+                    _welcomePanel.RefreshRecentMaps();
+                });
+
+            UpdateProjectStatus();
         }
 
         private void UpdateProjectStatus() {
@@ -430,7 +362,10 @@ namespace csharp_editor {
         private void Editor_KeyDown(object? sender, KeyEventArgs e) {
             // Toggle console with tilde key (~) or F1
             if (e.KeyCode == Keys.Oemtilde || e.KeyCode == Keys.F1) {
-                console.Visible = !console.Visible;
+                if (_consoleDock.IsHidden)
+                    _consoleDock.Show(dockPanel, DockState.DockBottom);
+                else
+                    _consoleDock.Hide();
                 e.Handled = true;
                 return; // Don't pass console toggle to SDL
             }
@@ -809,17 +744,11 @@ namespace csharp_editor {
             int stateId = CExterns.NewEditorState();
             string normalizedPath = Path.GetFullPath(path);
             string tabLabel = Path.GetFileNameWithoutExtension(path);
-            TabPage tab = new TabPage(tabLabel) { Tag = new TabState(stateId, normalizedPath) };
-            _suppressStateSwitch = true;
-            tabControl1.TabPages.Add(tab);
-            UpdateTabItemSize();
-            tabControl1.SelectedTab = tab;
-            _suppressStateSwitch = false;
-            CExterns.SetActiveState(stateId);
-            panelMain.Visible = true;
-            _welcomePanel.Visible = false;
-            hierarchyTree.LoadLayersFromBackend();
-            entitySelector.LoadEntities();
+            var mapDoc = new MapDocContent(stateId, tabLabel, normalizedPath);
+            mapDoc.FormClosing += MapDoc_FormClosing;
+            _openMaps.Add(mapDoc);
+            mapDoc.Show(dockPanel, DockState.Document);
+            // ActiveDocumentChanged handles: AttachViewport, SetActiveState, hierarchy, entities
             RecentProjectsManager.Add(normalizedPath);
             _welcomePanel.RefreshRecent();
             // Save/initialise the project file via the backend
@@ -861,18 +790,12 @@ namespace csharp_editor {
                 // Project imported successfully — resolve name from backend
                 CExternsEditor.GetProjectProps(out ProjectInfoStruct importedProps);
                 string tabLabel = importedProps.ProjectName ?? Path.GetFileNameWithoutExtension(path);
-                _welcomePanel.Visible = false;
                 int stateId = CExterns.NewEditorState();
-                TabPage tab = new TabPage(tabLabel) { Tag = new TabState(stateId, normalizedPath) };
-                _suppressStateSwitch = true;
-                tabControl1.TabPages.Add(tab);
-                UpdateTabItemSize();
-                tabControl1.SelectedTab = tab;
-                _suppressStateSwitch = false;
-                CExterns.SetActiveState(stateId);
-                panelMain.Visible = true;
-                hierarchyTree.LoadLayersFromBackend();
-                entitySelector.LoadEntities();
+                var mapDoc = new MapDocContent(stateId, tabLabel, normalizedPath);
+                mapDoc.FormClosing += MapDoc_FormClosing;
+                _openMaps.Add(mapDoc);
+                mapDoc.Show(dockPanel, DockState.Document);
+                // ActiveDocumentChanged handles: AttachViewport, SetActiveState, hierarchy, entities
                 RecentProjectsManager.Add(normalizedPath);
                 _welcomePanel.RefreshRecent();
                 Log($"Project opened: {tabLabel}");
@@ -930,31 +853,37 @@ namespace csharp_editor {
         }
 
         /// <summary>
-        /// Releases and removes all open tabs, optionally saving maps with a known file path first.
-        /// Does not show the welcome panel — caller handles that.
+        /// Releases and removes all open map tabs, optionally saving maps first.
         /// </summary>
         private void CloseAllTabs(bool saveFirst) {
-            _suppressStateSwitch = true;
-            var tabs = tabControl1.TabPages.Cast<TabPage>().ToList();
-            foreach (var tab in tabs) {
-                if (tab.Tag is TabState ts) {
-                    if (saveFirst && !string.IsNullOrEmpty(ts.FilePath) &&
-                        ts.FilePath.EndsWith(".json", StringComparison.OrdinalIgnoreCase)) {
-                        CExterns.SetActiveState(ts.StateId);
-                        bool ok = CExternsEditor.ExportMap(ts.FilePath);
-                        if (!ok) {
-                            MessageBox.Show($"Failed to save map '{ts.FilePath}':\n{GetLastErrorMessage()}", "Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        } else {
-                            Log($"Saved map: {ts.FilePath}");
-                        }
-                    }
-                    CExterns.ReleaseState(ts.StateId);
-                    tabControl1.TabPages.Remove(tab); // skip welcome tab (string tag)
+            // Temporarily stop listening so cascading events don’t interfere
+            dockPanel.ActiveDocumentChanged -= DockPanel_ActiveDocumentChanged;
+
+            // Rescue ExternView before any MapDocContent is disposed
+            RescueViewport();
+
+            var maps = _openMaps.ToList();
+            foreach (var mapDoc in maps) {
+                if (saveFirst && !string.IsNullOrEmpty(mapDoc.FilePath) &&
+                    mapDoc.FilePath.EndsWith(".json", StringComparison.OrdinalIgnoreCase)) {
+                    CExterns.SetActiveState(mapDoc.StateId);
+                    bool ok = CExternsEditor.ExportMap(mapDoc.FilePath);
+                    if (!ok)
+                        MessageBox.Show($"Failed to save map '{mapDoc.FilePath}':\n{GetLastErrorMessage()}", "Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    else
+                        Log($"Saved map: {mapDoc.FilePath}");
                 }
+                mapDoc.FormClosing -= MapDoc_FormClosing;
+                CExterns.ReleaseState(mapDoc.StateId);
+                mapDoc.Close();
             }
-            _suppressStateSwitch = false;
-            UpdateTabItemSize();
-            panelMain.Visible = false;
+            _openMaps.Clear();
+
+            dockPanel.ActiveDocumentChanged += DockPanel_ActiveDocumentChanged;
+
+            _welcomeDock.Show(dockPanel, DockState.Document);
+            _welcomePanel.RefreshRecent();
+            _welcomePanel.RefreshRecentMaps();
             UpdateProjectStatus();
         }
 

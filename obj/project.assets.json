@@ -1,11 +1,71 @@
 {
   "version": 3,
   "targets": {
-    "net8.0-windows7.0": {}
+    "net8.0-windows7.0": {
+      "DockPanelSuite/3.1.1": {
+        "type": "package",
+        "compile": {
+          "lib/netcoreapp3.1/WeifenLuo.WinFormsUI.Docking.dll": {}
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/WeifenLuo.WinFormsUI.Docking.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.WindowsDesktop.App.WindowsForms"
+        ]
+      },
+      "DockPanelSuite.ThemeVS2015/3.1.1": {
+        "type": "package",
+        "dependencies": {
+          "DockPanelSuite": "3.1.1"
+        },
+        "compile": {
+          "lib/netcoreapp3.1/WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll": {}
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.WindowsDesktop.App.WindowsForms"
+        ]
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "DockPanelSuite/3.1.1": {
+      "sha512": "goYuIMrAHyzPfwqqW5MHXk9mWVI4oyILqC1TRlNS0pzXY7ku/fxoY1j0JuDJnwboqpIxvAatOT9ONrheCMo3/Q==",
+      "type": "package",
+      "path": "dockpanelsuite/3.1.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "dockpanelsuite.3.1.1.nupkg.sha512",
+        "dockpanelsuite.nuspec",
+        "lib/net35/WeifenLuo.WinFormsUI.Docking.dll",
+        "lib/net40/WeifenLuo.WinFormsUI.Docking.dll",
+        "lib/netcoreapp3.1/WeifenLuo.WinFormsUI.Docking.dll"
+      ]
+    },
+    "DockPanelSuite.ThemeVS2015/3.1.1": {
+      "sha512": "5ZrBaRcCoW9FMDmWD5nY5YzGIIBmMHzTMZHs6ScZsEAISfJYKopUPo8e1T+hRKe2aKYVkAfnLAW5lgpKNMvMug==",
+      "type": "package",
+      "path": "dockpanelsuite.themevs2015/3.1.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "dockpanelsuite.themevs2015.3.1.1.nupkg.sha512",
+        "dockpanelsuite.themevs2015.nuspec",
+        "lib/net35/WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll",
+        "lib/net40/WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll",
+        "lib/netcoreapp3.1/WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll"
+      ]
+    }
+  },
   "projectFileDependencyGroups": {
-    "net8.0-windows7.0": []
+    "net8.0-windows7.0": [
+      "DockPanelSuite >= 3.1.1",
+      "DockPanelSuite.ThemeVS2015 >= 3.1.1"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\efedorenko\\.nuget\\packages\\": {}
@@ -49,6 +109,16 @@
     "frameworks": {
       "net8.0-windows7.0": {
         "targetAlias": "net8.0-windows7.0",
+        "dependencies": {
+          "DockPanelSuite": {
+            "target": "Package",
+            "version": "[3.1.1, )"
+          },
+          "DockPanelSuite.ThemeVS2015": {
+            "target": "Package",
+            "version": "[3.1.1, )"
+          }
+        },
         "imports": [
           "net461",
           "net462",

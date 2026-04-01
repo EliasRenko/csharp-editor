@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "qMeOS6NpSvA=",
+  "dgSpecHash": "/Q5UDT7c9XU=",
   "success": true,
   "projectFilePath": "C:\\Users\\efedorenko\\Documents\\projects\\csharp\\csharp-editor\\csharp-editor.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\efedorenko\\.nuget\\packages\\dockpanelsuite\\3.1.1\\dockpanelsuite.3.1.1.nupkg.sha512",
+    "C:\\Users\\efedorenko\\.nuget\\packages\\dockpanelsuite.themevs2015\\3.1.1\\dockpanelsuite.themevs2015.3.1.1.nupkg.sha512"
+  ],
   "logs": []
 }
