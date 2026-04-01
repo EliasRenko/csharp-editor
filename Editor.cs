@@ -94,6 +94,9 @@ namespace csharp_editor {
             _welcomePanel.OpenProjectRequested += WelcomePanel_OpenProjectRequested;
             _welcomePanel.OpenMapRequested     += WelcomePanel_OpenMapRequested;
             Controls.Add(_welcomePanel);
+            // Permanent Welcome tab — always first, never closeable
+            tabControl1.TabPages.Insert(0, new TabPage("Welcome") { Tag = "welcome" });
+            UpdateTabItemSize();
         }
 
         protected override void Log(string text) {
@@ -181,12 +184,7 @@ namespace csharp_editor {
         /// Also shows/hides the tab strip depending on whether any tabs exist.
         /// </summary>
         private void UpdateTabItemSize() {
-            if (tabControl1.TabPages.Count == 0) {
-                tabControl1.Visible = false;
-                return;
-            }
-            tabControl1.Visible = true;
-
+            // tabControl1 is always visible — it always has at least the Welcome tab
             // Leave room for the close × button + horizontal padding
             const int extraPadding = 50;
             const int minWidth = 120;
@@ -274,7 +272,16 @@ namespace csharp_editor {
 
         private void TabControl1_SelectedIndexChanged(object? sender, EventArgs e) {
             if (_suppressStateSwitch) return;
+            if (tabControl1.SelectedTab?.Tag is string tag && tag == "welcome") {
+                panelMain.Visible = false;
+                _welcomePanel.RefreshRecent();
+                _welcomePanel.RefreshRecentMaps();
+                _welcomePanel.Visible = true;
+                return;
+            }
             if (tabControl1.SelectedTab?.Tag is TabState ts) {
+                _welcomePanel.Visible = false;
+                panelMain.Visible = true;
                 CExterns.SetActiveState(ts.StateId);
                 hierarchyTree.LoadLayersFromBackend();
                 entitySelector.LoadEntities();
@@ -336,23 +343,27 @@ namespace csharp_editor {
                                         tabRect.Right - 1, tabRect.Bottom - 5);
             }
 
-            // Tab text (leave room for ×)
-            Rectangle closeRect = GetTabCloseRect(tabRect);
-            Rectangle textRect = new Rectangle(tabRect.Left + 8, tabRect.Top,
-                                               tabRect.Width - closeRect.Width - 16, tabRect.Height);
+            // Tab text — welcome tab (index 0) uses full width; map tabs leave room for ×
+            Rectangle textRect;
+            if (e.Index == 0) {
+                textRect = new Rectangle(tabRect.Left + 8, tabRect.Top, tabRect.Width - 16, tabRect.Height);
+            } else {
+                Rectangle closeRect = GetTabCloseRect(tabRect);
+                textRect = new Rectangle(tabRect.Left + 8, tabRect.Top,
+                                         tabRect.Width - closeRect.Width - 16, tabRect.Height);
+                // × button — more visible on active/hovered tabs
+                Color closeColor = isSelected || isHovered ? SystemColors.ControlDarkDark : SystemColors.ControlDark;
+                using Font closeFont = new Font(tabControl1.Font.FontFamily, 8f, FontStyle.Bold);
+                TextRenderer.DrawText(e.Graphics, "×", closeFont, closeRect, closeColor,
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+            }
             Color textColor = isSelected ? SystemColors.ControlText : Color.FromArgb(80, 80, 80);
             TextRenderer.DrawText(e.Graphics, tab.Text, tabControl1.Font, textRect, textColor,
                 TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
-
-            // × button — more visible on active/hovered tabs
-            Color closeColor = isSelected || isHovered ? SystemColors.ControlDarkDark : SystemColors.ControlDark;
-            using Font closeFont = new Font(tabControl1.Font.FontFamily, 8f, FontStyle.Bold);
-            TextRenderer.DrawText(e.Graphics, "×", closeFont, closeRect, closeColor,
-                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
         }
 
         private void TabControl1_MouseClick(object? sender, MouseEventArgs e) {
-            for (int i = 0; i < tabControl1.TabPages.Count; i++) {
+            for (int i = 1; i < tabControl1.TabPages.Count; i++) { // i=1: skip the permanent Welcome tab
                 if (GetTabCloseRect(tabControl1.GetTabRect(i)).Contains(e.Location)) {
                     CloseStateTab(i);
                     return;
@@ -366,12 +377,9 @@ namespace csharp_editor {
             }
             tabControl1.TabPages.RemoveAt(index);
             UpdateTabItemSize();
-            if (tabControl1.TabPages.Count == 0) {
-                panelMain.Visible = false;
-                _welcomePanel.RefreshRecent();
-                _welcomePanel.RefreshRecentMaps();
-                _welcomePanel.Visible = true;
-            }
+            // If only the Welcome tab remains, navigate back to it
+            if (tabControl1.TabPages.Count == 1)
+                tabControl1.SelectedIndex = 0; // triggers SelectedIndexChanged → shows welcome panel
         }
 
         private void UpdateProjectStatus() {
@@ -863,7 +871,6 @@ namespace csharp_editor {
                 _suppressStateSwitch = false;
                 CExterns.SetActiveState(stateId);
                 panelMain.Visible = true;
-                _welcomePanel.Visible = false;
                 hierarchyTree.LoadLayersFromBackend();
                 entitySelector.LoadEntities();
                 RecentProjectsManager.Add(normalizedPath);
@@ -942,9 +949,9 @@ namespace csharp_editor {
                         }
                     }
                     CExterns.ReleaseState(ts.StateId);
+                    tabControl1.TabPages.Remove(tab); // skip welcome tab (string tag)
                 }
             }
-            tabControl1.TabPages.Clear();
             _suppressStateSwitch = false;
             UpdateTabItemSize();
             panelMain.Visible = false;

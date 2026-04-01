@@ -384,7 +384,7 @@ namespace csharp_editor {
             tabControl1.SelectedIndex = 0;
             tabControl1.Size = new System.Drawing.Size(1058, 34);
             tabControl1.TabIndex = 12;
-            tabControl1.Visible = false;
+            tabControl1.Visible = true;
             // 
             // panelMain
             // 
@@ -396,7 +396,6 @@ namespace csharp_editor {
             panelMain.Controls.Add(propertyGridPanel1);
             panelMain.Controls.Add(splitterRight);
             panelMain.Controls.Add(panelRight);
-            panelMain.Controls.Add(tabControl1);
             panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
             panelMain.Location = new System.Drawing.Point(0, 49);
             panelMain.Name = "panelMain";
@@ -461,6 +460,7 @@ namespace csharp_editor {
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(1058, 768);
             Controls.Add(panelMain);
+            Controls.Add(tabControl1);
             Controls.Add(toolStrip1);
             Controls.Add(console);
             Controls.Add(statusStrip1);
