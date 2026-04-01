@@ -4,11 +4,10 @@ using csharp_editor.Models;
 using csharp_editor.Dialogs;
 using csharp_editor.Helpers;
 using NativeHaxeRuntime;
+using ToolStripRenderer = csharp_editor.Styles.ToolStripRenderer;
 
 namespace csharp_editor {
     public partial class Editor : Runtime {
-
-        //public bool active = false;
         
         private CExternsEditor.EntitySelectionChangedCallback? _entitySelectionChangedCallback;
         public event EventHandler? EntitySelectionChanged;
@@ -34,7 +33,9 @@ namespace csharp_editor {
             };
 
             view_extern.Init(logHandler);
-
+            
+            toolStrip1.Renderer = new ToolStripRenderer();
+            
             // Toolstrip Events
             toolStripMenuItem_open.MouseUp += toolStripButton_openFile;
             toolStripMenuItem_export.MouseUp += toolStripButton_export;
@@ -91,6 +92,7 @@ namespace csharp_editor {
             _welcomePanel = new WelcomePanel();
             _welcomePanel.NewProjectRequested  += WelcomePanel_NewProjectRequested;
             _welcomePanel.OpenProjectRequested += WelcomePanel_OpenProjectRequested;
+            _welcomePanel.OpenMapRequested     += WelcomePanel_OpenMapRequested;
             Controls.Add(_welcomePanel);
         }
 
@@ -102,6 +104,7 @@ namespace csharp_editor {
             using var dialog = new Dialogs.TimelineDialog();
             dialog.ShowDialog(this);
         }
+
 
         private void SelectTileDraw(object? sender, MouseEventArgs e) {
             CExternsEditor.SetToolType(ToolType.TileDraw);
@@ -237,9 +240,9 @@ namespace csharp_editor {
             // Show the editor panel if it was hidden
             panelMain.Visible = true;
 
-            // Track in recent projects
-            RecentProjectsManager.Add(normalizedPath);
-            _welcomePanel.RefreshRecent();
+            // Track in recent maps
+            RecentMapsManager.Add(normalizedPath);
+            _welcomePanel.RefreshRecentMaps();
 
             // Refresh the hierarchy tree to show loaded layers
             hierarchyTree.LoadLayersFromBackend();
@@ -366,6 +369,7 @@ namespace csharp_editor {
             if (tabControl1.TabPages.Count == 0) {
                 panelMain.Visible = false;
                 _welcomePanel.RefreshRecent();
+                _welcomePanel.RefreshRecentMaps();
                 _welcomePanel.Visible = true;
             }
         }
@@ -817,6 +821,10 @@ namespace csharp_editor {
                 Log($"Warning: ExportProject returned 0 for '{normalizedPath}'");
             Log($"New project created: {tabLabel} (state {stateId})");
             UpdateProjectStatus();
+        }
+
+        private void WelcomePanel_OpenMapRequested(object? sender, string path) {
+            LoadMap(path);
         }
 
         private void WelcomePanel_OpenProjectRequested(object? sender, string path) {

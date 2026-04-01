@@ -1,5 +1,6 @@
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using ToolStripRenderer = csharp_editor.Styles.ToolStripRenderer;
 
 namespace csharp_editor.UserControls {
     public partial class TextureViewer : UserControl {
@@ -97,6 +98,9 @@ namespace csharp_editor.UserControls {
 
         public TextureViewer() {
             InitializeComponent();
+
+            toolStrip.Renderer = new ToolStripRenderer();
+            
             pictureBoxTexture.MouseDown += PictureBoxTexture_MouseDown;
             pictureBoxTexture.MouseMove += PictureBoxTexture_MouseMove;
             pictureBoxTexture.MouseUp += PictureBoxTexture_MouseUp;

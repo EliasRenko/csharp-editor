@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using csharp_editor.Dialogs;
+using ToolStripRenderer = csharp_editor.Styles.ToolStripRenderer;
 
 namespace csharp_editor.UserControls {
     public partial class HierarchyTree : UserControl {
@@ -72,6 +73,9 @@ namespace csharp_editor.UserControls {
 
         public HierarchyTree() {
             InitializeComponent();
+
+            toolStrip_layers.Renderer = new ToolStripRenderer();
+            
             InitializeTreeView();
             // create the immutable "State" root up front so it shows even when no layers exist
             GetStateNode();
