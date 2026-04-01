@@ -67,7 +67,7 @@ namespace csharp_editor {
             button_cursor = new System.Windows.Forms.Button();
             button_entity = new System.Windows.Forms.Button();
             button_brush = new System.Windows.Forms.Button();
-            dockPanel = new DockPanel();
+            dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             menuStrip1.SuspendLayout();
             statusStrip1.SuspendLayout();
             toolStrip1.SuspendLayout();
@@ -244,8 +244,9 @@ namespace csharp_editor {
             // toolStripButton_newMap
             // 
             toolStripButton_newMap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            toolStripButton_newMap.Image = global::csharp_editor.Properties.Resources.page_white;
+            toolStripButton_newMap.Image = global::csharp_editor.Properties.Resources.page;
             toolStripButton_newMap.ImageTransparentColor = System.Drawing.Color.Magenta;
+            toolStripButton_newMap.Margin = new System.Windows.Forms.Padding(6, 1, 0, 2);
             toolStripButton_newMap.Name = "toolStripButton_newMap";
             toolStripButton_newMap.Size = new System.Drawing.Size(23, 22);
             toolStripButton_newMap.Text = "New map";
@@ -264,6 +265,7 @@ namespace csharp_editor {
             toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             toolStripButton3.Image = global::csharp_editor.Properties.Resources.disk;
             toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
+            toolStripButton3.Margin = new System.Windows.Forms.Padding(1, 1, 0, 2);
             toolStripButton3.Name = "toolStripButton3";
             toolStripButton3.Size = new System.Drawing.Size(23, 22);
             toolStripButton3.Text = "toolStripButton3";
@@ -285,7 +287,7 @@ namespace csharp_editor {
             // toolStripButton5
             // 
             toolStripButton5.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            toolStripButton5.Image = global::csharp_editor.Properties.Resources.application_view_list;
+            toolStripButton5.Image = global::csharp_editor.Properties.Resources.arrow_undo;
             toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolStripButton5.Name = "toolStripButton5";
             toolStripButton5.Size = new System.Drawing.Size(23, 22);
@@ -294,7 +296,7 @@ namespace csharp_editor {
             // toolStripButton6
             // 
             toolStripButton6.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            toolStripButton6.Image = global::csharp_editor.Properties.Resources.control_play;
+            toolStripButton6.Image = global::csharp_editor.Properties.Resources.arrow_redo;
             toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolStripButton6.Name = "toolStripButton6";
             toolStripButton6.Size = new System.Drawing.Size(23, 22);
@@ -378,10 +380,9 @@ namespace csharp_editor {
             // dockPanel
             // 
             dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            dockPanel.DocumentStyle = DocumentStyle.DockingWindow;
             dockPanel.Location = new System.Drawing.Point(0, 49);
             dockPanel.Name = "dockPanel";
-            dockPanel.Size = new System.Drawing.Size(1058, 695);
+            dockPanel.Size = new System.Drawing.Size(1058, 697);
             dockPanel.TabIndex = 3;
             // 
             // Editor
@@ -436,11 +437,11 @@ namespace csharp_editor {
         private ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton toolStripButton_newMap;
         private ToolStripButton toolStripButton2;
-        private ToolStripButton toolStripButton3;
-        private ToolStripButton toolStripButton4;
+        private System.Windows.Forms.ToolStripButton toolStripButton3;
+        private System.Windows.Forms.ToolStripButton toolStripButton4;
         private ToolStripSeparator toolStripSeparator1;
-        private ToolStripButton toolStripButton5;
-        private ToolStripButton toolStripButton6;
+        private System.Windows.Forms.ToolStripButton toolStripButton5;
+        private System.Windows.Forms.ToolStripButton toolStripButton6;
         private ToolStripSeparator toolStripSeparator2;
         private ToolStripButton toolStripButton_tilesets;
         private ToolStripButton toolStripButton_entitiesDefs;
