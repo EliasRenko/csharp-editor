@@ -31,7 +31,9 @@ namespace csharp_editor {
 
             // DockPanel Suite requires a theme before any DockContent is shown
             dockPanel.Theme = new CustomDockTheme();
-            _propertyGridDock = new PropertyGridDockContent(propertyGridPanel1);
+            dockPanel.DockLeftPortion = 256;
+            dockPanel.DockRightPortion = 256;
+            _propertyGridDock = new PropertyGridDockContent();
             _propertyGridDock.Show(dockPanel, DockState.DockLeft);
             _hierarchyDock = new HierarchyTreeDockContent(hierarchyTree, textureViewer, entitySelector);
             _hierarchyDock.Show(dockPanel, DockState.DockRight);
@@ -94,6 +96,11 @@ namespace csharp_editor {
             ToolStripMenuItem_timeline.MouseDown += ShowTimelineDialog;
             toolStripButton_tilesets.MouseDown += ShowTilesetDefDialog;
             toolStripButton_entitiesDefs.MouseDown += ShowEntitiesDefDialog;
+
+            // View menu — re-show dock panels
+            viewMenuItem_properties.Click += (_, _) => ShowDockPanel(_propertyGridDock, DockState.DockLeft);
+            viewMenuItem_hierarchy.Click  += (_, _) => ShowDockPanel(_hierarchyDock,    DockState.DockRight);
+            viewMenuItem_console.Click    += (_, _) => ShowDockPanel(_consoleDock,       DockState.DockBottom);
 
 
 
@@ -321,6 +328,19 @@ namespace csharp_editor {
                 statusLabel_project.Text = "No project loaded";
         }
 
+        /// <summary>
+        /// Shows a dock panel, restoring it to <paramref name="defaultState"/> if it
+        /// has been fully closed rather than merely hidden.
+        /// </summary>
+        private void ShowDockPanel(DockContent panel, DockState defaultState) {
+            if (panel.IsDisposed) return;
+            if (panel.IsHidden || panel.DockState == DockState.Unknown ||
+                panel.DockState == DockState.Hidden)
+                panel.Show(dockPanel, defaultState);
+            else
+                panel.Activate();
+        }
+
         private void EditProject_Click(object? sender, EventArgs e) {
             if (!CExternsEditor.GetProjectProps(out ProjectInfoStruct existingProps)) {
                 MessageBox.Show(this,
@@ -371,7 +391,7 @@ namespace csharp_editor {
             }
 
             // TODO: OPTIMIZE FURTHER
-            if (propertyGridPanel1.PropertyGrid.ContainsFocus) {
+            if (_propertyGridDock.PropertyGrid.ContainsFocus) {
 
                 if (e.KeyCode == Keys.Escape) {
                     view_extern.Focus();
@@ -424,8 +444,8 @@ namespace csharp_editor {
 
             if (count <= 0) {
                 // Only wipe entity-specific info; preserve layer/state info if no entity was shown
-                if (propertyGridPanel1.PropertyGrid.SelectedObject is EntityInstanceDisplay)
-                    propertyGridPanel1.PropertyGrid.SelectedObject = null;
+                if (_propertyGridDock.PropertyGrid.SelectedObject is EntityInstanceDisplay)
+                    _propertyGridDock.PropertyGrid.SelectedObject = null;
                 return;
             }
 
@@ -446,7 +466,7 @@ namespace csharp_editor {
                     Width   = data.width,
                     Height  = data.height
                 };
-                propertyGridPanel1.PropertyGrid.SelectedObject = display;
+                _propertyGridDock.PropertyGrid.SelectedObject = display;
                 Log($"Entity selected: {display.DefName} at ({display.X}, {display.Y})");
                 entitySelector.SelectInstanceByUid(display.Uid);
                 return;
@@ -470,7 +490,7 @@ namespace csharp_editor {
                     Height  = data.height
                 });
             }
-            propertyGridPanel1.PropertyGrid.SelectedObjects = items.Cast<object>().ToArray();
+            _propertyGridDock.PropertyGrid.SelectedObjects = items.Cast<object>().ToArray();
             Log($"{items.Count} entities selected");
         }
 
@@ -533,7 +553,7 @@ namespace csharp_editor {
                 string error = GetLastErrorMessage();
                 Log($"Failed to retrieve layer info for '{layer.Name}': {error}");
                 MessageBox.Show($"Failed to retrieve layer info for '{layer.Name}':\n{error}", "Layer Info Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                propertyGridPanel1.PropertyGrid.SelectedObject = null;
+                _propertyGridDock.PropertyGrid.SelectedObject = null;
             }
             else {
                 // Use editable LayerInfoDisplay class
@@ -565,7 +585,7 @@ namespace csharp_editor {
                     }
                 };
 
-                propertyGridPanel1.PropertyGrid.SelectedObject = layerInfoDisplay;
+                _propertyGridDock.PropertyGrid.SelectedObject = layerInfoDisplay;
             }
 
             // Switch between TextureViewer and EntitySelector based on layer type
@@ -601,8 +621,7 @@ namespace csharp_editor {
 
                     if (!gotInfo) {
                         MessageBox.Show($"Failed to retrieve map info:\n{GetLastErrorMessage()}", "Map Info Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        if (propertyGridPanel1?.PropertyGrid != null)
-                            propertyGridPanel1.PropertyGrid.SelectedObject = null;
+                        _propertyGridDock.PropertyGrid.SelectedObject = null;
                     }
                     else {
                         // success: populate display object
@@ -643,13 +662,12 @@ namespace csharp_editor {
                                 }
                             }
                         };
-                        propertyGridPanel1.PropertyGrid.SelectedObject = display;
+                        _propertyGridDock.PropertyGrid.SelectedObject = display;
                     }
                 }
                 else {
                     Log("Failed to retrieve map info");
-                    if (propertyGridPanel1?.PropertyGrid != null)
-                        propertyGridPanel1.PropertyGrid.SelectedObject = null;
+                    _propertyGridDock.PropertyGrid.SelectedObject = null;
                 }
             }
             catch (Exception ex) {
@@ -674,7 +692,7 @@ namespace csharp_editor {
             if (layer.Type != LayerType.TileLayer || string.IsNullOrEmpty(layer.TilesetName)) {
                 // Clear the texture viewer if no valid tileset
                 textureViewer.Clear();
-                propertyGridPanel1.PropertyGrid.SelectedObject = null;
+                _propertyGridDock.PropertyGrid.SelectedObject = null;
                 return;
             }
 

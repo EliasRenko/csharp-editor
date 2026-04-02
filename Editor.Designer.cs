@@ -41,6 +41,9 @@ namespace csharp_editor {
             editToolStripMenuItem_editProject = new System.Windows.Forms.ToolStripMenuItem();
             closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            viewMenuItem_properties = new System.Windows.Forms.ToolStripMenuItem();
+            viewMenuItem_hierarchy = new System.Windows.Forms.ToolStripMenuItem();
+            viewMenuItem_console = new System.Windows.Forms.ToolStripMenuItem();
             toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             ToolStripMenuItem_timeline = new System.Windows.Forms.ToolStripMenuItem();
             helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,7 +66,6 @@ namespace csharp_editor {
             toolStripButton_entitiesDefs = new System.Windows.Forms.ToolStripButton();
             toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             toolStripButton7 = new System.Windows.Forms.ToolStripButton();
-            propertyGridPanel1 = new csharp_editor.UserControls.PropertyGridPanel();
             button_cursor = new System.Windows.Forms.Button();
             button_entity = new System.Windows.Forms.Button();
             button_brush = new System.Windows.Forms.Button();
@@ -157,9 +159,28 @@ namespace csharp_editor {
             // 
             // viewToolStripMenuItem
             // 
+            viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { viewMenuItem_properties, viewMenuItem_hierarchy, viewMenuItem_console });
             viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             viewToolStripMenuItem.Text = "View";
+            // 
+            // viewMenuItem_properties
+            // 
+            viewMenuItem_properties.Name = "viewMenuItem_properties";
+            viewMenuItem_properties.Size = new System.Drawing.Size(180, 22);
+            viewMenuItem_properties.Text = "Properties";
+            // 
+            // viewMenuItem_hierarchy
+            // 
+            viewMenuItem_hierarchy.Name = "viewMenuItem_hierarchy";
+            viewMenuItem_hierarchy.Size = new System.Drawing.Size(180, 22);
+            viewMenuItem_hierarchy.Text = "Hierarchy";
+            // 
+            // viewMenuItem_console
+            // 
+            viewMenuItem_console.Name = "viewMenuItem_console";
+            viewMenuItem_console.Size = new System.Drawing.Size(180, 22);
+            viewMenuItem_console.Text = "Console";
             // 
             // toolStripMenuItem2
             // 
@@ -339,14 +360,6 @@ namespace csharp_editor {
             toolStripButton7.Size = new System.Drawing.Size(23, 22);
             toolStripButton7.Text = "toolStripButton7";
             // 
-            // propertyGridPanel1
-            // 
-            propertyGridPanel1.Dock = System.Windows.Forms.DockStyle.Left;
-            propertyGridPanel1.Location = new System.Drawing.Point(0, 0);
-            propertyGridPanel1.Name = "propertyGridPanel1";
-            propertyGridPanel1.Size = new System.Drawing.Size(265, 463);
-            propertyGridPanel1.TabIndex = 9;
-            // 
             // button_cursor
             // 
             button_cursor.BackColor = System.Drawing.SystemColors.ControlDark;
@@ -414,8 +427,6 @@ namespace csharp_editor {
 
         private System.Windows.Forms.Button button_brush;
 
-        private csharp_editor.UserControls.PropertyGridPanel propertyGridPanel1;
-
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
 
         #endregion
@@ -425,6 +436,9 @@ namespace csharp_editor {
         private ToolStripMenuItem fileToolStripMenuItem;
         private ToolStripMenuItem editToolStripMenuItem;
         private ToolStripMenuItem viewToolStripMenuItem;
+        private ToolStripMenuItem viewMenuItem_properties;
+        private ToolStripMenuItem viewMenuItem_hierarchy;
+        private ToolStripMenuItem viewMenuItem_console;
         private ToolStripMenuItem helpToolStripMenuItem;
         private ToolStripMenuItem toolStripMenuItem_open;
         private ToolStripMenuItem toolStripMenuItem_export;

@@ -1,11 +1,11 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Windows.Forms;
 
 namespace csharp_editor.UserControls
 {
         public partial class PropertyGridPanel : UserControl
         {
-            private PropertyGrid propertyGrid;
+            private System.Windows.Forms.PropertyGrid propertyGrid;
             private object _lastSelectedObject = null;
 
         public PropertyGridPanel()
@@ -52,26 +52,32 @@ namespace csharp_editor.UserControls
             }
         }
 
-        private void InitializeComponent() {
-            propertyGrid = new PropertyGrid();
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            propertyGrid = new System.Windows.Forms.PropertyGrid();
             SuspendLayout();
             // 
             // propertyGrid
             // 
-            propertyGrid.Dock = DockStyle.Fill;
+            propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             propertyGrid.HelpVisible = false;
-            propertyGrid.Location = new Point(0, 0);
+            propertyGrid.Location = new System.Drawing.Point(2, 2);
+            propertyGrid.Margin = new System.Windows.Forms.Padding(0);
             propertyGrid.Name = "propertyGrid";
-            propertyGrid.PropertySort = PropertySort.NoSort;
-            propertyGrid.Size = new Size(300, 400);
+            propertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
+            propertyGrid.Size = new System.Drawing.Size(296, 396);
             propertyGrid.TabIndex = 0;
             propertyGrid.ToolbarVisible = false;
             // 
             // PropertyGridPanel
             // 
             Controls.Add(propertyGrid);
-            Name = "PropertyGridPanel";
-            Size = new Size(300, 400);
+            Padding = new System.Windows.Forms.Padding(2);
+            Size = new System.Drawing.Size(300, 400);
             ResumeLayout(false);
         }
 

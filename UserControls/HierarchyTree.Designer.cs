@@ -34,27 +34,26 @@ namespace csharp_editor.UserControls {
             toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             toolStripButton_moveUp = new System.Windows.Forms.ToolStripButton();
             toolStripButton_moveDown = new System.Windows.Forms.ToolStripButton();
-            labelTitle = new System.Windows.Forms.Label();
             toolStrip_layers.SuspendLayout();
             SuspendLayout();
             // 
             // treeViewLayers
             // 
+            treeViewLayers.BackColor = System.Drawing.SystemColors.Menu;
             treeViewLayers.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             treeViewLayers.Dock = System.Windows.Forms.DockStyle.Fill;
             treeViewLayers.Location = new System.Drawing.Point(0, 25);
             treeViewLayers.Name = "treeViewLayers";
-            treeViewLayers.Size = new System.Drawing.Size(250, 450);
+            treeViewLayers.Size = new System.Drawing.Size(250, 475);
             treeViewLayers.TabIndex = 0;
             treeViewLayers.AfterSelect += treeViewLayers_AfterSelect;
             treeViewLayers.NodeMouseDoubleClick += treeViewLayers_NodeMouseDoubleClick;
             // 
             // toolStrip_layers
             // 
-            toolStrip_layers.Dock = System.Windows.Forms.DockStyle.Bottom;
             toolStrip_layers.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             toolStrip_layers.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripButton_addLayer, toolStripButton_remove, toolStripButton_editLayer, toolStripSeparator2, toolStripButton_moveUp, toolStripButton_moveDown });
-            toolStrip_layers.Location = new System.Drawing.Point(0, 475);
+            toolStrip_layers.Location = new System.Drawing.Point(0, 0);
             toolStrip_layers.Name = "toolStrip_layers";
             toolStrip_layers.Size = new System.Drawing.Size(250, 25);
             toolStrip_layers.TabIndex = 1;
@@ -123,25 +122,12 @@ namespace csharp_editor.UserControls {
             toolStripButton_moveDown.ToolTipText = "Move Down";
             toolStripButton_moveDown.Click += toolStripButton_moveDown_Click;
             // 
-            // labelTitle
-            // 
-            labelTitle.Dock = System.Windows.Forms.DockStyle.Top;
-            labelTitle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            labelTitle.Location = new System.Drawing.Point(0, 0);
-            labelTitle.Name = "labelTitle";
-            labelTitle.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            labelTitle.Size = new System.Drawing.Size(250, 25);
-            labelTitle.TabIndex = 2;
-            labelTitle.Text = "Hierarchy";
-            labelTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // HierarchyTree
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(treeViewLayers);
             Controls.Add(toolStrip_layers);
-            Controls.Add(labelTitle);
             Size = new System.Drawing.Size(250, 500);
             toolStrip_layers.ResumeLayout(false);
             toolStrip_layers.PerformLayout();
@@ -161,6 +147,5 @@ namespace csharp_editor.UserControls {
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton toolStripButton_moveUp;
         private System.Windows.Forms.ToolStripButton toolStripButton_moveDown;
-        private System.Windows.Forms.Label labelTitle;
     }
 }

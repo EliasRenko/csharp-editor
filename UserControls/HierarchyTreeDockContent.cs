@@ -14,9 +14,25 @@ public sealed class HierarchyTreeDockContent : DockContent
         Controls.Add(textureViewer);
         Controls.Add(tree);
 
+        Padding = new System.Windows.Forms.Padding(4);
+
         TabText     = "Hierarchy";
         Text        = "Hierarchy";
         HideOnClose = true;
         DockAreas   = DockAreas.DockLeft | DockAreas.DockRight | DockAreas.Float;
+    }
+
+    /// <summary>
+    /// Required method for Designer support - do not modify
+    /// the contents of this method with the code editor.
+    /// </summary>
+    private void InitializeComponent()
+    {
+        SuspendLayout();
+        // 
+        // HierarchyTreeDockContent
+        // 
+        ClientSize = new System.Drawing.Size(284, 261);
+        ResumeLayout(false);
     }
 }
