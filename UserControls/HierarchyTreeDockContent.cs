@@ -3,10 +3,8 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace csharp_editor.UserControls;
 
 /// <summary>Dockable wrapper for the Hierarchy / Texture / Entity right panel.</summary>
-public sealed class HierarchyTreeDockContent : DockContent
-{
-    public HierarchyTreeDockContent(HierarchyTree tree, TextureViewer textureViewer, EntitySelector entitySelector)
-    {
+public sealed class HierarchyTreeDockContent : DockContent {
+    public HierarchyTreeDockContent(HierarchyTree tree, TextureViewer textureViewer, EntitySelector entitySelector) {
         // Preserve same stacking order as the original panelRight:
         //   entitySelector & textureViewer (Fill) added first → lower Z-order
         //   hierarchyTree (Top) added last  → docked first by layout engine
@@ -16,18 +14,17 @@ public sealed class HierarchyTreeDockContent : DockContent
 
         Padding = new System.Windows.Forms.Padding(4);
 
-        TabText     = "Hierarchy";
-        Text        = "Hierarchy";
+        TabText = "Hierarchy";
+        Text = "Hierarchy";
         HideOnClose = true;
-        DockAreas   = DockAreas.DockLeft | DockAreas.DockRight | DockAreas.Float;
+        DockAreas = DockAreas.DockLeft | DockAreas.DockRight | DockAreas.Float;
     }
 
     /// <summary>
     /// Required method for Designer support - do not modify
     /// the contents of this method with the code editor.
     /// </summary>
-    private void InitializeComponent()
-    {
+    private void InitializeComponent() {
         SuspendLayout();
         // 
         // HierarchyTreeDockContent

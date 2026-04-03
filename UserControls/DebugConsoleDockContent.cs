@@ -26,5 +26,5 @@ public sealed class DebugConsoleDockContent : DockContent
     }
 
     /// <summary>Forwards a log message to the inner console.</summary>
-    public void Log(string message) => _console.Log(message);
+    public void Log(string priority, string category, string message) => _console.Log(priority, category, message);
 }

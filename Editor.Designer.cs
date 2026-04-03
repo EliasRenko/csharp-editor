@@ -46,6 +46,7 @@ namespace csharp_editor {
             viewMenuItem_console = new System.Windows.Forms.ToolStripMenuItem();
             toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             ToolStripMenuItem_timeline = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripMenuItem_theme = new System.Windows.Forms.ToolStripMenuItem();
             helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             statusStrip1 = new System.Windows.Forms.StatusStrip();
             statusLabel_project = new System.Windows.Forms.ToolStripStatusLabel();
@@ -184,7 +185,7 @@ namespace csharp_editor {
             // 
             // toolStripMenuItem2
             // 
-            toolStripMenuItem2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { ToolStripMenuItem_timeline });
+            toolStripMenuItem2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { ToolStripMenuItem_timeline, toolStripMenuItem_theme });
             toolStripMenuItem2.Name = "toolStripMenuItem2";
             toolStripMenuItem2.Size = new System.Drawing.Size(46, 20);
             toolStripMenuItem2.Text = "Tools";
@@ -194,6 +195,12 @@ namespace csharp_editor {
             ToolStripMenuItem_timeline.Name = "ToolStripMenuItem_timeline";
             ToolStripMenuItem_timeline.Size = new System.Drawing.Size(153, 22);
             ToolStripMenuItem_timeline.Text = "Timeline demo";
+            //
+            // toolStripMenuItem_theme
+            //
+            toolStripMenuItem_theme.Name = "toolStripMenuItem_theme";
+            toolStripMenuItem_theme.Size = new System.Drawing.Size(153, 22);
+            toolStripMenuItem_theme.Text = "Theme...";
             // 
             // helpToolStripMenuItem
             // 
@@ -461,6 +468,7 @@ namespace csharp_editor {
         private ToolStripButton toolStripButton_entitiesDefs;
         private ToolStripMenuItem toolStripMenuItem2;
         private ToolStripMenuItem ToolStripMenuItem_timeline;
+        private ToolStripMenuItem toolStripMenuItem_theme;
         private ToolStripSeparator toolStripSeparator3;
         private ToolStripButton toolStripButton7;
         private ToolStripMenuItem projectToolStripMenuItem;

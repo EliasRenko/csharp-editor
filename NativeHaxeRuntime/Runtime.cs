@@ -29,7 +29,7 @@ public class Runtime : Form {
         CExterns.SwapBuffers();
     }
 
-    protected virtual void Log(string text) {
+    protected virtual void Log(string priority, string category, string message) {
         // Override in derived class to log to UI
     }
 
@@ -42,6 +42,6 @@ public class Runtime : Form {
 
     private void LogHandler(string priority, string category, string message) {
         lastError.SetError(priority, category, message);
-        Log($"{priority} - {category} - {message}");
+        Log(priority, category, message);
     }
 }

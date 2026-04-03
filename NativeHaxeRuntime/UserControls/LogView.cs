@@ -1,21 +1,30 @@
+using System.Runtime.Versioning;
 using System.Windows.Forms;
 
 namespace NativeHaxeRuntime.UserControls;
 
+[SupportedOSPlatform("windows")]
 public partial class LogView : UserControl {
-    private Panel _panelBorder;
-    private RichTextBox _richTextBoxLog;
+    private Panel _panelBorder = null!;
+    private RichTextBox _richTextBoxLog = null!;
 
     public LogView() {
         InitializeComponent();
+        _richTextBoxLog.AppendText("Startup...");
     }
 
     public string? CopyText() {
         return _richTextBoxLog.SelectedText;
     }
 
-    public void Log(string text) {
+    public void Log(string text) => Log(text, System.Drawing.Color.Empty);
+
+    public void Log(string text, System.Drawing.Color color) {
+        _richTextBoxLog.SelectionStart  = _richTextBoxLog.TextLength;
+        _richTextBoxLog.SelectionLength = 0;
+        _richTextBoxLog.SelectionColor  = color == System.Drawing.Color.Empty ? _richTextBoxLog.ForeColor: color;
         _richTextBoxLog.AppendText(Environment.NewLine + text);
+        _richTextBoxLog.SelectionColor = _richTextBoxLog.ForeColor;
         _richTextBoxLog.ScrollToCaret();
     }
 

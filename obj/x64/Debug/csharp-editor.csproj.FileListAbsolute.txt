@@ -5,8 +5,6 @@ C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\bin\x64\Debug\csharp
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\bin\x64\Debug\csharp-editor.pdb
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.Dialogs.EntitiesDialog.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.Dialogs.PropertyDefinitionDialog.resources
-C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.Dialogs.TilesetCreateDialog.resources
-C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.Dialogs.TilesetImportDialog.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.Editor.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\DebugConsole.resources
 C:\Users\efedorenko\Documents\projects\csharp\csharp-editor\obj\x64\Debug\csharp_editor.Properties.Resources.resources

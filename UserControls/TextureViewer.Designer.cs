@@ -14,9 +14,10 @@ namespace csharp_editor.UserControls {
         private void InitializeComponent()
         {
             toolStrip = new System.Windows.Forms.ToolStrip();
-            toolStripLabelZoom = new System.Windows.Forms.ToolStripLabel();
             toolStripComboBoxZoom = new System.Windows.Forms.ToolStripComboBox();
+            toolStripLabelZoom = new System.Windows.Forms.ToolStripLabel();
             toolStripButtonChecker = new System.Windows.Forms.ToolStripButton();
+            toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             toolStripButtonAntiAlias = new System.Windows.Forms.ToolStripButton();
             panelContainer = new System.Windows.Forms.Panel();
             pictureBoxTexture = new System.Windows.Forms.PictureBox();
@@ -28,43 +29,55 @@ namespace csharp_editor.UserControls {
             // toolStrip
             // 
             toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripLabelZoom, toolStripComboBoxZoom, toolStripButtonChecker, toolStripButtonAntiAlias });
+            toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripComboBoxZoom, toolStripLabelZoom, toolStripButtonChecker, toolStripButton1, toolStripButtonAntiAlias });
             toolStrip.Location = new System.Drawing.Point(0, 0);
             toolStrip.Name = "toolStrip";
             toolStrip.Size = new System.Drawing.Size(600, 25);
             toolStrip.TabIndex = 0;
             toolStrip.Text = "toolStrip";
             // 
+            // toolStripComboBoxZoom
+            // 
+            toolStripComboBoxZoom.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            toolStripComboBoxZoom.AutoSize = false;
+            toolStripComboBoxZoom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            toolStripComboBoxZoom.IntegralHeight = false;
+            toolStripComboBoxZoom.Name = "toolStripComboBoxZoom";
+            toolStripComboBoxZoom.Size = new System.Drawing.Size(55, 23);
+            // 
             // toolStripLabelZoom
             // 
+            toolStripLabelZoom.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             toolStripLabelZoom.Name = "toolStripLabelZoom";
             toolStripLabelZoom.Size = new System.Drawing.Size(42, 22);
             toolStripLabelZoom.Text = "Zoom:";
-            // 
-            // toolStripComboBoxZoom
-            // 
-            toolStripComboBoxZoom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            toolStripComboBoxZoom.Name = "toolStripComboBoxZoom";
-            toolStripComboBoxZoom.Size = new System.Drawing.Size(75, 25);
             // 
             // toolStripButtonChecker
             // 
             toolStripButtonChecker.CheckOnClick = true;
             toolStripButtonChecker.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            toolStripButtonChecker.Image = global::csharp_editor.Properties.Resources.checkerboard;
             toolStripButtonChecker.Name = "toolStripButtonChecker";
             toolStripButtonChecker.Size = new System.Drawing.Size(23, 22);
-            toolStripButtonChecker.Text = "";
-            toolStripButtonChecker.Image = Properties.Resources.checkerboard;
+            // 
+            // toolStripButton1
+            // 
+            toolStripButton1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            toolStripButton1.Image = global::csharp_editor.Properties.Resources.arrow_out;
+            toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            toolStripButton1.Margin = new System.Windows.Forms.Padding(0, 1, 8, 2);
+            toolStripButton1.Name = "toolStripButton1";
+            toolStripButton1.Size = new System.Drawing.Size(23, 22);
             // 
             // toolStripButtonAntiAlias
             // 
             toolStripButtonAntiAlias.CheckOnClick = true;
             toolStripButtonAntiAlias.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            toolStripButtonAntiAlias.Image = global::csharp_editor.Properties.Resources.style;
             toolStripButtonAntiAlias.Name = "toolStripButtonAntiAlias";
             toolStripButtonAntiAlias.Size = new System.Drawing.Size(23, 22);
-            toolStripButtonAntiAlias.Text = "";
             toolStripButtonAntiAlias.ToolTipText = "Toggle anti-aliasing";
-            toolStripButtonAntiAlias.Image = Properties.Resources.style;
             // 
             // panelContainer
             // 
@@ -79,6 +92,7 @@ namespace csharp_editor.UserControls {
             // pictureBoxTexture
             // 
             pictureBoxTexture.BackColor = System.Drawing.SystemColors.Control;
+            pictureBoxTexture.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             pictureBoxTexture.Location = new System.Drawing.Point(0, 0);
             pictureBoxTexture.Name = "pictureBoxTexture";
             pictureBoxTexture.Size = new System.Drawing.Size(600, 475);
@@ -100,6 +114,8 @@ namespace csharp_editor.UserControls {
             ResumeLayout(false);
             PerformLayout();
         }
+
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
 
         #endregion
 

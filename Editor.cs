@@ -54,6 +54,7 @@ namespace csharp_editor {
                 BeginInvoke(() => EntitySelectionChanged?.Invoke(this, EventArgs.Empty));
             };
 
+            // Init externs
             view_extern.Init(logHandler);
             
             toolStrip1.Renderer = new ToolStripRenderer();
@@ -94,6 +95,7 @@ namespace csharp_editor {
             // Debug 
 
             ToolStripMenuItem_timeline.MouseDown += ShowTimelineDialog;
+            toolStripMenuItem_theme.Click        += EditTheme_Click;
             toolStripButton_tilesets.MouseDown += ShowTilesetDefDialog;
             toolStripButton_entitiesDefs.MouseDown += ShowEntitiesDefDialog;
 
@@ -118,15 +120,30 @@ namespace csharp_editor {
             _welcomeDock = new WelcomeDockContent(_welcomePanel);
             _welcomeDock.Show(dockPanel, DockState.Document);
             dockPanel.ActiveDocumentChanged += DockPanel_ActiveDocumentChanged;
+
+            // Apply persisted theme and subscribe to live updates
+            AppThemeManager.ThemeUpdated += OnThemeUpdated;
+            ThemeApplier.Apply(this, AppThemeManager.Current);
         }
 
-        protected override void Log(string text) {
-            _consoleDock.Log(text);
+        protected override void Log(string priority, string category, string message) {
+            _consoleDock.Log(priority, category, message);
         }
+
+        private void Log(string message) => Log("INFO", "", message);
 
         private void ShowTimelineDialog(object? sender, MouseEventArgs e) {
             using var dialog = new Dialogs.TimelineDialog();
             dialog.ShowDialog(this);
+        }
+
+        private void EditTheme_Click(object? sender, EventArgs e) {
+            using var dialog = new Dialogs.ThemeDialog();
+            dialog.ShowDialog(this);
+        }
+
+        private void OnThemeUpdated(AppTheme theme) {
+            ThemeApplier.Apply(this, theme);
         }
 
 

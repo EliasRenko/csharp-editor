@@ -35,7 +35,7 @@ namespace csharp_editor.Dialogs {
             numericUpDownTileSizeX = new NumericUpDown { Location = new Point(12, 130), Size = new Size(80, 22), Minimum = 1, Maximum = 1024 };
             numericUpDownTileSizeY = new NumericUpDown { Location = new Point(100, 130), Size = new Size(80, 22), Minimum = 1, Maximum = 1024 };
 
-            buttonOK = new Button { Text = "OK", Location = new Point(186, 165), Size = new Size(75, 25), DialogResult = DialogResult.OK };
+            buttonOK = new Button { Text = "OK", Location = new Point(186, 165), Size = new Size(75, 25) };
             buttonCancel = new Button { Text = "Cancel", Location = new Point(267, 165), Size = new Size(75, 25), DialogResult = DialogResult.Cancel };
 
             buttonOK.Click += ButtonOK_Click;
@@ -53,8 +53,8 @@ namespace csharp_editor.Dialogs {
 
             textBoxProjectFilePath.Text = current.FilePath ?? "";
             textBoxProjectName.Text = current.ProjectName ?? "";
-            numericUpDownTileSizeX.Value = current.DefaultTileSizeX > 0 ? current.DefaultTileSizeX : 32;
-            numericUpDownTileSizeY.Value = current.DefaultTileSizeY > 0 ? current.DefaultTileSizeY : 32;
+            numericUpDownTileSizeX.Value = Math.Clamp(current.DefaultTileSizeX > 0 ? current.DefaultTileSizeX : 32, (int)numericUpDownTileSizeX.Minimum, (int)numericUpDownTileSizeX.Maximum);
+            numericUpDownTileSizeY.Value = Math.Clamp(current.DefaultTileSizeY > 0 ? current.DefaultTileSizeY : 32, (int)numericUpDownTileSizeY.Minimum, (int)numericUpDownTileSizeY.Maximum);
 
             UpdatedProjectInfo = current;
         }
