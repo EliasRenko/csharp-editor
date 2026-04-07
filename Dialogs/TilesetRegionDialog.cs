@@ -82,7 +82,7 @@ namespace csharp_editor.Dialogs {
                 MessageBox.Show($"Tileset '{_tilesetName}' not found.", "Error", 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.DialogResult = DialogResult.Cancel;
-                this.Close();
+                this.Load += (s, e) => this.Close();
                 return;
             }
             

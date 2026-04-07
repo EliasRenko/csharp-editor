@@ -138,6 +138,30 @@ namespace csharp_editor.UserControls {
         }
 
         public void AddLayer(string name, LayerType type, string tilesetName = "", int tileSize = 0) {
+            // Determine insert index from current selection BEFORE touching the tree
+            TreeNode parent = GetStateNode();
+            int insertIndex;
+            if (treeViewLayers.SelectedNode != null &&
+                treeViewLayers.SelectedNode.Tag is LayerNode &&
+                treeViewLayers.SelectedNode.Parent == parent) {
+                insertIndex = treeViewLayers.SelectedNode.Index;
+            } else {
+                insertIndex = parent.Nodes.Count;
+            }
+
+            // Create in backend FIRST so the layer exists when AfterSelect fires
+            if (type == LayerType.TileLayer) {
+                if (!CExternsEditor.CreateTilemapLayer(name, tilesetName, tileSize, insertIndex)) {
+                    string error = _externView?.GetLastErrorMessage() ?? "Unknown error.";
+                    MessageBox.Show($"Failed to create tile layer '{name}':\n{error}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            } else if (type == LayerType.EntityLayer) {
+                // API no longer requires a tileset for entity layers
+                CExternsEditor.CreateEntityLayer(name);
+            }
+
+            // Now add to the tree — layer is guaranteed to exist in the backend
             LayerNode layer = new LayerNode {
                 Name = name,
                 Type = type,
@@ -150,39 +174,14 @@ namespace csharp_editor.UserControls {
             treeNode.Tag = layer;
             layer.TreeNodeRef = treeNode;
 
-            // Insert into the State parent at selected layer position, or at end if nothing is selected
-            TreeNode parent = GetStateNode();
-            int insertIndex;
-            if (treeViewLayers.SelectedNode != null &&
-                treeViewLayers.SelectedNode.Tag is LayerNode selLayer &&
-                treeViewLayers.SelectedNode.Parent == parent) {
-                insertIndex = treeViewLayers.SelectedNode.Index;
-            } else {
-                insertIndex = parent.Nodes.Count;
-            }
             parent.Nodes.Insert(insertIndex, treeNode);
             _layers.Insert(insertIndex, layer);
             // make sure the state container remains expanded so the new child is visible
             parent.Expand();
-            // optionally select the newly added layer so user sees it immediately
+            // selecting fires AfterSelect which calls SetActiveLayer — layer already exists
             treeViewLayers.SelectedNode = treeNode;
             // request a repaint in case owner-draw hasn't been triggered yet
             treeViewLayers.Invalidate();
-
-            // Notify backend - pass index for insertion
-            if (type == LayerType.TileLayer) {
-                CExternsEditor.CreateTilemapLayer(name, tilesetName, tileSize, insertIndex);
-            } else if (type == LayerType.EntityLayer) {
-                // API no longer requires a tileset for entity layers
-                CExternsEditor.CreateEntityLayer(name);
-            }
-
-            // Select the new layer as active in the backend
-            bool activeOK = CExternsEditor.SetActiveLayer(name);
-            if (!activeOK) {
-                string error = _externView?.GetLastErrorMessage() ?? "Unknown error.";
-                MessageBox.Show($"Failed to activate layer '{name}':\n{error}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
 
             LayersChanged?.Invoke(this, EventArgs.Empty);
             UpdateButtonStates();
@@ -638,7 +637,7 @@ namespace csharp_editor.UserControls {
 
         private void treeViewLayers_AfterSelect(object sender, TreeViewEventArgs e) {
             UpdateButtonStates();
-            
+
             if (e.Node?.Tag is LayerNode layer) {
                 // Notify backend that this layer is now active
                 bool activeOK = CExternsEditor.SetActiveLayer(layer.Name);

@@ -177,6 +177,18 @@ namespace csharp_editor {
                 dialog.ShowDialog(this);
             }
             entitySelector.LoadEntities();
+            AutoSaveProject();
+        }
+
+        private void AutoSaveProject() {
+            if (dockPanel.ActiveDocument is MapDocContent mapDoc && !string.IsNullOrEmpty(mapDoc.FilePath)) {
+                string projectName = Path.GetFileNameWithoutExtension(mapDoc.FilePath);
+                bool result = CExternsEditor.ExportProject(mapDoc.FilePath, projectName);
+                if (result == false)
+                    Log($"Warning: AutoSave — ExportProject returned 0 for '{mapDoc.FilePath}'");
+                else
+                    Log($"Project auto-saved: {mapDoc.FilePath}");
+            }
         }
 
         private void SaveProject_Click(object? sender, EventArgs e) {
@@ -935,6 +947,7 @@ namespace csharp_editor {
                 })) {
                 dialog.ShowDialog(this);
             }
+            AutoSaveProject();
         }
 
         /// <summary>

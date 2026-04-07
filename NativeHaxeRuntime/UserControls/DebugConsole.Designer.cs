@@ -27,8 +27,8 @@ partial class DebugConsole {
         {
             logView = new NativeHaxeRuntime.UserControls.LogView();
             panel1 = new System.Windows.Forms.Panel();
-            button_copy = new System.Windows.Forms.Button();
             button_clear = new System.Windows.Forms.Button();
+            button_copy = new System.Windows.Forms.Button();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -53,15 +53,6 @@ partial class DebugConsole {
             panel1.Size = new System.Drawing.Size(272, 33);
             panel1.TabIndex = 3;
             // 
-            // button_copy
-            // 
-            button_copy.Location = new System.Drawing.Point(3, 5);
-            button_copy.Name = "button_copy";
-            button_copy.Size = new System.Drawing.Size(48, 23);
-            button_copy.TabIndex = 1;
-            button_copy.Text = "Copy";
-            button_copy.UseVisualStyleBackColor = true;
-            // 
             // button_clear
             // 
             button_clear.Location = new System.Drawing.Point(57, 5);
@@ -70,6 +61,15 @@ partial class DebugConsole {
             button_clear.TabIndex = 2;
             button_clear.Text = "Clear";
             button_clear.UseVisualStyleBackColor = true;
+            // 
+            // button_copy
+            // 
+            button_copy.Location = new System.Drawing.Point(3, 5);
+            button_copy.Name = "button_copy";
+            button_copy.Size = new System.Drawing.Size(48, 23);
+            button_copy.TabIndex = 1;
+            button_copy.Text = "Copy";
+            button_copy.UseVisualStyleBackColor = true;
             // 
             // DebugConsole
             // 

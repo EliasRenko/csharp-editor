@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using csharp_editor.Models;
 using csharp_editor.UserControls;
 
 namespace csharp_editor.Dialogs {
@@ -94,10 +95,23 @@ namespace csharp_editor.Dialogs {
 
                 if (dialog.ShowDialog() != DialogResult.OK) return;
 
-                string imagePath = dialog.FileName;
-                string name = Path.GetFileNameWithoutExtension(imagePath);
+                if (CExternsEditor.GetProjectProps(out ProjectInfoStruct info)) {
+                    if (string.IsNullOrEmpty(info.ProjectName)) {
+                        MessageBox.Show("Project name is not set. Please set it in Project Settings before importing textures.",
+                            "Import Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                }
 
-                bool success = CExternsEditor.CreateTileset(imagePath, name);
+                string imagePath = dialog.FileName;
+                string name = Path.GetFileName(imagePath);
+                string relativePath = $"res/textures/{name}";
+                string destinationPath = Path.Combine(info.ProjectDir, relativePath);
+    
+                Directory.CreateDirectory(Path.GetDirectoryName(destinationPath) ?? "");
+                File.Copy(imagePath, destinationPath, overwrite: true);
+
+                bool success = CExternsEditor.CreateTileset(relativePath, Path.GetFileNameWithoutExtension(imagePath));
                 if (!success) {
                     string error = _externView.GetLastErrorMessage();
                     MessageBox.Show($"Failed to import tileset '{name}':\n{error}", "Import Error",

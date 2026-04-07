@@ -81,6 +81,8 @@ using NativeHaxeRuntime;
         public struct ProjectProps {
             public IntPtr filePath;          // Project file path
             public IntPtr projectName;       // Project name
+
+            public IntPtr projectDir;         // Directory of the project file (added for convenience, not set by native code)
             public int defaultTileSizeX;
             public int defaultTileSizeY;
         }
@@ -102,6 +104,7 @@ using NativeHaxeRuntime;
                 outInfo = new ProjectInfoStruct {
                     FilePath = Marshal.PtrToStringAnsi(temp.filePath),
                     ProjectName = Marshal.PtrToStringAnsi(temp.projectName),
+                    ProjectDir = Path.GetDirectoryName(Marshal.PtrToStringAnsi(temp.filePath) ?? ""),
                     DefaultTileSizeX = temp.defaultTileSizeX,
                     DefaultTileSizeY = temp.defaultTileSizeY
                 };
@@ -291,7 +294,7 @@ using NativeHaxeRuntime;
         #region  Layer managment
         
         [DllImport(CExterns.DLL, EntryPoint = "createTilemapLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void CreateTilemapLayer(string layerName, string tilesetName, int tileSize, int index);
+        public static extern bool CreateTilemapLayer(string layerName, string tilesetName, int tileSize, int index);
         
         [DllImport(CExterns.DLL, EntryPoint = "createEntityLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void CreateEntityLayer(string layerName);
