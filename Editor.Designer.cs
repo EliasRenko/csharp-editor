@@ -71,6 +71,7 @@ namespace csharp_editor {
             button_entity = new System.Windows.Forms.Button();
             button_brush = new System.Windows.Forms.Button();
             dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+            toolStripButton_toggleLabels = new System.Windows.Forms.ToolStripButton();
             menuStrip1.SuspendLayout();
             statusStrip1.SuspendLayout();
             toolStrip1.SuspendLayout();
@@ -168,19 +169,19 @@ namespace csharp_editor {
             // viewMenuItem_properties
             // 
             viewMenuItem_properties.Name = "viewMenuItem_properties";
-            viewMenuItem_properties.Size = new System.Drawing.Size(180, 22);
+            viewMenuItem_properties.Size = new System.Drawing.Size(127, 22);
             viewMenuItem_properties.Text = "Properties";
             // 
             // viewMenuItem_hierarchy
             // 
             viewMenuItem_hierarchy.Name = "viewMenuItem_hierarchy";
-            viewMenuItem_hierarchy.Size = new System.Drawing.Size(180, 22);
+            viewMenuItem_hierarchy.Size = new System.Drawing.Size(127, 22);
             viewMenuItem_hierarchy.Text = "Hierarchy";
             // 
             // viewMenuItem_console
             // 
             viewMenuItem_console.Name = "viewMenuItem_console";
-            viewMenuItem_console.Size = new System.Drawing.Size(180, 22);
+            viewMenuItem_console.Size = new System.Drawing.Size(127, 22);
             viewMenuItem_console.Text = "Console";
             // 
             // toolStripMenuItem2
@@ -195,9 +196,9 @@ namespace csharp_editor {
             ToolStripMenuItem_timeline.Name = "ToolStripMenuItem_timeline";
             ToolStripMenuItem_timeline.Size = new System.Drawing.Size(153, 22);
             ToolStripMenuItem_timeline.Text = "Timeline demo";
-            //
+            // 
             // toolStripMenuItem_theme
-            //
+            // 
             toolStripMenuItem_theme.Name = "toolStripMenuItem_theme";
             toolStripMenuItem_theme.Size = new System.Drawing.Size(153, 22);
             toolStripMenuItem_theme.Text = "Theme...";
@@ -262,7 +263,7 @@ namespace csharp_editor {
             // toolStrip1
             // 
             toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripButton_newMap, toolStripButton2, toolStripButton3, toolStripButton4, toolStripSeparator1, toolStripButton5, toolStripButton6, toolStripSeparator2, toolStripButton_tilesets, toolStripButton_entitiesDefs, toolStripSeparator3, toolStripButton7 });
+            toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripButton_newMap, toolStripButton2, toolStripButton3, toolStripButton4, toolStripSeparator1, toolStripButton5, toolStripButton6, toolStripSeparator2, toolStripButton_tilesets, toolStripButton_entitiesDefs, toolStripSeparator3, toolStripButton7, toolStripButton_toggleLabels });
             toolStrip1.Location = new System.Drawing.Point(0, 24);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new System.Drawing.Size(1058, 25);
@@ -405,6 +406,14 @@ namespace csharp_editor {
             dockPanel.Size = new System.Drawing.Size(1058, 697);
             dockPanel.TabIndex = 3;
             // 
+            // toolStripButton_toggleLabels
+            // 
+            toolStripButton_toggleLabels.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            toolStripButton_toggleLabels.Image = global::csharp_editor.Properties.Resources.tag;
+            toolStripButton_toggleLabels.ImageTransparentColor = System.Drawing.Color.Magenta;
+            toolStripButton_toggleLabels.Name = "toolStripButton_toggleLabels";
+            toolStripButton_toggleLabels.Size = new System.Drawing.Size(23, 22);
+            // 
             // Editor
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -425,6 +434,8 @@ namespace csharp_editor {
             ResumeLayout(false);
             PerformLayout();
         }
+
+        private System.Windows.Forms.ToolStripButton toolStripButton_toggleLabels;
 
         private DockPanel dockPanel;
 
@@ -455,7 +466,7 @@ namespace csharp_editor {
         private csharp_editor.UserControls.HierarchyTree hierarchyTree;
         private csharp_editor.UserControls.TextureViewer textureViewer;
         private csharp_editor.UserControls.EntitySelector entitySelector;
-        private ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton toolStripButton_newMap;
         private ToolStripButton toolStripButton2;
         private System.Windows.Forms.ToolStripButton toolStripButton3;

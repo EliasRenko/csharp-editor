@@ -64,6 +64,9 @@ namespace csharp_editor.UserControls {
         }
         private const int IconSize = 16;
         private const int IconSpacing = 4;
+        private const int TriangleSize = 8;       // expand/collapse glyph size
+        private const int IndentWidth = 20;       // pixels per tree-level indent
+        private const int BaseIndent = 4;         // left margin for the root level
         private static Image? _stateIcon = null; // loaded lazily from Icons/map.png
         
         public event EventHandler<LayerNode>? LayerSelected;
@@ -89,7 +92,11 @@ namespace csharp_editor.UserControls {
             treeViewLayers.HideSelection = false;
             treeViewLayers.FullRowSelect = true;
             treeviewLayersBeforeExpandHook();
-            treeViewLayers.DrawMode = TreeViewDrawMode.OwnerDrawText;
+            treeViewLayers.DrawMode = TreeViewDrawMode.OwnerDrawAll;
+            treeViewLayers.ShowPlusMinus = false;
+            treeViewLayers.ShowLines = false;
+            treeViewLayers.ShowRootLines = false;
+            treeViewLayers.Indent = IndentWidth;
             treeViewLayers.DrawNode += TreeViewLayers_DrawNode;
             treeViewLayers.MouseDown += TreeViewLayers_MouseDown;
             treeViewLayers.KeyDown += TreeViewLayers_KeyDown;
@@ -669,195 +676,97 @@ namespace csharp_editor.UserControls {
         private void TreeViewLayers_DrawNode(object? sender, DrawTreeNodeEventArgs e) {
             if (e.Node == null) return;
 
-            // special fixed parent node
-            if (_stateNode != null && e.Node == _stateNode) {
-                int fullRowWidth = treeViewLayers.ClientSize.Width;
-                Rectangle fullRowBounds = new Rectangle(0, e.Bounds.Top, fullRowWidth, e.Bounds.Height);
-                Color backColor = (e.State & TreeNodeStates.Selected) != 0
-                    ? Color.FromArgb(51, 153, 255)
-                    : treeViewLayers.BackColor;
-                using (SolidBrush brush = new SolidBrush(backColor)) {
-                    e.Graphics.FillRectangle(brush, fullRowBounds);
+            int fullRowWidth = treeViewLayers.ClientSize.Width;
+            bool selected = (e.State & TreeNodeStates.Selected) != 0;
+            Color backColor = selected ? Color.FromArgb(51, 153, 255) : treeViewLayers.BackColor;
+
+            // Fill full-row background
+            using (SolidBrush brush = new SolidBrush(backColor))
+                e.Graphics.FillRectangle(brush, 0, e.Bounds.Top, fullRowWidth, e.Bounds.Height);
+
+            int iconY  = e.Bounds.Top + (e.Bounds.Height - IconSize) / 2;
+            int cx     = BaseIndent + e.Node.Level * IndentWidth; // current x, advances left→right
+
+            // ── expand / collapse glyph ──────────────────────────────────────────────
+            int triangleAreaWidth = TriangleSize + IconSpacing;
+            if (e.Node.Nodes.Count > 0) {
+                int tx = cx + (triangleAreaWidth - TriangleSize) / 2;
+                int ty = e.Bounds.Top + (e.Bounds.Height - TriangleSize) / 2;
+                Color arrowColor = selected ? Color.White : Color.FromArgb(130, 130, 130);
+                using (SolidBrush arrowBrush = new SolidBrush(arrowColor)) {
+                    Point[] tri = e.Node.IsExpanded
+                        ? new[] { new Point(tx, ty), new Point(tx + TriangleSize, ty), new Point(tx + TriangleSize / 2, ty + TriangleSize) }
+                        : new[] { new Point(tx, ty), new Point(tx, ty + TriangleSize), new Point(tx + TriangleSize, ty + TriangleSize / 2) };
+                    e.Graphics.FillPolygon(arrowBrush, tri);
                 }
-                // draw its icon on left
-                int iconY = e.Bounds.Top + (e.Bounds.Height - IconSize) / 2;
+            }
+            cx += triangleAreaWidth;
+
+            // ── State node ───────────────────────────────────────────────────────────
+            if (_stateNode != null && e.Node == _stateNode) {
                 if (_stateIcon == null) {
-                    // try resource first
-                    try {
-                        _stateIcon = Properties.Resources.map;
-                    } catch {
-                        _stateIcon = null;
-                    }
-                    // if resource not available, fall back to file
+                    try { _stateIcon = Properties.Resources.map; } catch { }
                     if (_stateIcon == null) {
                         try {
                             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Icons", "map.png");
-                            if (File.Exists(path))
-                                _stateIcon = Image.FromFile(path);
-                        } catch {
-                            _stateIcon = null;
-                        }
+                            if (File.Exists(path)) _stateIcon = Image.FromFile(path);
+                        } catch { }
                     }
                 }
                 if (_stateIcon != null) {
-                    e.Graphics.DrawImage(_stateIcon, 2, iconY, IconSize, IconSize);
+                    e.Graphics.DrawImage(_stateIcon, cx, iconY, IconSize, IconSize);
+                    cx += IconSize + IconSpacing;
                 }
-
-                // draw its text using its nodefont/color (shifted right of icon)
                 Font font = e.Node.NodeFont ?? treeViewLayers.Font;
-                Color textColor = (e.State & TreeNodeStates.Selected) != 0
-                    ? Color.White
-                    : e.Node.ForeColor;
+                Color stateTextColor = selected ? Color.White : e.Node.ForeColor;
                 TextRenderer.DrawText(e.Graphics, e.Node.Text, font,
-                    new Rectangle(IconSize + IconSpacing, e.Bounds.Top, fullRowWidth - (IconSize + IconSpacing), e.Bounds.Height),
-                    textColor, TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
+                    new Rectangle(cx, e.Bounds.Top, fullRowWidth - cx - IconSpacing, e.Bounds.Height),
+                    stateTextColor, TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
                 return;
             }
 
-            // If this is a layer node, draw the usual icons
+            // ── Layer node ───────────────────────────────────────────────────────────
             if (e.Node.Tag is LayerNode layer) {
-                // Use full row width
-                int fullRowWidth = treeViewLayers.ClientSize.Width;
-                Rectangle fullRowBounds = new Rectangle(0, e.Bounds.Top, fullRowWidth, e.Bounds.Height);
+                // visibility icon — acts as an inline checkbox, left of the type icon
+                Image visIcon = layer.Visible ? Properties.Resources.visible : Properties.Resources.invisible;
+                e.Graphics.DrawImage(visIcon, cx, iconY, IconSize, IconSize);
+                cx += IconSize + IconSpacing;
 
-                // Draw background for full row
-                Color backColor = (e.State & TreeNodeStates.Selected) != 0 
-                    ? Color.FromArgb(51, 153, 255) 
-                    : treeViewLayers.BackColor;
-                using (SolidBrush brush = new SolidBrush(backColor)) {
-                    e.Graphics.FillRectangle(brush, fullRowBounds);
-                }
-
-                // Draw expand/collapse triangle in the empty space on the left if node has children
-                // Draw triangle and icon at a fixed position from the control's left edge
-                int leftEdge = 2; // 2px margin from the very left
-                int triangleSize = 8;
-                int triangleX = leftEdge;
-                int triangleY = e.Bounds.Top + (e.Bounds.Height - triangleSize) / 2;
-                int iconY = e.Bounds.Top + (e.Bounds.Height - IconSize) / 2;
-                int typeIconX = triangleX + triangleSize + 2; // icon immediately after triangle, 2px gap
-                if (e.Node.Nodes.Count > 0) {
-                    Point[] triangle;
-                    if (e.Node.IsExpanded) {
-                        triangle = new[] {
-                            new Point(triangleX, triangleY),
-                            new Point(triangleX + triangleSize, triangleY),
-                            new Point(triangleX + triangleSize/2, triangleY + triangleSize)
-                        };
-                    } else {
-                        triangle = new[] {
-                            new Point(triangleX, triangleY),
-                            new Point(triangleX, triangleY + triangleSize),
-                            new Point(triangleX + triangleSize, triangleY + triangleSize/2)
-                        };
-                    }
-                    e.Graphics.FillPolygon(Brushes.Black, triangle);
-                }
-                Image typeIcon = layer.Type == LayerType.TileLayer 
-                    ? Properties.Resources.tiles 
+                // type icon
+                Image typeIcon = layer.Type == LayerType.TileLayer
+                    ? Properties.Resources.tiles
                     : Properties.Resources.entities;
-                e.Graphics.DrawImage(typeIcon, typeIconX, iconY, IconSize, IconSize);
+                e.Graphics.DrawImage(typeIcon, cx, iconY, IconSize, IconSize);
+                cx += IconSize + IconSpacing;
 
-                // Calculate space needed for icons (2 icons + spacing on right)
-                int iconsWidth = (IconSize * 2) + (IconSpacing * 3);
-
-                // Calculate text bounds (leave room for type icon on left and action icons on right)
-                int textStartX = typeIconX + IconSize + IconSpacing;
-                Rectangle textBounds = new Rectangle(
-                    textStartX,
-                    e.Bounds.Top,
-                    fullRowWidth - textStartX - iconsWidth,
-                    e.Bounds.Height
-                );
-
-                // Draw node text with clipping
-                Color textColor = (e.State & TreeNodeStates.Selected) != 0 
-                    ? Color.White 
-                    : treeViewLayers.ForeColor;
-                TextRenderer.DrawText(e.Graphics, e.Node.Text, treeViewLayers.Font, 
-                    textBounds, textColor, 
-                    TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
-
-                // Calculate icon positions (from right to left, docked to control edge)
-
-                // Draw lock icon (rightmost)
+                // lock icon — right-aligned
                 int lockIconX = fullRowWidth - IconSize - IconSpacing;
-                Image lockIcon = layer.Locked 
-                    ? Properties.Resources._lock 
-                    : Properties.Resources.unlock;
+                Image lockIcon = layer.Locked ? Properties.Resources._lock : Properties.Resources.unlock;
                 e.Graphics.DrawImage(lockIcon, lockIconX, iconY, IconSize, IconSize);
 
-                // Draw visibility icon (second from right)
-                int visibilityIconX = lockIconX - IconSize - IconSpacing;
-                Image visibilityIcon = layer.Visible 
-                    ? Properties.Resources.visible 
-                    : Properties.Resources.invisible;
-                e.Graphics.DrawImage(visibilityIcon, visibilityIconX, iconY, IconSize, IconSize);
+                // name text between left icons and lock
+                Color layerTextColor = selected ? Color.White : treeViewLayers.ForeColor;
+                int textWidth = lockIconX - cx - IconSpacing;
+                TextRenderer.DrawText(e.Graphics, layer.Name, treeViewLayers.Font,
+                    new Rectangle(cx, e.Bounds.Top, textWidth, e.Bounds.Height),
+                    layerTextColor, TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
                 return;
             }
 
-            // If this node is a batch, draw a tile icon on the left with arrow overlay
+            // ── Batch node ───────────────────────────────────────────────────────────
             if (e.Node.Tag is BatchInfo batch) {
-                // draw background normally
-                int fullRowWidth = treeViewLayers.ClientSize.Width;
-                Rectangle fullRowBounds = new Rectangle(0, e.Bounds.Top, fullRowWidth, e.Bounds.Height);
-                Color backColor = (e.State & TreeNodeStates.Selected) != 0 
-                    ? Color.FromArgb(51, 153, 255) 
-                    : treeViewLayers.BackColor;
-                using (SolidBrush brush = new SolidBrush(backColor)) {
-                    e.Graphics.FillRectangle(brush, fullRowBounds);
-                }
+                // tile icon
+                e.Graphics.DrawImage(Properties.Resources.tiles, cx, iconY, IconSize, IconSize);
+                cx += IconSize + IconSpacing;
 
-                int indent = 0;
-                if (e.Node.Nodes.Count > 0) {
-                    int hitWidth = IconSize + IconSpacing + 4;
-                    int iconX = e.Bounds.Left + (hitWidth - IconSize) / 2;
-                    int iconY = e.Bounds.Top + (e.Bounds.Height - IconSize) / 2;
-                    // tile icon inside hit area
-                    e.Graphics.DrawImage(Properties.Resources.tiles, iconX, iconY, IconSize, IconSize);
-                    // arrow overlay
-                    int arrowSize = 6;
-                    int ax = iconX + (IconSize - arrowSize) / 2;
-                    int ay = iconY + (IconSize - arrowSize) / 2;
-                    Point[] arrow;
-                    if (e.Node.IsExpanded) {
-                        arrow = new[] {
-                            new Point(ax, ay),
-                            new Point(ax + arrowSize, ay),
-                            new Point(ax + arrowSize/2, ay + arrowSize)
-                        };
-                    } else {
-                        arrow = new[] {
-                            new Point(ax, ay),
-                            new Point(ax, ay + arrowSize),
-                            new Point(ax + arrowSize, ay + arrowSize/2)
-                        };
-                    }
-                    e.Graphics.FillPolygon(Brushes.Black, arrow);
-                    indent = hitWidth;
-                }
-
-                // draw small icon to distinguish (shifted if glyph drawn)
-                int iconY2 = e.Bounds.Top + (e.Bounds.Height - IconSize) / 2;
-                e.Graphics.DrawImage(Properties.Resources.tiles, e.Bounds.Left + indent, iconY2, IconSize, IconSize);
-
-                // draw text offset by icon
-                Rectangle textBounds = new Rectangle(
-                    e.Bounds.Left + indent + IconSize + IconSpacing,
-                    e.Bounds.Top,
-                    fullRowWidth - (indent + IconSize + IconSpacing),
-                    e.Bounds.Height
-                );
-                Color textColor = (e.State & TreeNodeStates.Selected) != 0 
-                    ? Color.White 
-                    : treeViewLayers.ForeColor;
-                TextRenderer.DrawText(e.Graphics, e.Node.Text, treeViewLayers.Font, 
-                    textBounds, textColor, 
-                    TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
+                Color batchTextColor = selected ? Color.White : treeViewLayers.ForeColor;
+                TextRenderer.DrawText(e.Graphics, e.Node.Text, treeViewLayers.Font,
+                    new Rectangle(cx, e.Bounds.Top, fullRowWidth - cx - IconSpacing, e.Bounds.Height),
+                    batchTextColor, TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
                 return;
             }
 
-            // nothing else to draw for other nodes (fallback to default appearance)
+            // fallback: default drawing for unrecognised nodes
         }
 
         private void TreeViewLayers_MouseDown(object? sender, MouseEventArgs e) {
@@ -870,30 +779,27 @@ namespace csharp_editor.UserControls {
                 return;
             }
 
+            // Compute positions that exactly match DrawNode's layout
+            int nodeLeft  = BaseIndent + node.Level * IndentWidth;
+            int triangleAreaWidth = TriangleSize + IconSpacing;
+            int iconY     = node.Bounds.Top + (node.Bounds.Height - IconSize) / 2;
+
+            // Expand / collapse area (the triangle glyph zone)
+            if (node.Nodes.Count > 0) {
+                Rectangle expandRect = new Rectangle(nodeLeft, node.Bounds.Top, triangleAreaWidth, node.Bounds.Height);
+                if (expandRect.Contains(e.Location)) {
+                    node.Toggle();
+                    return;
+                }
+            }
+
             LayerNode? layer = node.Tag as LayerNode;
             if (layer == null) return;
 
-            // Use full control width for icon positioning
-            int fullRowWidth = treeViewLayers.ClientSize.Width;
-            
-            // Calculate icon bounds (from right to left, docked to control edge)
-            int lockIconX = fullRowWidth - IconSize - IconSpacing;
-            int visibilityIconX = lockIconX - IconSize - IconSpacing;
-            int iconY = node.Bounds.Top + (node.Bounds.Height - IconSize) / 2;
+            int cx = nodeLeft + triangleAreaWidth;
 
-            Rectangle lockIconBounds = new Rectangle(lockIconX, iconY, IconSize, IconSize);
-            Rectangle visibilityIconBounds = new Rectangle(visibilityIconX, iconY, IconSize, IconSize);
-
-            // Check if click was on lock icon
-            if (lockIconBounds.Contains(e.Location)) {
-                treeViewLayers.SelectedNode = node;
-                layer.Locked = !layer.Locked;
-                treeViewLayers.Invalidate();
-                LayersChanged?.Invoke(this, EventArgs.Empty);
-                return;
-            }
-
-            // Check if click was on visibility icon
+            // Visibility icon (inline, left side)
+            Rectangle visibilityIconBounds = new Rectangle(cx, iconY, IconSize, IconSize);
             if (visibilityIconBounds.Contains(e.Location)) {
                 treeViewLayers.SelectedNode = node;
                 layer.Visible = !layer.Visible;
@@ -902,15 +808,16 @@ namespace csharp_editor.UserControls {
                 return;
             }
 
-            // support clicking anywhere in the left-hand hit zone (triangle + padding)
-            if (node.Nodes.Count > 0) {
-                int hitWidth = IconSize + IconSpacing + 4;
-                int leftEdge = 2; // match drawing offset
-                Rectangle hitRect = new Rectangle(leftEdge, node.Bounds.Top, hitWidth, node.Bounds.Height);
-                if (hitRect.Contains(e.Location)) {
-                    node.Toggle();
-                    return;
-                }
+            // Lock icon (right-aligned)
+            int fullRowWidth = treeViewLayers.ClientSize.Width;
+            int lockIconX = fullRowWidth - IconSize - IconSpacing;
+            Rectangle lockIconBounds = new Rectangle(lockIconX, iconY, IconSize, IconSize);
+            if (lockIconBounds.Contains(e.Location)) {
+                treeViewLayers.SelectedNode = node;
+                layer.Locked = !layer.Locked;
+                treeViewLayers.Invalidate();
+                LayersChanged?.Invoke(this, EventArgs.Empty);
+                return;
             }
         }
 

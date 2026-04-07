@@ -112,6 +112,7 @@ namespace csharp_editor {
             //toolStripButton_tileErase.MouseDown += SelectTileErase;
             button_entity.MouseDown += SelectEntityAdd;
             button_cursor.MouseDown += SelectEntitySelect;
+            toolStripButton_toggleLabels.MouseDown += ToolStripButton_toggleLabels_Click;
             // Welcome panel
             _welcomePanel = new WelcomePanel();
             _welcomePanel.NewProjectRequested  += WelcomePanel_NewProjectRequested;
@@ -161,6 +162,11 @@ namespace csharp_editor {
 
         private void SelectEntitySelect(object? sender, MouseEventArgs e) {
             CExternsEditor.SetToolType(ToolType.EntitySelect);
+        }
+
+        private void ToolStripButton_toggleLabels_Click(object? sender, MouseEventArgs e) {
+            toolStripButton_toggleLabels.Checked = !toolStripButton_toggleLabels.Checked;
+            CExternsEditor.ToggleLabels(toolStripButton_toggleLabels.Checked);
         }
 
         private void ShowEntitiesDefDialog(object? sender, MouseEventArgs e) {

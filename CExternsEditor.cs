@@ -80,8 +80,8 @@ using NativeHaxeRuntime;
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
         public struct ProjectProps {
             public IntPtr filePath;          // Project file path
+            public IntPtr projectId; 
             public IntPtr projectName;       // Project name
-
             public IntPtr projectDir;         // Directory of the project file (added for convenience, not set by native code)
             public int defaultTileSizeX;
             public int defaultTileSizeY;
@@ -103,6 +103,7 @@ using NativeHaxeRuntime;
             if (result) {
                 outInfo = new ProjectInfoStruct {
                     FilePath = Marshal.PtrToStringAnsi(temp.filePath),
+                    ProjectId = Marshal.PtrToStringAnsi(temp.projectId),
                     ProjectName = Marshal.PtrToStringAnsi(temp.projectName),
                     ProjectDir = Path.GetDirectoryName(Marshal.PtrToStringAnsi(temp.filePath) ?? ""),
                     DefaultTileSizeX = temp.defaultTileSizeX,
@@ -417,6 +418,13 @@ using NativeHaxeRuntime;
         
         [DllImport(CExterns.DLL, EntryPoint = "moveEntityLayerBatchToByIndex", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool MoveEntityLayerBatchToByIndex(int layerIndex, int batchIndex, int newIndex);
+
+        #endregion
+
+        #region View
+
+        [DllImport(CExterns.DLL, EntryPoint = "toggleLabels", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void ToggleLabels(bool enable);
 
         #endregion
         
