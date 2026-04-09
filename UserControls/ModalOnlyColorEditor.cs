@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
+using csharp_editor.Dialogs;
 
 namespace csharp_editor.UserControls
 {
@@ -16,13 +17,14 @@ namespace csharp_editor.UserControls
 
         public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
         {
-            using (ColorDialog dlg = new ColorDialog())
+            var ownerControl = (provider?.GetService(typeof(IWindowsFormsEditorService)) as IWindowsFormsEditorService) != null
+                ? Application.OpenForms.Count > 0 ? Application.OpenForms[0] : null
+                : null;
+
+            using var dlg = new ColorPickerDialog(value is Color c ? c : Color.White);
+            if (dlg.ShowDialog(ownerControl) == DialogResult.OK)
             {
-                dlg.Color = (Color)value;
-                if (dlg.ShowDialog() == DialogResult.OK)
-                {
-                    return dlg.Color;
-                }
+                return dlg.SelectedColor;
             }
             return value;
         }

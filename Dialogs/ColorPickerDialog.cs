@@ -67,24 +67,38 @@ namespace csharp_editor.Dialogs {
             if (w <= 0 || h <= 0) return;
 
             _svBitmap?.Dispose();
-            _svBitmap = new Bitmap(w, h);
+            _svBitmap = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
 
             Color hueColor = HsvToColor(_h, 1f, 1f);
+            float hr = hueColor.R, hg = hueColor.G, hb = hueColor.B;
 
-            for (int px = 0; px < w; px++) {
-                float s = (float)px / (w - 1);
-                for (int py = 0; py < h; py++) {
-                    float v  = 1f - (float)py / (h - 1);
-                    // Blend hueColor towards white (S) and towards black (V)
-                    int r = (int)((1 - s) * 255 + s * (hueColor.R * v));
-                    int g = (int)((1 - s) * 255 + s * (hueColor.G * v));
-                    int b = (int)((1 - s) * 255 + s * (hueColor.B * v));
-                    _svBitmap.SetPixel(px, py, Color.FromArgb(
-                        Math.Clamp(r, 0, 255),
-                        Math.Clamp(g, 0, 255),
-                        Math.Clamp(b, 0, 255)));
+            var bmpData = _svBitmap.LockBits(
+                new Rectangle(0, 0, w, h),
+                System.Drawing.Imaging.ImageLockMode.WriteOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+
+            int stride = bmpData.Stride;
+            byte[] pixels = new byte[h * stride];
+
+            for (int py = 0; py < h; py++) {
+                float v = 1f - (float)py / (h - 1);
+                int rowOffset = py * stride;
+                for (int px = 0; px < w; px++) {
+                    float s = (float)px / (w - 1);
+                    // Correct formula: blend white→hueColor by S, then darken by V
+                    int r = (int)(((1 - s) * 255 + s * hr) * v);
+                    int g = (int)(((1 - s) * 255 + s * hg) * v);
+                    int b = (int)(((1 - s) * 255 + s * hb) * v);
+                    int idx = rowOffset + px * 4;
+                    pixels[idx + 0] = (byte)Math.Clamp(b, 0, 255); // B
+                    pixels[idx + 1] = (byte)Math.Clamp(g, 0, 255); // G
+                    pixels[idx + 2] = (byte)Math.Clamp(r, 0, 255); // R
+                    pixels[idx + 3] = 255;
                 }
             }
+
+            System.Runtime.InteropServices.Marshal.Copy(pixels, 0, bmpData.Scan0, pixels.Length);
+            _svBitmap.UnlockBits(bmpData);
         }
 
         private void RebuildHueBitmap() {
@@ -93,14 +107,31 @@ namespace csharp_editor.Dialogs {
             if (w <= 0 || h <= 0) return;
 
             _hueBitmap?.Dispose();
-            _hueBitmap = new Bitmap(w, h);
+            _hueBitmap = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
 
+            var bmpData = _hueBitmap.LockBits(
+                new Rectangle(0, 0, w, h),
+                System.Drawing.Imaging.ImageLockMode.WriteOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+
+            int stride = bmpData.Stride;
+            byte[] pixels = new byte[h * stride];
+
+            // Build one row of the rainbow, then copy it to every row
+            byte[] row0 = new byte[w * 4];
             for (int px = 0; px < w; px++) {
                 float hue = (float)px / (w - 1) * 360f;
                 Color c   = HsvToColor(hue, 1f, 1f);
-                for (int py = 0; py < h; py++)
-                    _hueBitmap.SetPixel(px, py, c);
+                row0[px * 4 + 0] = c.B;
+                row0[px * 4 + 1] = c.G;
+                row0[px * 4 + 2] = c.R;
+                row0[px * 4 + 3] = 255;
             }
+            for (int py = 0; py < h; py++)
+                Buffer.BlockCopy(row0, 0, pixels, py * stride, w * 4);
+
+            System.Runtime.InteropServices.Marshal.Copy(pixels, 0, bmpData.Scan0, pixels.Length);
+            _hueBitmap.UnlockBits(bmpData);
         }
 
         private void pickerCanvas_Paint(object? sender, PaintEventArgs e) {
