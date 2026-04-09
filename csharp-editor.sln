@@ -5,7 +5,7 @@ VisualStudioVersion = 18.2.11415.280 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csharp-editor", "csharp-editor.csproj", "{5B4061DF-BD18-47A6-A8FA-CB641193B018}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NativeHaxeRuntime", "NativeHaxeRuntime\NativeHaxeRuntime.csproj", "{D777C6A5-2E30-4945-88BC-FC6F3093399E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NativeHaxeRuntime", "..\..\github\nativeHaxeRuntime\NativeHaxeRuntime.csproj", "{1E3120D6-4CAD-422A-8849-0CA577D33585}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,14 +23,14 @@ Global
 		{5B4061DF-BD18-47A6-A8FA-CB641193B018}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5B4061DF-BD18-47A6-A8FA-CB641193B018}.Release|x64.ActiveCfg = Release|x64
 		{5B4061DF-BD18-47A6-A8FA-CB641193B018}.Release|x64.Build.0 = Release|x64
-		{D777C6A5-2E30-4945-88BC-FC6F3093399E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D777C6A5-2E30-4945-88BC-FC6F3093399E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D777C6A5-2E30-4945-88BC-FC6F3093399E}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{D777C6A5-2E30-4945-88BC-FC6F3093399E}.Debug|x64.Build.0 = Debug|Any CPU
-		{D777C6A5-2E30-4945-88BC-FC6F3093399E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D777C6A5-2E30-4945-88BC-FC6F3093399E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D777C6A5-2E30-4945-88BC-FC6F3093399E}.Release|x64.ActiveCfg = Release|Any CPU
-		{D777C6A5-2E30-4945-88BC-FC6F3093399E}.Release|x64.Build.0 = Release|Any CPU
+		{1E3120D6-4CAD-422A-8849-0CA577D33585}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E3120D6-4CAD-422A-8849-0CA577D33585}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E3120D6-4CAD-422A-8849-0CA577D33585}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1E3120D6-4CAD-422A-8849-0CA577D33585}.Debug|x64.Build.0 = Debug|Any CPU
+		{1E3120D6-4CAD-422A-8849-0CA577D33585}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E3120D6-4CAD-422A-8849-0CA577D33585}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E3120D6-4CAD-422A-8849-0CA577D33585}.Release|x64.ActiveCfg = Release|Any CPU
+		{1E3120D6-4CAD-422A-8849-0CA577D33585}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

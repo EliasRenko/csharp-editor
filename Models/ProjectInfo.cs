@@ -1,5 +1,5 @@
 namespace csharp_editor.Models {
-    public struct ProjectInfoStruct {
+    public struct ProjectInfo {
         public string? FilePath;
         public string? ProjectDir;
         public string? ProjectId;

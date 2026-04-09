@@ -1,5 +1,5 @@
 namespace csharp_editor.Models {
-    public struct MapInfoStruct {
+    public struct MapInfo {
         public string? idd;
         public string? name;
         public int worldx;

@@ -3,6 +3,8 @@ using System.Runtime.InteropServices;
 using csharp_editor.Models;
 using NativeHaxeRuntime;
 
+namespace csharp_editor;
+
     public static class CExternsEditor {
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -98,10 +100,10 @@ using NativeHaxeRuntime;
         [DllImport(CExterns.DLL, EntryPoint = "getProjectProps", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool _GetProjectProps(out ProjectProps outProps);
         
-        public static bool GetProjectProps(out ProjectInfoStruct outInfo) {
+        public static bool GetProjectProps(out ProjectInfo outInfo) {
             bool result = _GetProjectProps(out ProjectProps temp);
             if (result) {
-                outInfo = new ProjectInfoStruct {
+                outInfo = new ProjectInfo {
                     FilePath = Marshal.PtrToStringAnsi(temp.filePath),
                     ProjectId = Marshal.PtrToStringAnsi(temp.projectId),
                     ProjectName = Marshal.PtrToStringAnsi(temp.projectName),
@@ -118,7 +120,7 @@ using NativeHaxeRuntime;
         [DllImport(CExterns.DLL, EntryPoint = "editProject", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool _EditProject(ref ProjectProps inProps);
 
-        public static bool EditProject(ProjectInfoStruct info) {
+        public static bool EditProject(ProjectInfo info) {
             IntPtr filePathPtr = Marshal.StringToHGlobalAnsi(info.FilePath ?? "");
             IntPtr projectNamePtr = Marshal.StringToHGlobalAnsi(info.ProjectName ?? "");
             try {
@@ -149,7 +151,7 @@ using NativeHaxeRuntime;
         [DllImport(CExterns.DLL, EntryPoint = "getMapProps", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern bool _GetMapProps(out MapProps outInfo);
         
-        public static bool GetMapProps(out MapInfoStruct outInfo) {
+        public static bool GetMapProps(out MapInfo outInfo) {
             MapProps temp;
             bool success = _GetMapProps(out temp);
 
@@ -158,7 +160,7 @@ using NativeHaxeRuntime;
                 return false;
             }
 
-            outInfo = new MapInfoStruct {
+            outInfo = new MapInfo {
                 idd = Marshal.PtrToStringAnsi(temp.idd),
                 name = Marshal.PtrToStringAnsi(temp.name),
                 worldx = temp.worldx,
@@ -179,7 +181,7 @@ using NativeHaxeRuntime;
         [DllImport(CExterns.DLL, EntryPoint = "setMapProps", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern bool _SetMapProps(ref MapProps info);
         
-        public static bool SetMapProps(MapInfoStruct info) {
+        public static bool SetMapProps(MapInfo info) {
             IntPtr projectFilePathPtr = Marshal.StringToHGlobalAnsi(info.projectFilePath ?? "");
             IntPtr projectNamePtr = Marshal.StringToHGlobalAnsi(info.projectName ?? "");
 
@@ -372,7 +374,7 @@ using NativeHaxeRuntime;
         public static extern bool MoveLayerDownByIndex(int index);
         
         [DllImport(CExterns.DLL, EntryPoint = "setToolType")]
-        public static extern void SetToolType(int toolType);
+        public static extern void SetToolType(ToolType toolType);
         
         [DllImport(CExterns.DLL, EntryPoint = "getToolType")]
         public static extern int GetToolType();

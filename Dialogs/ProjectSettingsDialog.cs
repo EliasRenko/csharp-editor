@@ -13,9 +13,9 @@ namespace csharp_editor.Dialogs {
         private Button buttonOK;
         private Button buttonCancel;
 
-        public ProjectInfoStruct UpdatedProjectInfo { get; private set; }
+        public ProjectInfo UpdatedProjectInfo { get; private set; }
 
-        public ProjectSettingsDialog(ProjectInfoStruct current) {
+        public ProjectSettingsDialog(ProjectInfo current) {
             this.Text = "Project Settings";
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.StartPosition = FormStartPosition.CenterParent;
@@ -66,7 +66,7 @@ namespace csharp_editor.Dialogs {
                 return;
             }
 
-            UpdatedProjectInfo = new ProjectInfoStruct {
+            UpdatedProjectInfo = new ProjectInfo {
                 FilePath = textBoxProjectFilePath.Text,
                 ProjectName = projectName,
                 DefaultTileSizeX = (int)numericUpDownTileSizeX.Value,

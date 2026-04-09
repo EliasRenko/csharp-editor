@@ -357,7 +357,7 @@ namespace csharp_editor {
         }
 
         private void UpdateProjectStatus() {
-            if (CExternsEditor.GetProjectProps(out ProjectInfoStruct info))
+            if (CExternsEditor.GetProjectProps(out ProjectInfo info))
                 statusLabel_project.Text = $"Project: {info.ProjectName}";
             else
                 statusLabel_project.Text = "No project loaded";
@@ -377,7 +377,7 @@ namespace csharp_editor {
         }
 
         private void EditProject_Click(object? sender, EventArgs e) {
-            if (!CExternsEditor.GetProjectProps(out ProjectInfoStruct existingProps)) {
+            if (!CExternsEditor.GetProjectProps(out ProjectInfo existingProps)) {
                 MessageBox.Show(this,
                     "No project is loaded. Open or create a project first.",
                     "Edit Project",
@@ -390,7 +390,7 @@ namespace csharp_editor {
             if (dialog.ShowDialog(this) != DialogResult.OK)
                 return;
 
-            ProjectInfoStruct updated = dialog.UpdatedProjectInfo;
+            ProjectInfo updated = dialog.UpdatedProjectInfo;
             bool edited = CExternsEditor.EditProject(updated);
             if (!edited) {
                 MessageBox.Show(this,
@@ -578,7 +578,7 @@ namespace csharp_editor {
             }
         }
 
-        private void HierarchyTree_LayerSelected(object? sender, HierarchyTree.LayerNode layer) {
+        private void HierarchyTree_LayerSelected(object? sender, LayerNode layer) {
             Log($"Layer selected: {layer.Name} ({layer.Type})");
 
             // Retrieve layer info from backend
@@ -652,7 +652,7 @@ namespace csharp_editor {
             CExternsEditor.DeselectEntity();
             try {
                 if (view_extern != null) {
-                    bool gotInfo = CExternsEditor.GetMapProps(out MapInfoStruct info);
+                    bool gotInfo = CExternsEditor.GetMapProps(out MapInfo info);
 
                     if (!gotInfo) {
                         MessageBox.Show($"Failed to retrieve map info:\n{GetLastErrorMessage()}", "Map Info Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -677,7 +677,7 @@ namespace csharp_editor {
                         display.PropertyChanged += (s, args) => {
                             if (s is MapInfoDisplay m && view_extern != null) {
                                 // push back to engine
-                                MapInfoStruct native = new MapInfoStruct {
+                                MapInfo native = new MapInfo {
                                     idd = m.ID,
                                     name = m.Name,
                                     worldx = m.WorldX,
@@ -722,7 +722,7 @@ namespace csharp_editor {
             entitySelector.SetBatchFilter(args.TilesetName, args.BatchIndex);
         }
 
-        private void UpdateTextureInfo(HierarchyTree.LayerNode layer) {
+        private void UpdateTextureInfo(LayerNode layer) {
             // Only update if it's a tile layer with a tileset
             if (layer.Type != LayerType.TileLayer || string.IsNullOrEmpty(layer.TilesetName)) {
                 // Clear the texture viewer if no valid tileset
@@ -819,7 +819,7 @@ namespace csharp_editor {
 
         private void WelcomePanel_OpenProjectRequested(object? sender, string path) {
             // Check if a project is already loaded — warn the user before overwriting
-            if (CExternsEditor.GetProjectProps(out ProjectInfoStruct existing)) {
+            if (CExternsEditor.GetProjectProps(out ProjectInfo existing)) {
                 var action = ShowProjectLoadConflictDialog(existing.ProjectName ?? "Unknown");
                 switch (action) {
                     case ProjectLoadAction.Abort:
@@ -841,7 +841,7 @@ namespace csharp_editor {
             bool result = CExternsEditor.ImportProject(normalizedPath);
             if (result != false) {
                 // Project imported successfully — resolve name from backend
-                CExternsEditor.GetProjectProps(out ProjectInfoStruct importedProps);
+                CExternsEditor.GetProjectProps(out ProjectInfo importedProps);
                 string tabLabel = importedProps.ProjectName ?? Path.GetFileNameWithoutExtension(path);
                 int stateId = CExterns.NewEditorState();
                 var mapDoc = new MapDocContent(stateId, tabLabel, normalizedPath);
@@ -859,50 +859,10 @@ namespace csharp_editor {
             }
         }
 
-        private enum ProjectLoadAction { SaveAll, Close, Add, Abort }
-
         private ProjectLoadAction ShowProjectLoadConflictDialog(string projectName) {
-            var result = ProjectLoadAction.Abort;
-
-            using var dlg = new Form {
-                Text = "Project Already Loaded",
-                Size = new Size(500, 190),
-                FormBorderStyle = FormBorderStyle.FixedDialog,
-                StartPosition = FormStartPosition.CenterParent,
-                MaximizeBox = false,
-                MinimizeBox = false
-            };
-
-            var label = new Label {
-                Text = $"A project is already loaded: \"{projectName}\"\n\n" +
-                       "Loading a new project will overwrite it. What would you like to do with the currently open maps?",
-                Dock = DockStyle.Top,
-                Height = 65,
-                TextAlign = ContentAlignment.MiddleLeft,
-                Padding = new Padding(12, 10, 12, 0)
-            };
-
-            var btnPanel = new FlowLayoutPanel {
-                Dock = DockStyle.Bottom,
-                FlowDirection = FlowDirection.RightToLeft,
-                Height = 45,
-                Padding = new Padding(8, 6, 8, 0)
-            };
-
-            var btnAbort   = new Button { Text = "Abort",            Width = 80,  Height = 30 };
-            var btnAdd     = new Button { Text = "Add",              Width = 80,  Height = 30 };
-            var btnClose   = new Button { Text = "Close All",        Width = 90,  Height = 30 };
-            var btnSaveAll = new Button { Text = "Save All & Close", Width = 120, Height = 30 };
-
-            btnAbort.Click   += (s, e) => { result = ProjectLoadAction.Abort;   dlg.Close(); };
-            btnAdd.Click     += (s, e) => { result = ProjectLoadAction.Add;     dlg.Close(); };
-            btnClose.Click   += (s, e) => { result = ProjectLoadAction.Close;   dlg.Close(); };
-            btnSaveAll.Click += (s, e) => { result = ProjectLoadAction.SaveAll; dlg.Close(); };
-
-            btnPanel.Controls.AddRange(new Control[] { btnAbort, btnAdd, btnClose, btnSaveAll });
-            dlg.Controls.AddRange(new Control[] { label, btnPanel });
+            using var dlg = new ProjectLoadConflictDialog(projectName);
             dlg.ShowDialog(this);
-            return result;
+            return dlg.SelectedAction;
         }
 
         /// <summary>
@@ -957,62 +917,11 @@ namespace csharp_editor {
         }
 
         /// <summary>
-        /// Display a simple dialog listing all available tilesets and return the selected name (or null).
+        /// Display a dialog listing all available tilesets and return the selected name (or null).
         /// </summary>
         public string? ShowTilesetSelectionDialog() {
-            using (var dialog = new Form()) {
-                dialog.Text = "Select Tileset";
-                dialog.Size = new Size(350, 240);
-                dialog.StartPosition = FormStartPosition.CenterParent;
-                dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
-                dialog.MaximizeBox = false;
-                dialog.MinimizeBox = false;
-
-                Label label = new Label {
-                    Text = "Available Tilesets:",
-                    Location = new Point(10, 10),
-                    Size = new Size(320, 20)
-                };
-
-                ListBox listBox = new ListBox {
-                    Location = new Point(10, 35),
-                    Size = new Size(320, 120)
-                };
-
-                int count = CExternsEditor.GetTilesetCount();
-                for (int i = 0; i < count; i++) {
-                    CExternsEditor.TilesetInfoStruct tilesetInfo = new CExternsEditor.TilesetInfoStruct();
-                    bool result = CExternsEditor.GetTilesetAt(i, out tilesetInfo);
-                    if (result) {
-                        string tilesetName = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "";
-                        if (!string.IsNullOrEmpty(tilesetName))
-                            listBox.Items.Add(tilesetName);
-                    }
-                }
-                if (listBox.Items.Count > 0)
-                    listBox.SelectedIndex = 0;
-
-                Button buttonOk = new Button {
-                    Text = "OK",
-                    DialogResult = DialogResult.OK,
-                    Location = new Point(175, 170),
-                    Size = new Size(75, 30)
-                };
-                Button buttonCancel = new Button {
-                    Text = "Cancel",
-                    DialogResult = DialogResult.Cancel,
-                    Location = new Point(255, 170),
-                    Size = new Size(75, 30)
-                };
-
-                dialog.Controls.AddRange(new Control[] { label, listBox, buttonOk, buttonCancel });
-                dialog.AcceptButton = buttonOk;
-                dialog.CancelButton = buttonCancel;
-
-                if (dialog.ShowDialog(this) == DialogResult.OK && listBox.SelectedItem != null)
-                    return listBox.SelectedItem.ToString();
-                return null;
-            }
+            using var dlg = new TilesetSelectionDialog();
+            return dlg.ShowDialog(this) == DialogResult.OK ? dlg.SelectedTileset : null;
         }
     }
 }

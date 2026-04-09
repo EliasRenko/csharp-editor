@@ -95,7 +95,7 @@ namespace csharp_editor.Dialogs {
 
                 if (dialog.ShowDialog() != DialogResult.OK) return;
 
-                if (CExternsEditor.GetProjectProps(out ProjectInfoStruct info)) {
+                if (CExternsEditor.GetProjectProps(out ProjectInfo info)) {
                     if (string.IsNullOrEmpty(info.ProjectName)) {
                         MessageBox.Show("Project name is not set. Please set it in Project Settings before importing textures.",
                             "Import Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);

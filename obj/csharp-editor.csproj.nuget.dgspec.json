@@ -26,7 +26,11 @@
         "frameworks": {
           "net8.0-windows7.0": {
             "targetAlias": "net8.0-windows7.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\Users\\efedorenko\\Documents\\projects\\github\\nativeHaxeRuntime\\NativeHaxeRuntime.csproj": {
+                "projectPath": "C:\\Users\\efedorenko\\Documents\\projects\\github\\nativeHaxeRuntime\\NativeHaxeRuntime.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -70,6 +74,83 @@
             },
             "Microsoft.WindowsDesktop.App.WindowsForms": {
               "privateAssets": "none"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\efedorenko\\Documents\\projects\\github\\nativeHaxeRuntime\\NativeHaxeRuntime.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\efedorenko\\Documents\\projects\\github\\nativeHaxeRuntime\\NativeHaxeRuntime.csproj",
+        "projectName": "NativeHaxeRuntime",
+        "projectPath": "C:\\Users\\efedorenko\\Documents\\projects\\github\\nativeHaxeRuntime\\NativeHaxeRuntime.csproj",
+        "packagesPath": "C:\\Users\\efedorenko\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\efedorenko\\Documents\\projects\\github\\nativeHaxeRuntime\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\efedorenko\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://www.nuget.org/api/v2/": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.8.0, )"
+            },
+            "System.Drawing.Common": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "System.Windows.Forms": {
+              "target": "Package",
+              "version": "[4.0.0, )"
+            },
+            "coverlet.collector": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"

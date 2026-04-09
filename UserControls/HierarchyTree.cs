@@ -5,25 +5,12 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using csharp_editor.Dialogs;
+using csharp_editor.Models;
 using ToolStripRenderer = csharp_editor.Styles.ToolStripRenderer;
 
 namespace csharp_editor.UserControls {
     public partial class HierarchyTree : UserControl {
         
-        public class LayerNode {
-            public string Name { get; set; } = "";
-            public LayerType Type { get; set; } = LayerType.TileLayer;
-            public bool Visible { get; set; } = true;
-            public bool Locked { get; set; } = false;
-            public string TilesetName { get; set; } = ""; // For TileLayer only
-            public int TileSize { get; set; } = 0;        // For TileLayer only
-            public TreeNode TreeNodeRef { get; set; } = null!; // assigned when node created
-            
-            public override string ToString() {
-                return Name;
-            }
-        }
-
         /// <summary>
         /// Holds information about a batch group inside an entity layer.
         /// Used as the Tag for batch child nodes.
