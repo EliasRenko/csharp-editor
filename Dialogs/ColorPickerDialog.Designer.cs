@@ -13,6 +13,8 @@ namespace csharp_editor.Dialogs {
         {
             pickerCanvas = new csharp_editor.Dialogs.ColorPickerDialog.DoubleBufferedPanel();
             hueStrip = new csharp_editor.Dialogs.ColorPickerDialog.DoubleBufferedPanel();
+            satStrip = new csharp_editor.Dialogs.ColorPickerDialog.DoubleBufferedPanel();
+            valStrip = new csharp_editor.Dialogs.ColorPickerDialog.DoubleBufferedPanel();
             previewOld = new System.Windows.Forms.Panel();
             previewNew = new System.Windows.Forms.Panel();
             lblHex = new System.Windows.Forms.Label();
@@ -58,11 +60,39 @@ namespace csharp_editor.Dialogs {
             hueStrip.MouseUp += hueStrip_MouseUp;
             hueStrip.Resize += hueStrip_Resize;
             // 
+            // satStrip
+            // 
+            satStrip.BackColor = System.Drawing.Color.Black;
+            satStrip.Cursor = System.Windows.Forms.Cursors.Hand;
+            satStrip.Location = new System.Drawing.Point(12, 330);
+            satStrip.Name = "satStrip";
+            satStrip.Size = new System.Drawing.Size(360, 22);
+            satStrip.TabIndex = 14;
+            satStrip.Paint += satStrip_Paint;
+            satStrip.MouseDown += satStrip_MouseDown;
+            satStrip.MouseMove += satStrip_MouseMove;
+            satStrip.MouseUp += satStrip_MouseUp;
+            satStrip.Resize += satStrip_Resize;
+            // 
+            // valStrip
+            // 
+            valStrip.BackColor = System.Drawing.Color.Black;
+            valStrip.Cursor = System.Windows.Forms.Cursors.Hand;
+            valStrip.Location = new System.Drawing.Point(12, 360);
+            valStrip.Name = "valStrip";
+            valStrip.Size = new System.Drawing.Size(360, 22);
+            valStrip.TabIndex = 15;
+            valStrip.Paint += valStrip_Paint;
+            valStrip.MouseDown += valStrip_MouseDown;
+            valStrip.MouseMove += valStrip_MouseMove;
+            valStrip.MouseUp += valStrip_MouseUp;
+            valStrip.Resize += valStrip_Resize;
+            // 
             // previewOld
             // 
             previewOld.BackColor = System.Drawing.Color.Gray;
             previewOld.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            previewOld.Location = new System.Drawing.Point(12, 332);
+            previewOld.Location = new System.Drawing.Point(12, 390);
             previewOld.Name = "previewOld";
             previewOld.Size = new System.Drawing.Size(44, 30);
             previewOld.TabIndex = 2;
@@ -71,7 +101,7 @@ namespace csharp_editor.Dialogs {
             // 
             previewNew.BackColor = System.Drawing.Color.White;
             previewNew.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            previewNew.Location = new System.Drawing.Point(58, 332);
+            previewNew.Location = new System.Drawing.Point(58, 390);
             previewNew.Name = "previewNew";
             previewNew.Size = new System.Drawing.Size(44, 30);
             previewNew.TabIndex = 3;
@@ -81,7 +111,7 @@ namespace csharp_editor.Dialogs {
             lblHex.AutoSize = true;
             lblHex.Font = new System.Drawing.Font("Segoe UI", 8F);
             lblHex.ForeColor = System.Drawing.Color.FromArgb(((int)((byte)153)), ((int)((byte)153)), ((int)((byte)153)));
-            lblHex.Location = new System.Drawing.Point(116, 332);
+            lblHex.Location = new System.Drawing.Point(116, 390);
             lblHex.Name = "lblHex";
             lblHex.Size = new System.Drawing.Size(26, 13);
             lblHex.TabIndex = 4;
@@ -93,7 +123,7 @@ namespace csharp_editor.Dialogs {
             hexBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             hexBox.Font = new System.Drawing.Font("Consolas", 9F);
             hexBox.ForeColor = System.Drawing.Color.FromArgb(((int)((byte)212)), ((int)((byte)212)), ((int)((byte)212)));
-            hexBox.Location = new System.Drawing.Point(116, 350);
+            hexBox.Location = new System.Drawing.Point(116, 408);
             hexBox.Name = "hexBox";
             hexBox.Size = new System.Drawing.Size(80, 22);
             hexBox.TabIndex = 5;
@@ -105,7 +135,7 @@ namespace csharp_editor.Dialogs {
             lblCh1.AutoSize = true;
             lblCh1.Font = new System.Drawing.Font("Segoe UI", 8F);
             lblCh1.ForeColor = System.Drawing.Color.FromArgb(((int)((byte)153)), ((int)((byte)153)), ((int)((byte)153)));
-            lblCh1.Location = new System.Drawing.Point(210, 332);
+            lblCh1.Location = new System.Drawing.Point(210, 390);
             lblCh1.Name = "lblCh1";
             lblCh1.Size = new System.Drawing.Size(27, 13);
             lblCh1.TabIndex = 6;
@@ -116,7 +146,7 @@ namespace csharp_editor.Dialogs {
             lblCh2.AutoSize = true;
             lblCh2.Font = new System.Drawing.Font("Segoe UI", 8F);
             lblCh2.ForeColor = System.Drawing.Color.FromArgb(((int)((byte)153)), ((int)((byte)153)), ((int)((byte)153)));
-            lblCh2.Location = new System.Drawing.Point(262, 332);
+            lblCh2.Location = new System.Drawing.Point(262, 390);
             lblCh2.Name = "lblCh2";
             lblCh2.Size = new System.Drawing.Size(38, 13);
             lblCh2.TabIndex = 8;
@@ -127,7 +157,7 @@ namespace csharp_editor.Dialogs {
             lblCh3.AutoSize = true;
             lblCh3.Font = new System.Drawing.Font("Segoe UI", 8F);
             lblCh3.ForeColor = System.Drawing.Color.FromArgb(((int)((byte)153)), ((int)((byte)153)), ((int)((byte)153)));
-            lblCh3.Location = new System.Drawing.Point(314, 332);
+            lblCh3.Location = new System.Drawing.Point(314, 390);
             lblCh3.Name = "lblCh3";
             lblCh3.Size = new System.Drawing.Size(29, 13);
             lblCh3.TabIndex = 10;
@@ -139,7 +169,7 @@ namespace csharp_editor.Dialogs {
             ch1Box.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             ch1Box.Font = new System.Drawing.Font("Consolas", 9F);
             ch1Box.ForeColor = System.Drawing.Color.FromArgb(((int)((byte)212)), ((int)((byte)212)), ((int)((byte)212)));
-            ch1Box.Location = new System.Drawing.Point(210, 350);
+            ch1Box.Location = new System.Drawing.Point(210, 408);
             ch1Box.Name = "ch1Box";
             ch1Box.Size = new System.Drawing.Size(44, 22);
             ch1Box.TabIndex = 7;
@@ -152,7 +182,7 @@ namespace csharp_editor.Dialogs {
             ch2Box.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             ch2Box.Font = new System.Drawing.Font("Consolas", 9F);
             ch2Box.ForeColor = System.Drawing.Color.FromArgb(((int)((byte)212)), ((int)((byte)212)), ((int)((byte)212)));
-            ch2Box.Location = new System.Drawing.Point(262, 350);
+            ch2Box.Location = new System.Drawing.Point(262, 408);
             ch2Box.Name = "ch2Box";
             ch2Box.Size = new System.Drawing.Size(44, 22);
             ch2Box.TabIndex = 9;
@@ -165,7 +195,7 @@ namespace csharp_editor.Dialogs {
             ch3Box.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             ch3Box.Font = new System.Drawing.Font("Consolas", 9F);
             ch3Box.ForeColor = System.Drawing.Color.FromArgb(((int)((byte)212)), ((int)((byte)212)), ((int)((byte)212)));
-            ch3Box.Location = new System.Drawing.Point(314, 350);
+            ch3Box.Location = new System.Drawing.Point(314, 408);
             ch3Box.Name = "ch3Box";
             ch3Box.Size = new System.Drawing.Size(44, 22);
             ch3Box.TabIndex = 11;
@@ -180,7 +210,7 @@ namespace csharp_editor.Dialogs {
             btnMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnMode.Font = new System.Drawing.Font("Segoe UI", 9F);
             btnMode.ForeColor = System.Drawing.Color.FromArgb(((int)((byte)212)), ((int)((byte)212)), ((int)((byte)212)));
-            btnMode.Location = new System.Drawing.Point(12, 376);
+            btnMode.Location = new System.Drawing.Point(12, 434);
             btnMode.Name = "btnMode";
             btnMode.Size = new System.Drawing.Size(56, 24);
             btnMode.TabIndex = 12;
@@ -229,7 +259,7 @@ namespace csharp_editor.Dialogs {
             panelBottom.Controls.Add(btnOk);
             panelBottom.Controls.Add(btnCancel);
             panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            panelBottom.Location = new System.Drawing.Point(0, 412);
+            panelBottom.Location = new System.Drawing.Point(0, 470);
             panelBottom.Name = "panelBottom";
             panelBottom.Size = new System.Drawing.Size(384, 48);
             panelBottom.TabIndex = 13;
@@ -241,9 +271,11 @@ namespace csharp_editor.Dialogs {
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             BackColor = System.Drawing.Color.FromArgb(((int)((byte)45)), ((int)((byte)45)), ((int)((byte)48)));
             CancelButton = btnCancel;
-            ClientSize = new System.Drawing.Size(384, 460);
+            ClientSize = new System.Drawing.Size(384, 518);
             Controls.Add(pickerCanvas);
             Controls.Add(hueStrip);
+            Controls.Add(satStrip);
+            Controls.Add(valStrip);
             Controls.Add(previewOld);
             Controls.Add(previewNew);
             Controls.Add(lblHex);
@@ -271,6 +303,8 @@ namespace csharp_editor.Dialogs {
 
         private DoubleBufferedPanel pickerCanvas;
         private DoubleBufferedPanel hueStrip;
+        private DoubleBufferedPanel satStrip;
+        private DoubleBufferedPanel valStrip;
         private System.Windows.Forms.Panel  previewOld;
         private System.Windows.Forms.Panel  previewNew;
         private System.Windows.Forms.Label  lblHex;

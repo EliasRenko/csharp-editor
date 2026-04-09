@@ -26,10 +26,14 @@ namespace csharp_editor.Dialogs {
         // ── Cached bitmaps ────────────────────────────────────────────────────
         private Bitmap? _svBitmap;
         private Bitmap? _hueBitmap;
+        private Bitmap? _satBitmap;
+        private Bitmap? _valBitmap;
 
         // ── Drag state ────────────────────────────────────────────────────────
         private bool _draggingSv  = false;
         private bool _draggingHue = false;
+        private bool _draggingSat = false;
+        private bool _draggingVal = false;
 
         // ── Colours (matches ThemeDialog palette) ─────────────────────────────
         private static readonly Color CBg      = Color.FromArgb(45, 45, 48);
@@ -188,16 +192,8 @@ namespace csharp_editor.Dialogs {
         private void hueStrip_Paint(object? sender, PaintEventArgs e) {
             if (_hueBitmap != null)
                 e.Graphics.DrawImage(_hueBitmap, 0, 0);
-
-            // Thumb circle
             int tx = (int)(_h / 360f * (hueStrip.Width - 1));
-            int ty = hueStrip.Height / 2;
-            const int TR = 8;
-            using var pen  = new Pen(Color.White, 2f);
-            using var penD = new Pen(Color.Black, 1f);
-            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            e.Graphics.DrawEllipse(pen,  tx - TR, ty - TR, TR * 2, TR * 2);
-            e.Graphics.DrawEllipse(penD, tx - TR - 1, ty - TR - 1, TR * 2 + 2, TR * 2 + 2);
+            DrawStripThumb(e.Graphics, tx, hueStrip.Height / 2);
         }
 
         private void hueStrip_MouseDown(object? sender, MouseEventArgs e) {
@@ -225,6 +221,104 @@ namespace csharp_editor.Dialogs {
         private void hueStrip_Resize(object? sender, EventArgs e) {
             RebuildHueBitmap();
             hueStrip.Invalidate();
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // Saturation strip
+        // ─────────────────────────────────────────────────────────────────────
+
+        private void RebuildSatBitmap() {
+            int w = satStrip.Width, h = satStrip.Height;
+            if (w <= 0 || h <= 0) return;
+            _satBitmap?.Dispose();
+            _satBitmap = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+            FillLinearGradient(_satBitmap, HsvToColor(_h, 0f, _v), HsvToColor(_h, 1f, _v));
+        }
+
+        private void satStrip_Paint(object? sender, PaintEventArgs e) {
+            if (_satBitmap != null) e.Graphics.DrawImage(_satBitmap, 0, 0);
+            DrawStripThumb(e.Graphics, (int)(_s * (satStrip.Width - 1)), satStrip.Height / 2);
+        }
+
+        private void satStrip_MouseDown(object? sender, MouseEventArgs e) {
+            if (e.Button == MouseButtons.Left) { _draggingSat = true; UpdateSatFromPoint(e.X); }
+        }
+        private void satStrip_MouseMove(object? sender, MouseEventArgs e) {
+            if (_draggingSat) UpdateSatFromPoint(e.X);
+        }
+        private void satStrip_MouseUp(object? sender, MouseEventArgs e)   { _draggingSat = false; }
+        private void satStrip_Resize(object? sender, EventArgs e)          { RebuildSatBitmap(); satStrip.Invalidate(); }
+
+        private void UpdateSatFromPoint(int px) {
+            _s = Math.Clamp((float)px / (satStrip.Width - 1), 0f, 1f);
+            RebuildSvBitmap();
+            UpdateAllFromHsv(syncHex: true, syncInputs: true);
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // Value strip
+        // ─────────────────────────────────────────────────────────────────────
+
+        private void RebuildValBitmap() {
+            int w = valStrip.Width, h = valStrip.Height;
+            if (w <= 0 || h <= 0) return;
+            _valBitmap?.Dispose();
+            _valBitmap = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+            FillLinearGradient(_valBitmap, Color.Black, HsvToColor(_h, _s, 1f));
+        }
+
+        private void valStrip_Paint(object? sender, PaintEventArgs e) {
+            if (_valBitmap != null) e.Graphics.DrawImage(_valBitmap, 0, 0);
+            DrawStripThumb(e.Graphics, (int)(_v * (valStrip.Width - 1)), valStrip.Height / 2);
+        }
+
+        private void valStrip_MouseDown(object? sender, MouseEventArgs e) {
+            if (e.Button == MouseButtons.Left) { _draggingVal = true; UpdateValFromPoint(e.X); }
+        }
+        private void valStrip_MouseMove(object? sender, MouseEventArgs e) {
+            if (_draggingVal) UpdateValFromPoint(e.X);
+        }
+        private void valStrip_MouseUp(object? sender, MouseEventArgs e)   { _draggingVal = false; }
+        private void valStrip_Resize(object? sender, EventArgs e)          { RebuildValBitmap(); valStrip.Invalidate(); }
+
+        private void UpdateValFromPoint(int px) {
+            _v = Math.Clamp((float)px / (valStrip.Width - 1), 0f, 1f);
+            RebuildSvBitmap();
+            UpdateAllFromHsv(syncHex: true, syncInputs: true);
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // Shared strip helpers
+        // ─────────────────────────────────────────────────────────────────────
+
+        private static void DrawStripThumb(Graphics g, int tx, int ty) {
+            const int TR = 8;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            using var pen  = new Pen(Color.White, 2f);
+            using var penD = new Pen(Color.Black, 1f);
+            g.DrawEllipse(pen,  tx - TR,     ty - TR,     TR * 2,     TR * 2);
+            g.DrawEllipse(penD, tx - TR - 1, ty - TR - 1, TR * 2 + 2, TR * 2 + 2);
+        }
+
+        private static void FillLinearGradient(Bitmap bmp, Color left, Color right) {
+            int w = bmp.Width, h = bmp.Height;
+            var bmpData = bmp.LockBits(new Rectangle(0, 0, w, h),
+                System.Drawing.Imaging.ImageLockMode.WriteOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+            int    stride = bmpData.Stride;
+            byte[] pixels = new byte[h * stride];
+            byte[] row0   = new byte[w * 4];
+            for (int px = 0; px < w; px++) {
+                float t      = w > 1 ? (float)px / (w - 1) : 0f;
+                row0[px*4+0] = (byte)(left.B + (right.B - left.B) * t);
+                row0[px*4+1] = (byte)(left.G + (right.G - left.G) * t);
+                row0[px*4+2] = (byte)(left.R + (right.R - left.R) * t);
+                row0[px*4+3] = 255;
+            }
+            for (int py = 0; py < h; py++)
+                Buffer.BlockCopy(row0, 0, pixels, py * stride, w * 4);
+            System.Runtime.InteropServices.Marshal.Copy(pixels, 0, bmpData.Scan0, pixels.Length);
+            bmp.UnlockBits(bmpData);
         }
 
         // ─────────────────────────────────────────────────────────────────────
@@ -313,9 +407,13 @@ namespace csharp_editor.Dialogs {
         private void UpdateAllFromHsv(bool syncHex, bool syncInputs) {
             SelectedColor = HsvToColor(_h, _s, _v, _alpha);
 
-            // Redraw canvas & hue strip
+            // Redraw canvas & all strips
             pickerCanvas.Invalidate();
             hueStrip.Invalidate();
+            RebuildSatBitmap();
+            satStrip.Invalidate();
+            RebuildValBitmap();
+            valStrip.Invalidate();
 
             // Preview swatch
             previewNew.BackColor = SelectedColor;
@@ -401,6 +499,8 @@ namespace csharp_editor.Dialogs {
             if (disposing) {
                 _svBitmap?.Dispose();
                 _hueBitmap?.Dispose();
+                _satBitmap?.Dispose();
+                _valBitmap?.Dispose();
                 components?.Dispose();
             }
             base.Dispose(disposing);
