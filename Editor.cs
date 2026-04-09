@@ -582,8 +582,8 @@ namespace csharp_editor {
             Log($"Layer selected: {layer.Name} ({layer.Type})");
 
             // Retrieve layer info from backend
-            CExternsEditor.LayerInfoStruct layerInfo = new CExternsEditor.LayerInfoStruct();
-            bool infoResult = CExternsEditor.GetLayerInfo(layer.Name, out layerInfo);
+            CExternsEditor.LayerStruct layerStruct = new CExternsEditor.LayerStruct();
+            bool infoResult = CExternsEditor.GetLayerInfo(layer.Name, out layerStruct);
             if (!infoResult) {
                 string error = GetLastErrorMessage();
                 Log($"Failed to retrieve layer info for '{layer.Name}': {error}");
@@ -593,12 +593,12 @@ namespace csharp_editor {
             else {
                 // Use editable LayerInfoDisplay class
                 var layerInfoDisplay = new LayerInfoDisplay {
-                    Name = Marshal.PtrToStringAnsi(layerInfo.name) ?? "",
-                    Type = layerInfo.type,
-                    TilesetName = Marshal.PtrToStringAnsi(layerInfo.tilesetName) ?? "",
-                    Visible = layerInfo.visible == 1,
-                    Silhouette = layerInfo.silhouette,
-                    SilhouetteColor = Utils.ConvertFromRGBA(layerInfo.silhouetteColor)
+                    Name = Marshal.PtrToStringAnsi(layerStruct.name) ?? "",
+                    Type = layerStruct.type,
+                    TilesetName = Marshal.PtrToStringAnsi(layerStruct.tilesetName) ?? "",
+                    Visible = layerStruct.visible == 1,
+                    Silhouette = layerStruct.silhouette,
+                    SilhouetteColor = Utils.ConvertFromRGBA(layerStruct.silhouetteColor)
                 };
                 layerInfoDisplay.SetOriginalName(layerInfoDisplay.Name);
 
@@ -652,7 +652,7 @@ namespace csharp_editor {
             CExternsEditor.DeselectEntity();
             try {
                 if (view_extern != null) {
-                    bool gotInfo = CExternsEditor.GetMapProps(out MapInfo info);
+                    bool gotInfo = CExternsEditor.GetMapProps(out MapStruct info);
 
                     if (!gotInfo) {
                         MessageBox.Show($"Failed to retrieve map info:\n{GetLastErrorMessage()}", "Map Info Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -677,7 +677,7 @@ namespace csharp_editor {
                         display.PropertyChanged += (s, args) => {
                             if (s is MapInfoDisplay m && view_extern != null) {
                                 // push back to engine
-                                MapInfo native = new MapInfo {
+                                MapStruct native = new MapStruct {
                                     idd = m.ID,
                                     name = m.Name,
                                     worldx = m.WorldX,
@@ -731,10 +731,10 @@ namespace csharp_editor {
                 return;
             }
 
-            CExternsEditor.TilesetInfoStruct tilesetInfo = new CExternsEditor.TilesetInfoStruct();
+            CExternsEditor.TextureDefStruct tilesetDef = new CExternsEditor.TextureDefStruct();
 
             // Get tileset info from C++ using the layer's tileset
-            bool result = CExternsEditor.GetTileset(layer.TilesetName, out tilesetInfo);
+            bool result = CExternsEditor.GetTileset(layer.TilesetName, out tilesetDef);
 
             if (!result) {
                 Log($"Failed to load tileset '{layer.TilesetName}' for texture viewer");
@@ -743,7 +743,7 @@ namespace csharp_editor {
             }
 
             // Get texture path from tileset info
-            string texturePath = Marshal.PtrToStringAnsi(tilesetInfo.texturePath) ?? "";
+            string texturePath = Marshal.PtrToStringAnsi(tilesetDef.texturePath) ?? "";
 
             if (string.IsNullOrEmpty(texturePath)) {
                 Log("Invalid texture path in tileset");

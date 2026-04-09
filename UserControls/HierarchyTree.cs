@@ -447,22 +447,22 @@ namespace csharp_editor.UserControls {
 
             treeViewLayers.BeginUpdate();
             for (int i = 0; i < count; i++) {
-                CExternsEditor.LayerInfoStruct layerInfo = new CExternsEditor.LayerInfoStruct();
-                bool result = CExternsEditor.GetLayerInfoAt(i, out layerInfo);
+                CExternsEditor.LayerStruct layerStruct = new CExternsEditor.LayerStruct();
+                bool result = CExternsEditor.GetLayerInfoAt(i, out layerStruct);
                 System.Diagnostics.Debug.WriteLine($"[LoadLayersFromBackend] Layer[{i}]: GetLayerInfoAt result={result}");
                 
                 if (result) {
-                    string layerName = Marshal.PtrToStringAnsi(layerInfo.name) ?? "";
-                    string tilesetName = Marshal.PtrToStringAnsi(layerInfo.tilesetName) ?? "";
-                    System.Diagnostics.Debug.WriteLine($"[LoadLayersFromBackend] Layer[{i}]: name='{layerName}', type={layerInfo.type}, tilesetName='{tilesetName}'");
+                    string layerName = Marshal.PtrToStringAnsi(layerStruct.name) ?? "";
+                    string tilesetName = Marshal.PtrToStringAnsi(layerStruct.tilesetName) ?? "";
+                    System.Diagnostics.Debug.WriteLine($"[LoadLayersFromBackend] Layer[{i}]: name='{layerName}', type={layerStruct.type}, tilesetName='{tilesetName}'");
                     
                     if (!string.IsNullOrEmpty(layerName)) {
                         LayerNode layer = new LayerNode {
                             Name = layerName,
-                            Type = (LayerType)layerInfo.type,
-                            Visible = layerInfo.visible != 0,
+                            Type = (LayerType)layerStruct.type,
+                            Visible = layerStruct.visible != 0,
                             TilesetName = tilesetName,
-                            TileSize = layerInfo.tileSize,
+                            TileSize = layerStruct.tileSize,
                         };
 
                         TreeNode treeNode = new TreeNode(layer.ToString());

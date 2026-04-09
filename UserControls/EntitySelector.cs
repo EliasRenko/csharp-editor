@@ -66,29 +66,29 @@ namespace csharp_editor.UserControls {
             int visibleCount = 0;
 
             for (int i = 0; i < count; i++) {
-                CExternsEditor.EntityDataStruct entityData = new CExternsEditor.EntityDataStruct();
-                CExternsEditor.GetEntityAt(i, out entityData);
+                CExternsEditor.EntityDefStruct entityDef = new CExternsEditor.EntityDefStruct();
+                CExternsEditor.GetEntityAt(i, out entityDef);
 
-                string name = Marshal.PtrToStringAnsi(entityData.name) ?? "";
-                string tilesetName = Marshal.PtrToStringAnsi(entityData.tilesetName) ?? "";
+                string name = Marshal.PtrToStringAnsi(entityDef.name) ?? "";
+                string tilesetName = Marshal.PtrToStringAnsi(entityDef.tilesetName) ?? "";
 
                 if (string.IsNullOrEmpty(name)) continue;
                 if (!string.IsNullOrEmpty(tilesetFilter) && tilesetName != tilesetFilter) continue;
 
                 string displayText = string.IsNullOrEmpty(tilesetName)
-                    ? $"{name} ({entityData.width}×{entityData.height})"
-                    : $"{name} ({entityData.width}×{entityData.height}) - {tilesetName}";
+                    ? $"{name} ({entityDef.width}×{entityDef.height})"
+                    : $"{name} ({entityDef.width}×{entityDef.height}) - {tilesetName}";
 
                 listBoxEntities.Items.Add(new EntityListItem {
                     Name = name,
                     DisplayText = displayText,
-                    Width = entityData.width,
-                    Height = entityData.height,
+                    Width = entityDef.width,
+                    Height = entityDef.height,
                     TilesetName = tilesetName,
-                    RegionX = entityData.regionX,
-                    RegionY = entityData.regionY,
-                    RegionWidth = entityData.regionWidth,
-                    RegionHeight = entityData.regionHeight
+                    RegionX = entityDef.regionX,
+                    RegionY = entityDef.regionY,
+                    RegionWidth = entityDef.regionWidth,
+                    RegionHeight = entityDef.regionHeight
                 });
                 visibleCount++;
             }
@@ -120,9 +120,9 @@ namespace csharp_editor.UserControls {
 
                 // Tileset filter: cross-reference the entity def's tileset
                 if (!string.IsNullOrEmpty(_tilesetFilter)) {
-                    CExternsEditor.EntityDataStruct defData = new CExternsEditor.EntityDataStruct();
-                    CExternsEditor.GetEntity(defName, out defData);
-                    string defTileset = Marshal.PtrToStringAnsi(defData.tilesetName) ?? "";
+                    CExternsEditor.EntityDefStruct defDef = new CExternsEditor.EntityDefStruct();
+                    CExternsEditor.GetEntity(defName, out defDef);
+                    string defTileset = Marshal.PtrToStringAnsi(defDef.tilesetName) ?? "";
                     if (defTileset != _tilesetFilter) continue;
                 }
 

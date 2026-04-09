@@ -22,9 +22,9 @@ namespace csharp_editor.Dialogs {
         private void TilesetSelectionDialog_Load(object? sender, EventArgs e) {
             int count = CExternsEditor.GetTilesetCount();
             for (int i = 0; i < count; i++) {
-                CExternsEditor.TilesetInfoStruct info = new CExternsEditor.TilesetInfoStruct();
-                if (CExternsEditor.GetTilesetAt(i, out info)) {
-                    string name = Marshal.PtrToStringAnsi(info.name) ?? "";
+                CExternsEditor.TextureDefStruct def = new CExternsEditor.TextureDefStruct();
+                if (CExternsEditor.GetTilesetAt(i, out def)) {
+                    string name = Marshal.PtrToStringAnsi(def.name) ?? "";
                     if (!string.IsNullOrEmpty(name))
                         listBox.Items.Add(name);
                 }

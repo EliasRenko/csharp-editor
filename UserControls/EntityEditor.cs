@@ -129,9 +129,9 @@ namespace csharp_editor.UserControls {
             if (_externView == null) { comboBoxTilemap.SelectedIndex = 0; return; }
             int count = CExternsEditor.GetTilesetCount();
             for (int i = 0; i < count; i++) {
-                CExternsEditor.TilesetInfoStruct info = new CExternsEditor.TilesetInfoStruct();
-                if (CExternsEditor.GetTilesetAt(i, out info)) {
-                    string name = Marshal.PtrToStringAnsi(info.name) ?? "";
+                CExternsEditor.TextureDefStruct def = new CExternsEditor.TextureDefStruct();
+                if (CExternsEditor.GetTilesetAt(i, out def)) {
+                    string name = Marshal.PtrToStringAnsi(def.name) ?? "";
                     if (!string.IsNullOrEmpty(name)) comboBoxTilemap.Items.Add(name);
                 }
             }
@@ -165,12 +165,12 @@ namespace csharp_editor.UserControls {
 
             int count = CExternsEditor.GetTilesetCount();
             for (int i = 0; i < count; i++) {
-                CExternsEditor.TilesetInfoStruct info = new CExternsEditor.TilesetInfoStruct();
-                if (!CExternsEditor.GetTilesetAt(i, out info)) continue;
-                string name = Marshal.PtrToStringAnsi(info.name) ?? "";
+                CExternsEditor.TextureDefStruct def = new CExternsEditor.TextureDefStruct();
+                if (!CExternsEditor.GetTilesetAt(i, out def)) continue;
+                string name = Marshal.PtrToStringAnsi(def.name) ?? "";
                 if (name != selectedTilemap) continue;
 
-                string texturePath = Marshal.PtrToStringAnsi(info.texturePath) ?? "";
+                string texturePath = Marshal.PtrToStringAnsi(def.texturePath) ?? "";
                 if (string.IsNullOrEmpty(texturePath)) break;
 
                 CExternsEditor.GetTextureData(texturePath, out CExternsEditor.TextureDataStruct textureData);
@@ -293,7 +293,7 @@ namespace csharp_editor.UserControls {
                 : Marshal.StringToHGlobalAnsi(comboBoxTilemap.SelectedItem?.ToString() ?? "");
 
             try {
-                var data = new CExternsEditor.EntityDataStruct {
+                var data = new CExternsEditor.EntityDefStruct {
                     width        = width,
                     height       = height,
                     tilesetName  = tilesetPtr,

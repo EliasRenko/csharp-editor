@@ -28,25 +28,25 @@ namespace csharp_editor.Dialogs {
 
             int count = CExternsEditor.GetEntityCount();
             for (int i = 0; i < count; i++) {
-                CExternsEditor.EntityDataStruct entityData = new CExternsEditor.EntityDataStruct();
-                CExternsEditor.GetEntityAt(i, out entityData);
+                CExternsEditor.EntityDefStruct entityDef = new CExternsEditor.EntityDefStruct();
+                CExternsEditor.GetEntityAt(i, out entityDef);
 
-                string name = Marshal.PtrToStringAnsi(entityData.name) ?? "";
-                string tilesetName = Marshal.PtrToStringAnsi(entityData.tilesetName) ?? "";
+                string name = Marshal.PtrToStringAnsi(entityDef.name) ?? "";
+                string tilesetName = Marshal.PtrToStringAnsi(entityDef.tilesetName) ?? "";
 
                 if (!string.IsNullOrEmpty(name)) {
                     EntityEntry entry = new EntityEntry {
                         Name = name,
-                        Width = entityData.width,
-                        Height = entityData.height,
+                        Width = entityDef.width,
+                        Height = entityDef.height,
                         TilemapName = tilesetName,
-                        TileX = entityData.regionX,
-                        TileY = entityData.regionY,
-                        TileWidth = entityData.regionWidth,
-                        TileHeight = entityData.regionHeight,
-                        PivotX = entityData.pivotX,
-                        PivotY = entityData.pivotY,
-                        PivotName = EntityEditor.FloatsToPivot(entityData.pivotX, entityData.pivotY)
+                        TileX = entityDef.regionX,
+                        TileY = entityDef.regionY,
+                        TileWidth = entityDef.regionWidth,
+                        TileHeight = entityDef.regionHeight,
+                        PivotX = entityDef.pivotX,
+                        PivotY = entityDef.pivotY,
+                        PivotName = EntityEditor.FloatsToPivot(entityDef.pivotX, entityDef.pivotY)
                     };
                     _entities.Add(entry);
                     listBoxEntities.Items.Add(entry);

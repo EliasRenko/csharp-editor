@@ -66,11 +66,11 @@ namespace csharp_editor.Dialogs {
             int tilesetIndex = -1;
             
             for (int i = 0; i < count; i++) {
-                CExternsEditor.TilesetInfoStruct tilesetInfo = new CExternsEditor.TilesetInfoStruct();
-                bool result = CExternsEditor.GetTilesetAt(i, out tilesetInfo);
+                CExternsEditor.TextureDefStruct tilesetDef = new CExternsEditor.TextureDefStruct();
+                bool result = CExternsEditor.GetTilesetAt(i, out tilesetDef);
                 
                 if (result) {
-                    string name = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "";
+                    string name = Marshal.PtrToStringAnsi(tilesetDef.name) ?? "";
                     if (name == _tilesetName) {
                         tilesetIndex = i;
                         break;
@@ -88,7 +88,7 @@ namespace csharp_editor.Dialogs {
             
             // Load texture data
             CExternsEditor.TextureDataStruct textureData = new CExternsEditor.TextureDataStruct();
-            CExternsEditor.TilesetInfoStruct tileset = new CExternsEditor.TilesetInfoStruct();
+            CExternsEditor.TextureDefStruct tileset = new CExternsEditor.TextureDefStruct();
             
             bool loadResult = CExternsEditor.GetTilesetAt(tilesetIndex, out tileset);
             if (loadResult) {

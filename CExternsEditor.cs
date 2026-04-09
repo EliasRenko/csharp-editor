@@ -14,7 +14,7 @@ namespace csharp_editor;
         
         [StructLayout(LayoutKind.Sequential)]
         public struct TextureDataStruct {
-            public IntPtr Data; // unsigned char*
+            public IntPtr Data;
             public int Width;
             public int Height;
             public int BytesPerPixel;
@@ -23,13 +23,13 @@ namespace csharp_editor;
         }
         
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-        public struct TilesetInfoStruct {
-            public IntPtr name;              // Tileset name (use Marshal.PtrToStringAnsi to read)
+        public struct TextureDefStruct {
+            public IntPtr name;              // Texture name (use Marshal.PtrToStringAnsi to read)
             public IntPtr texturePath;       // Resource path to texture (use Marshal.PtrToStringAnsi to read)
         }
         
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-        public struct LayerInfoStruct {
+        public struct LayerStruct {
             public IntPtr name;              // Layer name (use Marshal.PtrToStringAnsi to read)
             public int type;                 // Layer type (0 = TileLayer, 1 = EntityLayer)
             public IntPtr tilesetName;       // Tileset name for TileLayers (use Marshal.PtrToStringAnsi to read)
@@ -40,7 +40,7 @@ namespace csharp_editor;
         }
         
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-        public struct EntityDataStruct {
+        public struct EntityDefStruct {
             public IntPtr name;              // Entity name (use Marshal.PtrToStringAnsi to read)
             public int width;                // Entity width in pixels
             public int height;               // Entity height in pixels
@@ -80,7 +80,7 @@ namespace csharp_editor;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-        public struct ProjectProps {
+        public struct ProjectStruct {
             public IntPtr filePath;          // Project file path
             public IntPtr projectId; 
             public IntPtr projectName;       // Project name
@@ -98,10 +98,10 @@ namespace csharp_editor;
         public static extern bool ImportProject(string filePath);
 
         [DllImport(CExterns.DLL, EntryPoint = "getProjectProps", CallingConvention = CallingConvention.Cdecl)]
-        private static extern bool _GetProjectProps(out ProjectProps outProps);
+        private static extern bool _GetProjectProps(out ProjectStruct outProps);
         
         public static bool GetProjectProps(out ProjectInfo outInfo) {
-            bool result = _GetProjectProps(out ProjectProps temp);
+            bool result = _GetProjectProps(out ProjectStruct temp);
             if (result) {
                 outInfo = new ProjectInfo {
                     FilePath = Marshal.PtrToStringAnsi(temp.filePath),
@@ -118,13 +118,13 @@ namespace csharp_editor;
         }
 
         [DllImport(CExterns.DLL, EntryPoint = "editProject", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool _EditProject(ref ProjectProps inProps);
+        public static extern bool _EditProject(ref ProjectStruct inProps);
 
         public static bool EditProject(ProjectInfo info) {
             IntPtr filePathPtr = Marshal.StringToHGlobalAnsi(info.FilePath ?? "");
             IntPtr projectNamePtr = Marshal.StringToHGlobalAnsi(info.ProjectName ?? "");
             try {
-                var native = new ProjectProps {
+                var native = new ProjectStruct {
                     filePath = filePathPtr,
                     projectName = projectNamePtr,
                     defaultTileSizeX = info.DefaultTileSizeX,
@@ -151,7 +151,7 @@ namespace csharp_editor;
         [DllImport(CExterns.DLL, EntryPoint = "getMapProps", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern bool _GetMapProps(out MapProps outInfo);
         
-        public static bool GetMapProps(out MapInfo outInfo) {
+        public static bool GetMapProps(out MapStruct outInfo) {
             MapProps temp;
             bool success = _GetMapProps(out temp);
 
@@ -160,7 +160,7 @@ namespace csharp_editor;
                 return false;
             }
 
-            outInfo = new MapInfo {
+            outInfo = new MapStruct {
                 idd = Marshal.PtrToStringAnsi(temp.idd),
                 name = Marshal.PtrToStringAnsi(temp.name),
                 worldx = temp.worldx,
@@ -181,7 +181,7 @@ namespace csharp_editor;
         [DllImport(CExterns.DLL, EntryPoint = "setMapProps", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern bool _SetMapProps(ref MapProps info);
         
-        public static bool SetMapProps(MapInfo info) {
+        public static bool SetMapProps(MapStruct info) {
             IntPtr projectFilePathPtr = Marshal.StringToHGlobalAnsi(info.projectFilePath ?? "");
             IntPtr projectNamePtr = Marshal.StringToHGlobalAnsi(info.projectName ?? "");
 
@@ -228,10 +228,10 @@ namespace csharp_editor;
         public static extern bool DeleteTileset(string name);
         
         [DllImport(CExterns.DLL, EntryPoint = "getTileset", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool GetTileset(string tilesetName, out TilesetInfoStruct outInfo);
+        public static extern bool GetTileset(string tilesetName, out TextureDefStruct outDef);
         
         [DllImport(CExterns.DLL, EntryPoint = "getTilesetAt", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool GetTilesetAt(int index, out TilesetInfoStruct outInfo);
+        public static extern bool GetTilesetAt(int index, out TextureDefStruct outDef);
         
         [DllImport(CExterns.DLL, EntryPoint = "getTilesetCount", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetTilesetCount();
@@ -250,19 +250,19 @@ namespace csharp_editor;
         #region Entity definitions managment
 
         [DllImport(CExterns.DLL, EntryPoint = "createEntityDef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern bool CreateEntity(string entityName, ref EntityDataStruct data);
+        public static extern bool CreateEntity(string entityName, ref EntityDefStruct def);
         
         [DllImport(CExterns.DLL, EntryPoint = "editEntityDef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern bool EditEntity(string entityName, ref EntityDataStruct data);
+        public static extern bool EditEntity(string entityName, ref EntityDefStruct def);
         
         [DllImport(CExterns.DLL, EntryPoint = "deleteEntityDef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern bool DeleteEntityDef(string entityName);
         
         [DllImport(CExterns.DLL, EntryPoint = "getEntityDef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern bool GetEntity(string entityName, out EntityDataStruct outData);
+        public static extern bool GetEntity(string entityName, out EntityDefStruct outDef);
         
         [DllImport(CExterns.DLL, EntryPoint = "getEntityDefAt", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool GetEntityAt(int index, out EntityDataStruct outData);
+        public static extern bool GetEntityAt(int index, out EntityDefStruct outDef);
         
         [DllImport(CExterns.DLL, EntryPoint = "getEntityDefCount", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetEntityCount();
@@ -309,10 +309,10 @@ namespace csharp_editor;
         public static extern int GetLayerCount();
         
         [DllImport(CExterns.DLL, EntryPoint = "getLayerInfo", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern bool GetLayerInfo(string layerName, out LayerInfoStruct outInfo);
+        public static extern bool GetLayerInfo(string layerName, out LayerStruct @out);
         
         [DllImport(CExterns.DLL, EntryPoint = "getLayerInfoAt", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool GetLayerInfoAt(int index, out LayerInfoStruct outInfo);
+        public static extern bool GetLayerInfoAt(int index, out LayerStruct @out);
         
         [DllImport(CExterns.DLL, EntryPoint = "replaceLayerTileset", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern bool ReplaceLayerTileset(string layerName, string tilesetName);
@@ -324,7 +324,7 @@ namespace csharp_editor;
         public static extern bool SetActiveLayerAt(int index);
         
         [DllImport(CExterns.DLL, EntryPoint = "setLayerProperties", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private static extern bool _SetLayerProperties(string layerName, ref LayerInfoStruct properties);
+        private static extern bool _SetLayerProperties(string layerName, ref LayerStruct properties);
         
         public static bool SetLayerProperties(string originalName, string newName, bool visible, string? tilesetName = null, int type = 0, bool silhouette = false, System.Drawing.Color silhouetteColor = default) {
             IntPtr namePtr = Marshal.StringToHGlobalAnsi(newName);
@@ -332,7 +332,7 @@ namespace csharp_editor;
             try {
                 // Convert Color to RGBA (0xRRGGBBAA)
                 int rgba = (silhouetteColor.R << 24) | (silhouetteColor.G << 16) | (silhouetteColor.B << 8) | silhouetteColor.A;
-                var info = new CExternsEditor.LayerInfoStruct {
+                var info = new CExternsEditor.LayerStruct {
                     name = namePtr,
                     tilesetName = tilesetNamePtr,
                     type = type,
@@ -350,7 +350,7 @@ namespace csharp_editor;
         }
 
         [DllImport(CExterns.DLL, EntryPoint = "setLayerPropertiesAt", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool SetLayerPropertiesAt(int index, ref LayerInfoStruct properties);
+        public static extern bool SetLayerPropertiesAt(int index, ref LayerStruct properties);
 
         [DllImport(CExterns.DLL, EntryPoint = "removeLayer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern bool RemoveLayer(string layerName);

@@ -40,15 +40,15 @@ namespace csharp_editor.Dialogs {
             
             // Loop through and get each tileset info
             for (int i = 0; i < count; i++) {
-                CExternsEditor.TilesetInfoStruct tilesetInfo = new CExternsEditor.TilesetInfoStruct();
-                bool result = CExternsEditor.GetTilesetAt(i, out tilesetInfo);
+                CExternsEditor.TextureDefStruct tilesetDef = new CExternsEditor.TextureDefStruct();
+                bool result = CExternsEditor.GetTilesetAt(i, out tilesetDef);
                 
                 if (result) {
-                    string tilesetName = Marshal.PtrToStringAnsi(tilesetInfo.name) ?? "";
+                    string tilesetName = Marshal.PtrToStringAnsi(tilesetDef.name) ?? "";
                     
                     if (!string.IsNullOrEmpty(tilesetName)) {
                     
-                        string texturePath = Marshal.PtrToStringAnsi(tilesetInfo.texturePath) ?? "";
+                        string texturePath = Marshal.PtrToStringAnsi(tilesetDef.texturePath) ?? "";
                         
                         TilesetEntry entry = new TilesetEntry {
                             Name = tilesetName,
@@ -64,8 +64,8 @@ namespace csharp_editor.Dialogs {
 
         private void listBoxTilesets_SelectedIndexChanged(object sender, EventArgs e) {
             if (listBoxTilesets.SelectedItem is TilesetEntry entry) {
-                CExternsEditor.TilesetInfoStruct tilesetInfo = new CExternsEditor.TilesetInfoStruct();
-                bool result = CExternsEditor.GetTileset(entry.Name, out tilesetInfo);
+                CExternsEditor.TextureDefStruct tilesetDef = new CExternsEditor.TextureDefStruct();
+                bool result = CExternsEditor.GetTileset(entry.Name, out tilesetDef);
 
                 if (result && !string.IsNullOrEmpty(entry.ImagePath)) {
                     CExternsEditor.TextureDataStruct textureData = new CExternsEditor.TextureDataStruct();
