@@ -4,10 +4,19 @@
     <Compile Update="Dialogs\AddTileLayerDialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Dialogs\ColorPickerDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Dialogs\EntitiesDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Dialogs\EntityLayerDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialogs\ProjectLoadConflictDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialogs\ProjectSettingsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Dialogs\PropertyDefinitionDialog.cs">
@@ -16,16 +25,28 @@
     <Compile Update="Dialogs\TextureCollectionDialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Dialogs\ThemeDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Dialogs\TileLayerDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Dialogs\TilesetRegionDialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Dialogs\TilesetSelectionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Dialogs\TimelineDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Editor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Helpers\CustomDockTheme.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="UserControls\DebugConsoleDockContent.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="UserControls\EntityEditor.cs">
@@ -40,8 +61,17 @@
     <Compile Update="UserControls\HierarchyTree.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="UserControls\HierarchyTreeDockContent.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="UserControls\InputView.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\MapDocContent.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UserControls\PropertyGridDockContent.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Update="UserControls\PropertyGridPanel.cs">
       <SubType>UserControl</SubType>
@@ -51,6 +81,12 @@
     </Compile>
     <Compile Update="UserControls\Timeline\TimelineControl.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\ViewportDockContent.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UserControls\WelcomeDockContent.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Update="UserControls\WelcomePanel.cs">
       <SubType>UserControl</SubType>

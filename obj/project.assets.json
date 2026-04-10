@@ -911,8 +911,8 @@
     },
     "NativeHaxeRuntime/1.0.0": {
       "type": "project",
-      "path": "../../github/nativeHaxeRuntime/NativeHaxeRuntime.csproj",
-      "msbuildProject": "../../github/nativeHaxeRuntime/NativeHaxeRuntime.csproj"
+      "path": "../nativeHaxeRuntime/NativeHaxeRuntime.csproj",
+      "msbuildProject": "../nativeHaxeRuntime/NativeHaxeRuntime.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -923,33 +923,34 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\efedorenko\\.nuget\\packages\\": {}
+    "C:\\Users\\Renko\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\efedorenko\\Documents\\projects\\csharp\\csharp-editor\\csharp-editor.csproj",
+      "projectUniqueName": "C:\\Users\\Renko\\Documents\\Libraries\\csharp-editor\\csharp-editor.csproj",
       "projectName": "csharp-editor",
-      "projectPath": "C:\\Users\\efedorenko\\Documents\\projects\\csharp\\csharp-editor\\csharp-editor.csproj",
-      "packagesPath": "C:\\Users\\efedorenko\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\efedorenko\\Documents\\projects\\csharp\\csharp-editor\\obj\\",
+      "projectPath": "C:\\Users\\Renko\\Documents\\Libraries\\csharp-editor\\csharp-editor.csproj",
+      "packagesPath": "C:\\Users\\Renko\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Renko\\Documents\\Libraries\\csharp-editor\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\efedorenko\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\Renko\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0-windows7.0"
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "https://www.nuget.org/api/v2/": {}
+        "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0-windows7.0": {
           "targetAlias": "net8.0-windows7.0",
           "projectReferences": {
-            "C:\\Users\\efedorenko\\Documents\\projects\\github\\nativeHaxeRuntime\\NativeHaxeRuntime.csproj": {
-              "projectPath": "C:\\Users\\efedorenko\\Documents\\projects\\github\\nativeHaxeRuntime\\NativeHaxeRuntime.csproj"
+            "C:\\Users\\Renko\\Documents\\Libraries\\nativeHaxeRuntime\\NativeHaxeRuntime.csproj": {
+              "projectPath": "C:\\Users\\Renko\\Documents\\Libraries\\nativeHaxeRuntime\\NativeHaxeRuntime.csproj"
             }
           }
         }
@@ -963,7 +964,8 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "10.0.100"
     },
     "frameworks": {
       "net8.0-windows7.0": {
@@ -989,6 +991,24 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.25, 8.0.25]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[8.0.25, 8.0.25]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.25, 8.0.25]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.25, 8.0.25]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
@@ -997,7 +1017,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.104/PortableRuntimeIdentifierGraph.json"
       }
     }
   },

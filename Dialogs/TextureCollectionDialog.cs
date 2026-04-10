@@ -88,6 +88,11 @@ namespace csharp_editor.Dialogs {
         }
 
         private void buttonImport_Click(object sender, EventArgs e) {
+
+            string Normalize(string path) {
+                return path.Replace("\\", "/");
+            }
+
             using (OpenFileDialog dialog = new OpenFileDialog()) {
                 dialog.Filter = "Image Files (*.png;*.tga;*.jpg;*.bmp)|*.png;*.tga;*.jpg;*.bmp|All Files (*.*)|*.*";
                 dialog.FilterIndex = 1;
@@ -103,15 +108,53 @@ namespace csharp_editor.Dialogs {
                     }
                 }
 
-                string imagePath = dialog.FileName;
+                string imagePath = Normalize(dialog.FileName);
                 string name = Path.GetFileName(imagePath);
-                string relativePath = $"res/textures/{name}";
-                string destinationPath = Path.Combine(info.ProjectDir, relativePath);
-    
-                Directory.CreateDirectory(Path.GetDirectoryName(destinationPath) ?? "");
-                File.Copy(imagePath, destinationPath, overwrite: true);
+                string resourcesFolder = "res/";
+                string relativePath = $"textures/{name}";
+                string destinationPath = Normalize(Path.Combine(info.ProjectDir, resourcesFolder, relativePath));
+                string directoryPath = Path.GetDirectoryName(destinationPath) ?? "";
+                string fileNameWithExtension = Path.GetFileName(destinationPath) ?? "";
 
-                bool success = CExternsEditor.CreateTileset(relativePath, Path.GetFileNameWithoutExtension(imagePath));
+                if (!string.IsNullOrEmpty(directoryPath) || !Directory.Exists(directoryPath)) {
+                    Directory.CreateDirectory(directoryPath);
+                }
+                else {
+                    MessageBox.Show($"Failed to create directory '{directoryPath}' for the texture.", "Import Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (File.Exists(destinationPath)) {
+
+                    if (imagePath == destinationPath) {
+                        // File is already in the correct location, no need to copy
+                    }
+                    else {
+
+                        DialogResult overwriteConfirm = MessageBox.Show(
+                        $"A file named '{name}' already exists in the project. Do you want to overwrite it?",
+                        "File Exists", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                        if (overwriteConfirm != DialogResult.Yes) {
+                            return;
+                        }
+
+                        try {
+                            File.Copy(imagePath, destinationPath, true);
+                        }
+                        catch (Exception ex) {
+                            MessageBox.Show($"Failed to overwrite existing file:\n{ex.Message}", "Import Error",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                    }
+
+                } else {
+                    File.Copy(imagePath, destinationPath);
+                }
+
+                bool success = CExternsEditor.CreateTileset(fileNameWithExtension, relativePath);
                 if (!success) {
                     string error = _externView.GetLastErrorMessage();
                     MessageBox.Show($"Failed to import tileset '{name}':\n{error}", "Import Error",
