@@ -31,8 +31,9 @@ namespace csharp_editor {
             view_extern = new csharp_editor.UserControls.ExternView();
             menuStrip1 = new System.Windows.Forms.MenuStrip();
             fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            toolStripMenuItem_open = new System.Windows.Forms.ToolStripMenuItem();
-            toolStripMenuItem_export = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripMenuItem_openMap = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripMenuItem_saveMap = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripMenuItem_saveMapAs = new System.Windows.Forms.ToolStripMenuItem();
             editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             projectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -97,22 +98,29 @@ namespace csharp_editor {
             // 
             // fileToolStripMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripMenuItem_open, toolStripMenuItem_export });
+            fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripMenuItem_openMap, toolStripMenuItem_saveMap, toolStripMenuItem_saveMapAs });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             fileToolStripMenuItem.Text = "File";
             // 
-            // toolStripMenuItem_open
+            // toolStripMenuItem_openMap
             // 
-            toolStripMenuItem_open.Name = "toolStripMenuItem_open";
-            toolStripMenuItem_open.Size = new System.Drawing.Size(108, 22);
-            toolStripMenuItem_open.Text = "Open";
+            toolStripMenuItem_openMap.Name = "toolStripMenuItem_openMap";
+            toolStripMenuItem_openMap.Size = new System.Drawing.Size(130, 22);
+            toolStripMenuItem_openMap.Text = "Open Map";
             // 
-            // toolStripMenuItem_export
+            // toolStripMenuItem_saveMap
             // 
-            toolStripMenuItem_export.Name = "toolStripMenuItem_export";
-            toolStripMenuItem_export.Size = new System.Drawing.Size(108, 22);
-            toolStripMenuItem_export.Text = "Export";
+            toolStripMenuItem_saveMap.Name = "toolStripMenuItem_saveMap";
+            toolStripMenuItem_saveMap.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M;
+            toolStripMenuItem_saveMap.Size = new System.Drawing.Size(130, 22);
+            toolStripMenuItem_saveMap.Text = "Save Map";
+            // 
+            // toolStripMenuItem_saveMapAs
+            // 
+            toolStripMenuItem_saveMapAs.Name = "toolStripMenuItem_saveMapAs";
+            toolStripMenuItem_saveMapAs.Size = new System.Drawing.Size(130, 22);
+            toolStripMenuItem_saveMapAs.Text = "Save Map As";
             // 
             // editToolStripMenuItem
             // 
@@ -458,8 +466,9 @@ namespace csharp_editor {
         private ToolStripMenuItem viewMenuItem_hierarchy;
         private ToolStripMenuItem viewMenuItem_console;
         private ToolStripMenuItem helpToolStripMenuItem;
-        private ToolStripMenuItem toolStripMenuItem_open;
-        private ToolStripMenuItem toolStripMenuItem_export;
+        private ToolStripMenuItem toolStripMenuItem_openMap;
+        private ToolStripMenuItem toolStripMenuItem_saveMap;
+        private ToolStripMenuItem toolStripMenuItem_saveMapAs;
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel statusLabel_project;
 

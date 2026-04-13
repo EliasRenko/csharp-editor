@@ -60,8 +60,9 @@ namespace csharp_editor {
             toolStrip1.Renderer = new ToolStripRenderer();
             
             // Toolstrip Events
-            toolStripMenuItem_open.MouseUp += toolStripButton_openFile;
-            toolStripMenuItem_export.MouseUp += toolStripButton_export;
+            toolStripMenuItem_openMap.MouseUp += OpenMap_Click;
+            toolStripMenuItem_saveMap.Click += SaveMap_Click;
+            toolStripMenuItem_saveMapAs.MouseUp += SaveMapAs_Click;
             saveProjectToolStripMenuItem.Click += SaveProject_Click;
             saveAsProjectToolStripMenuItem.Click += SaveAsProject_Click;
             editToolStripMenuItem_editProject.Click += EditProject_Click;
@@ -187,37 +188,36 @@ namespace csharp_editor {
         }
 
         private void AutoSaveProject() {
-            if (dockPanel.ActiveDocument is MapDocContent mapDoc && !string.IsNullOrEmpty(mapDoc.FilePath)) {
-                string projectName = Path.GetFileNameWithoutExtension(mapDoc.FilePath);
-                bool result = CExternsEditor.ExportProject(mapDoc.FilePath, projectName);
-                if (result == false)
-                    Log($"Warning: AutoSave — ExportProject returned 0 for '{mapDoc.FilePath}'");
-                else
-                    Log($"Project auto-saved: {mapDoc.FilePath}");
-            }
+            if (!CExternsEditor.GetProjectProps(out ProjectInfo projectInfo) || string.IsNullOrEmpty(projectInfo.FilePath)) return;
+            string projectName = projectInfo.ProjectName ?? Path.GetFileNameWithoutExtension(projectInfo.FilePath);
+            bool result = CExternsEditor.ExportProject(projectInfo.FilePath, projectName);
+            if (result == false)
+                Log($"Warning: AutoSave — ExportProject returned 0 for '{projectInfo.FilePath}'");
+            else
+                Log($"Project auto-saved: {projectInfo.FilePath}");
         }
 
         private void SaveProject_Click(object? sender, EventArgs e) {
-            if (dockPanel.ActiveDocument is MapDocContent mapDoc && !string.IsNullOrEmpty(mapDoc.FilePath)) {
-                string projectName = Path.GetFileNameWithoutExtension(mapDoc.FilePath);
-                bool result = CExternsEditor.ExportProject(mapDoc.FilePath, projectName);
-                if (result == false)
-                    Log($"Warning: ExportProject returned 0 for '{mapDoc.FilePath}'");
-                else
-                    Log($"Project saved: {mapDoc.FilePath}");
-            } else {
-                Log("Save: no project path available for the current tab.");
+            if (!CExternsEditor.GetProjectProps(out ProjectInfo projectInfo) || string.IsNullOrEmpty(projectInfo.FilePath)) {
+                Log("Save: no project is currently loaded.");
+                return;
             }
+            string projectName = projectInfo.ProjectName ?? Path.GetFileNameWithoutExtension(projectInfo.FilePath);
+            bool result = CExternsEditor.ExportProject(projectInfo.FilePath, projectName);
+            if (result == false)
+                Log($"Warning: ExportProject returned 0 for '{projectInfo.FilePath}'");
+            else
+                Log($"Project saved: {projectInfo.FilePath}");
         }
 
         private void SaveAsProject_Click(object? sender, EventArgs e) {
-            if (dockPanel.ActiveDocument is not MapDocContent mapDoc) return;
+            CExternsEditor.GetProjectProps(out ProjectInfo currentProject);
             using SaveFileDialog dlg = new SaveFileDialog {
                 Title = "Save Project As",
                 Filter = "Project files (*.proj)|*.proj|All files (*.*)|*.*",
-                FileName = string.IsNullOrEmpty(mapDoc.FilePath)
+                FileName = string.IsNullOrEmpty(currentProject.FilePath)
                     ? ""
-                    : Path.GetFileName(mapDoc.FilePath)
+                    : Path.GetFileName(currentProject.FilePath)
             };
             if (dlg.ShowDialog(this) != DialogResult.OK) return;
             string newPath = Path.GetFullPath(dlg.FileName);
@@ -226,7 +226,7 @@ namespace csharp_editor {
             if (result == false) {
                 Log($"Warning: ExportProject returned 0 for '{newPath}'");
             } else {
-                mapDoc.UpdateFilePath(newPath);
+                RecentProjectsManager.Add(newPath);
                 Log($"Project saved as: {newPath}");
             }
         }
@@ -529,7 +529,7 @@ namespace csharp_editor {
             Log($"{items.Count} entities selected");
         }
 
-        private void toolStripButton_openFile(object? sender, MouseEventArgs e) {
+        private void OpenMap_Click(object? sender, MouseEventArgs e) {
             string path = Utils.OpenFile("");
 
             // User cancelled or invalid path
@@ -551,10 +551,29 @@ namespace csharp_editor {
             }
         }
 
-        private void toolStripButton_export(object? sender, MouseEventArgs e) {
-            string startingPath = AppContext.BaseDirectory;
+        private void SaveMap_Click(object? sender, EventArgs e) {
+            if (dockPanel.ActiveDocument is not MapDocContent mapDoc || string.IsNullOrEmpty(mapDoc.FilePath)) {
+                MessageBox.Show("No saved map is active. Use 'Save Map As' to choose a location.",
+                    "Save Map", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            bool ok = CExternsEditor.ExportMap(mapDoc.FilePath);
+            if (!ok)
+                MessageBox.Show($"Failed to save map:\n{GetLastErrorMessage()}", "Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            else
+                Log($"Map saved: {mapDoc.FilePath}");
+        }
+
+        private void SaveMapAs_Click(object? sender, MouseEventArgs e) {
             string name = "default";
             string exten = "json";
+
+            string startingPath = AppContext.BaseDirectory;
+            if (CExternsEditor.GetProjectProps(out ProjectInfo exportProjectInfo) && !string.IsNullOrEmpty(exportProjectInfo.FilePath)) {
+                string mapsDir = Path.Combine(Path.GetDirectoryName(exportProjectInfo.FilePath)!, "res", "maps");
+                Directory.CreateDirectory(mapsDir);
+                startingPath = mapsDir;
+            }
 
             try {
                 using (var dialog = new SaveFileDialog()) {
@@ -568,7 +587,11 @@ namespace csharp_editor {
                     if (dialog.ShowDialog() == DialogResult.OK) {
                         bool ok = CExternsEditor.ExportMap(dialog.FileName);
                         if (!ok) {
-                            MessageBox.Show($"Failed to export map:\n{GetLastErrorMessage()}", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show($"Failed to save map:\n{GetLastErrorMessage()}", "Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        } else {
+                            if (dockPanel.ActiveDocument is MapDocContent activeMap)
+                                activeMap.UpdateFilePath(dialog.FileName);
+                            Log($"Map saved as: {dialog.FileName}");
                         }
                     }
                 }
